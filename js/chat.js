@@ -3,7 +3,7 @@
    ═══════════════════════════════════════════════════════════════════ */
 
 const CHAT_API_CONFIG = {
-    endpoint: 'http://localhost:3001/api/chat',
+    endpoint: 'https://sonaris-chat-api.vercel.app/api/chat',
     maxMessages: 20,
 };
 
