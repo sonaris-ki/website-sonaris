@@ -45,16 +45,15 @@
 
     function scrollToContent() {
         enableScroll();
-        const doScroll = () => {
-            const aiFirst = document.getElementById('ai-first');
+        const aiFirst = document.getElementById('ai-first');
+        setTimeout(() => {
             if (aiFirst) {
                 aiFirst.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } else {
-                const y = Math.max(0, window.innerHeight * 1.3 - 100);
-                window.scrollTo({ top: y, left: 0, behavior: 'smooth' });
+                const targetY = Math.max(0, window.innerHeight * 1.3 - 100);
+                window.scrollTo({ top: targetY, left: 0, behavior: 'smooth' });
             }
-        };
-        setTimeout(doScroll, 200);
+        }, 50);
     }
 
     // Scroll indicator click
@@ -62,14 +61,23 @@
         scrollIndicator.addEventListener('click', scrollToContent);
     }
 
-    // Chat scroll hint (three arrows) click – capture phase for reliability
+    // Chat scroll hint (three arrows) – Event-Delegation, da Klicks sonst blockiert werden
     const chatScrollHint = document.getElementById('chat-scroll-hint');
+    function handleScrollHintActivate(e) {
+        const isOnHint = chatScrollHint && (
+            e.type === 'keydown' ? document.activeElement === chatScrollHint
+                : chatScrollHint.contains(e.target)
+        );
+        if (!isOnHint) return;
+        if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+        e.preventDefault();
+        e.stopPropagation();
+        scrollToContent();
+    }
     if (chatScrollHint) {
-        chatScrollHint.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            scrollToContent();
-        }, true);
+        document.addEventListener('click', handleScrollHintActivate, true);
+        document.addEventListener('touchend', handleScrollHintActivate, true);
+        chatScrollHint.addEventListener('keydown', handleScrollHintActivate);
     }
 
     // Detect scroll intent
@@ -144,6 +152,7 @@
         if (inContentZone && !wasInContentZone) {
             if (chatPanel) chatPanel.classList.add('minimized');
             if (chatFloatBtn) chatFloatBtn.classList.add('visible');
+            if (chatScrollHint) chatScrollHint.style.display = 'none';
 
             // Hide denkraum UI elements
             const denkraumFooter = document.getElementById('denkraum-footer');
@@ -157,6 +166,7 @@
         } else if (!inContentZone && wasInContentZone) {
             if (chatPanel) chatPanel.classList.remove('minimized');
             if (chatFloatBtn) chatFloatBtn.classList.remove('visible');
+            if (chatScrollHint) chatScrollHint.style.display = '';
 
             // Restore denkraum UI elements
             const denkraumFooter = document.getElementById('denkraum-footer');

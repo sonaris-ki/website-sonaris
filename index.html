@@ -143,11 +143,6 @@
             <input id="chat-input" type="text" placeholder="Schreib etwas …" autocomplete="off" />
             <button id="chat-send">&#8593;</button>
         </div>
-        <div id="chat-scroll-hint" aria-hidden="true">
-            <span class="scroll-arrow"><svg viewBox="0 0 24 24" width="36" height="36"><polyline points="6 9 12 15 18 9"/></svg></span>
-            <span class="scroll-arrow"><svg viewBox="0 0 24 24" width="36" height="36"><polyline points="6 9 12 15 18 9"/></svg></span>
-            <span class="scroll-arrow"><svg viewBox="0 0 24 24" width="36" height="36"><polyline points="6 9 12 15 18 9"/></svg></span>
-        </div>
     </div>
 
     <div id="denkraum-footer">
@@ -178,6 +173,16 @@
         </div>
     </div>
 </div>
+
+<!-- Scroll hint: fest positioniert, keine Überlappung mit Footer -->
+<a href="#ai-first" id="chat-scroll-hint" class="scroll-hint-link">
+    <span class="chat-scroll-hint-label">scroll down</span>
+    <span class="scroll-arrows">
+        <span class="scroll-arrow"><svg viewBox="0 0 24 24" width="36" height="36"><polyline points="6 9 12 15 18 9"/></svg></span>
+        <span class="scroll-arrow"><svg viewBox="0 0 24 24" width="36" height="36"><polyline points="6 9 12 15 18 9"/></svg></span>
+        <span class="scroll-arrow"><svg viewBox="0 0 24 24" width="36" height="36"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </span>
+</a>
 
 <!-- Scroll indicator -->
 <div id="scroll-indicator">
