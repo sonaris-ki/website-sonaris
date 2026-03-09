@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="55" r="42" fill="rgba(170,125,85,0.05)"/>
+                <circle cx="60" cy="25" r="2.5" fill="rgba(225,185,145,0.55)">
+                    <animate attributeName="r" values="2.5;2.8;2.5" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="42" cy="32" r="2" fill="rgba(225,185,145,0.45)"/>
+                <circle cx="78" cy="32" r="2" fill="rgba(225,185,145,0.45)"/>
+                <circle cx="36" cy="50" r="1.8" fill="rgba(225,185,145,0.35)"/>
+                <circle cx="84" cy="50" r="1.8" fill="rgba(225,185,145,0.35)"/>
+                <circle cx="40" cy="65" r="1.8" fill="rgba(225,185,145,0.3)"/>
+                <circle cx="80" cy="65" r="1.8" fill="rgba(225,185,145,0.3)"/>
+                <circle cx="50" cy="75" r="1.5" fill="rgba(225,185,145,0.25)"/>
+                <circle cx="70" cy="75" r="1.5" fill="rgba(225,185,145,0.25)"/>
+                <circle cx="60" cy="78" r="2" fill="rgba(225,185,145,0.35)"/>
+                <line x1="60" y1="25" x2="42" y2="32" stroke="rgba(225,185,145,0.15)" stroke-width="0.6"/>
+                <line x1="60" y1="25" x2="78" y2="32" stroke="rgba(225,185,145,0.15)" stroke-width="0.6"/>
+                <line x1="42" y1="32" x2="36" y2="50" stroke="rgba(225,185,145,0.12)" stroke-width="0.6"/>
+                <line x1="78" y1="32" x2="84" y2="50" stroke="rgba(225,185,145,0.12)" stroke-width="0.6"/>
+                <line x1="36" y1="50" x2="40" y2="65" stroke="rgba(225,185,145,0.1)" stroke-width="0.5"/>
+                <line x1="84" y1="50" x2="80" y2="65" stroke="rgba(225,185,145,0.1)" stroke-width="0.5"/>
+                <line x1="40" y1="65" x2="50" y2="75" stroke="rgba(225,185,145,0.08)" stroke-width="0.5"/>
+                <line x1="80" y1="65" x2="70" y2="75" stroke="rgba(225,185,145,0.08)" stroke-width="0.5"/>
+                <line x1="50" y1="75" x2="60" y2="78" stroke="rgba(225,185,145,0.08)" stroke-width="0.5"/>
+                <line x1="70" y1="75" x2="60" y2="78" stroke="rgba(225,185,145,0.08)" stroke-width="0.5"/>
+                <circle cx="52" cy="42" r="1.2" fill="rgba(160,85,95,0.55)">
+                    <animate attributeName="cx" values="52;54;50;52" dur="1.8s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="68" cy="40" r="1.2" fill="rgba(160,85,95,0.5)">
+                    <animate attributeName="cy" values="40;38;42;40" dur="1.6s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="50" r="1.2" fill="rgba(160,85,95,0.5)">
+                    <animate attributeName="cx" values="60;62;58;60" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="48" cy="55" r="1" fill="rgba(160,85,95,0.4)">
+                    <animate attributeName="cy" values="55;53;57;55" dur="1.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="72" cy="55" r="1" fill="rgba(160,85,95,0.4)">
+                    <animate attributeName="cx" values="72;74;70;72" dur="1.9s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="56" cy="63" r="1" fill="rgba(160,85,95,0.35)">
+                    <animate attributeName="cy" values="63;61;65;63" dur="1.7s" repeatCount="indefinite"/>
+                </circle>
+                <line x1="52" y1="42" x2="68" y2="40" stroke="rgba(160,85,95,0.12)" stroke-width="0.4"/>
+                <line x1="60" y1="50" x2="52" y2="42" stroke="rgba(160,85,95,0.1)" stroke-width="0.4"/>
+                <line x1="60" y1="50" x2="68" y2="40" stroke="rgba(160,85,95,0.1)" stroke-width="0.4"/>
+                <line x1="48" y1="55" x2="72" y2="55" stroke="rgba(160,85,95,0.08)" stroke-width="0.4"/>
+                <circle cx="30" cy="28" r="0.8" fill="rgba(160,85,95,0.25)">
+                    <animate attributeName="cy" values="28;24;28" dur="4s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="88" cy="25" r="0.8" fill="rgba(160,85,95,0.2)">
+                    <animate attributeName="cx" values="88;92;88" dur="3.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="15" r="0.8" fill="rgba(160,85,95,0.2)">
+                    <animate attributeName="cy" values="15;11;15" dur="4.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="38" cy="90" r="1.2" fill="rgba(225,185,145,0.15)"/>
+                <circle cx="82" cy="90" r="1.2" fill="rgba(225,185,145,0.15)"/>
+                <line x1="50" y1="75" x2="38" y2="90" stroke="rgba(225,185,145,0.06)" stroke-width="0.4"/>
+                <line x1="70" y1="75" x2="82" y2="90" stroke="rgba(225,185,145,0.06)" stroke-width="0.4"/>
+</svg>

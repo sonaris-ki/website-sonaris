@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonaris</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            overflow: hidden;
+            background: #121820;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        canvas { display: block; position: absolute; top: 0; left: 0; }
+        #main { z-index: 1; }
+        #fragments { z-index: 2; pointer-events: none; }
+
+        /* Branding */
+        #logo {
+            position: fixed;
+            top: 40px;
+            left: 45px;
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: rgba(140, 180, 220, 1);
+            z-index: 20;
+            cursor: default;
+            user-select: none;
+        }
+
+        /* Fragment tooltip */
+        #fragment-tooltip {
+            position: fixed;
+            background: rgba(20, 30, 42, 0.92);
+            border: 1px solid rgba(110, 145, 180, 0.25);
+            color: rgba(160, 185, 215, 0.95);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+            max-width: 240px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 30;
+        }
+        #fragment-tooltip.visible { opacity: 1; }
+
+        /* Chat panel */
+        #chat-panel {
+            position: fixed;
+            bottom: 48px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 560px;
+            max-width: calc(100vw - 48px);
+            z-index: 20;
+        }
+
+        #chat-messages {
+            max-height: 320px;
+            overflow-y: auto;
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 4px 2px;
+        }
+
+        #chat-messages::-webkit-scrollbar { width: 4px; }
+        #chat-messages::-webkit-scrollbar-track { background: transparent; }
+        #chat-messages::-webkit-scrollbar-thumb { background: rgba(110,145,180,0.3); border-radius: 2px; }
+
+        .msg {
+            max-width: 88%;
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.55;
+            animation: fadeUp 0.3s ease;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .msg.user {
+            align-self: flex-end;
+            background: rgba(110, 145, 180, 0.18);
+            color: rgba(200, 220, 240, 0.95);
+            border: 1px solid rgba(110, 145, 180, 0.2);
+        }
+
+        .msg.bot {
+            align-self: flex-start;
+            background: rgba(20, 30, 42, 0.75);
+            color: rgba(160, 185, 215, 0.95);
+            border: 1px solid rgba(110, 145, 180, 0.12);
+        }
+
+        .msg.typing {
+            align-self: flex-start;
+            background: rgba(20, 30, 42, 0.75);
+            border: 1px solid rgba(110, 145, 180, 0.12);
+            padding: 12px 18px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .typing-dots span {
+            width: 6px;
+            height: 6px;
+            background: rgba(110, 145, 180, 0.6);
+            border-radius: 50%;
+            animation: bounce 1.2s infinite;
+        }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+
+        #chat-input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: rgba(20, 30, 42, 0.82);
+            border: 1px solid rgba(110, 145, 180, 0.22);
+            border-radius: 14px;
+            padding: 10px 14px;
+            backdrop-filter: blur(12px);
+        }
+
+        #chat-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: rgba(200, 220, 240, 0.95);
+            font-size: 15px;
+            font-family: inherit;
+            placeholder-color: rgba(110, 145, 180, 0.5);
+        }
+
+        #chat-input::placeholder {
+            color: rgba(110, 145, 180, 0.45);
+        }
+
+        #chat-send {
+            background: rgba(110, 145, 180, 0.2);
+            border: 1px solid rgba(110, 145, 180, 0.3);
+            border-radius: 8px;
+            color: rgba(160, 185, 215, 0.9);
+            cursor: pointer;
+            padding: 6px 10px;
+            font-size: 16px;
+            transition: background 0.2s;
+            line-height: 1;
+        }
+
+        #chat-send:hover {
+            background: rgba(110, 145, 180, 0.35);
+        }
+
+        /* Learning badge */
+        #learning-badge {
+            position: fixed;
+            top: 40px;
+            right: 45px;
+            font-size: 11px;
+            color: rgba(110, 145, 180, 0.55);
+            letter-spacing: 0.5px;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        #learning-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: rgba(110, 180, 140, 0.7);
+            border-radius: 50%;
+            animation: pulse-dot 2.5s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.3); }
+        }
+
+        /* Settings toggle */
+        #toggle {
+            position: fixed;
+            bottom: 40px;
+            right: 45px;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            opacity: 0.35;
+            transition: opacity 0.2s;
+            z-index: 20;
+        }
+        #toggle:hover { opacity: 0.7; }
+        #toggle svg { width: 100%; height: 100%; stroke: rgba(160, 185, 215, 0.9); fill: none; stroke-width: 1.5; }
+
+        /* Controls panel */
+        #controls {
+            position: fixed;
+            bottom: 90px;
+            right: 45px;
+            width: 220px;
+            background: rgba(15, 22, 30, 0.92);
+            border: 1px solid rgba(80, 100, 130, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            z-index: 25;
+            display: none;
+            backdrop-filter: blur(16px);
+        }
+        #controls.visible { display: block; }
+
+        .control-group { margin-bottom: 14px; }
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 12px;
+            color: rgba(160, 185, 215, 0.6);
+        }
+        .control-value { color: rgba(150, 130, 130, 0.7); font-size: 11px; }
+
+        input[type="range"] {
+            width: 100%;
+            height: 4px;
+            -webkit-appearance: none;
+            background: rgba(80, 60, 65, 0.3);
+            border-radius: 2px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: rgba(110, 145, 180, 0.8);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .section-title {
+            color: rgba(110, 145, 180, 0.5);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(110, 145, 180, 0.1);
+        }
+        .section { margin-bottom: 20px; }
+        .section:last-child { margin-bottom: 0; }
+
+        .color-presets { display: flex; gap: 8px; margin-bottom: 14px; }
+        .color-preset {
+            flex: 1;
+            height: 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .color-preset:hover { transform: scale(1.05); }
+        .color-preset.active { border-color: rgba(255,255,255,0.4); }
+        .color-preset.blue { background: linear-gradient(135deg, #1a2530, #2a4055); }
+        .color-preset.red { background: linear-gradient(135deg, #251518, #4a2028); }
+        .color-preset.warm { background: linear-gradient(135deg, #252015, #4a3820); }
+    </style>
+</head>
+<body>
+    <canvas id="main"></canvas>
+    <canvas id="fragments"></canvas>
+
+    <div id="logo">sonaris</div>
+    <div id="learning-badge">Assistent wird trainiert</div>
+    <div id="fragment-tooltip"></div>
+
+    <!-- Chat -->
+    <div id="chat-panel">
+        <div id="chat-messages"></div>
+        <div id="chat-input-row">
+            <input id="chat-input" type="text" placeholder="Stellen Sie Ihre Frage …" autocomplete="off" />
+            <button id="chat-send">&#8593;</button>
+        </div>
+    </div>
+
+    <!-- Settings -->
+    <div id="toggle">
+        <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+        </svg>
+    </div>
+
+    <div id="controls">
+        <div class="section">
+            <div class="section-title">Farbwelt</div>
+            <div class="color-presets">
+                <div class="color-preset blue active" data-palette="blue" title="Kühl"></div>
+                <div class="color-preset red" data-palette="red" title="Tiefrot"></div>
+                <div class="color-preset warm" data-palette="warm" title="Warm"></div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title">Intensität</div>
+            <div class="control-group">
+                <div class="control-label"><span>Bewegungsstärke</span><span class="control-value" id="movementIntensityValue">1.0</span></div>
+                <input type="range" id="movementIntensity" min="0.3" max="2" step="0.1" value="1">
+            </div>
+            <div class="control-group">
+                <div class="control-label"><span>Atemgeschwindigkeit</span><span class="control-value" id="breathSpeedValue">1.0</span></div>
+                <input type="range" id="breathSpeed" min="0.2" max="3" step="0.1" value="1">
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title">Fragmente</div>
+            <div class="control-group">
+                <div class="control-label"><span>Sichtbarkeit</span><span class="control-value" id="fragmentVisibilityValue">1.0</span></div>
+                <input type="range" id="fragmentVisibility" min="0.1" max="2" step="0.1" value="1">
+            </div>
+            <div class="control-group">
+                <div class="control-label"><span>Größe</span><span class="control-value" id="fragmentSizeValue">1.0</span></div>
+                <input type="range" id="fragmentSize" min="0.5" max="2" step="0.1" value="1">
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title">Netzwerk</div>
+            <div class="control-group">
+                <div class="control-label"><span>Intensität</span><span class="control-value" id="networkIntensityValue">1.0</span></div>
+                <input type="range" id="networkIntensity" min="0" max="2" step="0.1" value="1">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ── Canvases ──────────────────────────────────────────────────────────
+        const mainCanvas = document.getElementById('main');
+        const mainCtx = mainCanvas.getContext('2d');
+        const fragmentsCanvas = document.getElementById('fragments');
+        const fragmentsCtx = fragmentsCanvas.getContext('2d');
+
+        let width, height;
+        let mouseX = 0, mouseY = 0;
+        let time = 0;
+        let dwellTime = 0;
+        let lastMouseX = 0, lastMouseY = 0;
+
+        // ── All 20 concept fragments ──────────────────────────────────────────
+        const allFragmentData = [
+            { text: 'Selbstermächtigung', explanation: 'Sie treffen Entscheidungen, die wirklich von Ihnen kommen.' },
+            { text: 'Denkpartner',        explanation: 'Ein Gegenüber, das mitdenkt – jederzeit, ohne Agenda.' },
+            { text: 'Führung',            explanation: 'Ihre Haltung wird sichtbar, bevor Sie ein Wort sagen.' },
+            { text: 'Klarheit',           explanation: 'Sie wissen, was zählt – und warum.' },
+            { text: 'Tempo',              explanation: 'Ihre besten Gedanken kommen schneller zum Einsatz.' },
+            { text: 'Entscheidung',       explanation: 'Sie entscheiden auf Basis von dem, was Sie wirklich wissen.' },
+            { text: 'Delegation',         explanation: 'Sie übergeben mit Vertrauen – und behalten den Überblick.' },
+            { text: 'Wirksamkeit',        explanation: 'Was Sie tun, hinterlässt Spuren, die Sie gewollt haben.' },
+            { text: 'Transformation',     explanation: 'Veränderung, die von Ihnen ausgeht – nicht über Sie hinweggeht.' },
+            { text: 'Kontrolle',          explanation: 'Sie behalten den Faden – auch wenn vieles gleichzeitig läuft.' },
+            { text: 'Vertrauen',          explanation: 'Ihr Team spürt, dass Sie wissen, wohin es geht.' },
+            { text: 'Fokus',              explanation: 'Ihre Aufmerksamkeit landet dort, wo sie den größten Unterschied macht.' },
+            { text: 'Verantwortung',      explanation: 'Sie tragen sie – und KI hilft Ihnen, ihr gerecht zu werden.' },
+            { text: 'Zukunft',            explanation: 'Sie gestalten sie aktiv, statt auf sie zu reagieren.' },
+            { text: 'Kompetenz',          explanation: 'Ihre Erfahrung verbindet sich mit neuen Möglichkeiten.' },
+            { text: 'Orientierung',       explanation: 'Sie wissen, wo Sie stehen – und was als nächstes kommt.' },
+            { text: 'Eigenständigkeit',   explanation: 'Sie bleiben Herr Ihrer Werkzeuge – nicht umgekehrt.' },
+            { text: 'Haltung',            explanation: 'Ihre Überzeugungen prägen, wie KI bei Ihnen wirkt.' },
+            { text: 'Souveränität',       explanation: 'Sie nutzen KI aus einer Position der Stärke.' },
+            { text: 'Anfang',             explanation: 'Der erste Schritt gehört Ihnen – und er ist kleiner als gedacht.' },
+        ];
+
+        const VISIBLE_COUNT = 6;
+        const ROTATION_INTERVAL = 16000; // ms between single-word swaps
+
+        // ── Fragment state ────────────────────────────────────────────────────
+        let fragments = [];          // currently active fragment objects (max 6)
+        let poolIndices = [];        // indices into allFragmentData not currently shown
+        let hoveredFragment = null;
+        let lastRotation = 0;
+
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function makeFragment(dataIndex, x, y) {
+            const d = allFragmentData[dataIndex];
+            return {
+                dataIndex,
+                text: d.text,
+                explanation: d.explanation,
+                depth: 0.4 + Math.random() * 0.6,
+                x: x !== undefined ? x : Math.random(),
+                y: y !== undefined ? y : Math.random(),
+                baseX: 0,
+                baseY: 0,
+                currentX: 0,
+                currentY: 0,
+                driftPhase: Math.random() * Math.PI * 2,
+                driftSpeed: 0.18 + Math.random() * 0.25,
+                visibility: 0,          // fades in
+                targetVisibility: 0,
+                fadingOut: false,
+                frozen: false,          // true while hovered
+            };
+        }
+
+        function initFragments() {
+            const order = shuffle([...Array(allFragmentData.length).keys()]);
+            const active = order.slice(0, VISIBLE_COUNT);
+            poolIndices = order.slice(VISIBLE_COUNT);
+
+            fragments = active.map(i => {
+                const f = makeFragment(i);
+                f.baseX = f.x * width;
+                f.baseY = f.y * height;
+                return f;
+            });
+        }
+
+        // Swap one random non-hovered, non-frozen fragment for a pool word
+        function rotateSingleFragment() {
+            if (poolIndices.length === 0) return;
+            const candidates = fragments.filter(f => !f.frozen && !f.fadingOut);
+            if (candidates.length === 0) return;
+
+            const outFrag = candidates[Math.floor(Math.random() * candidates.length)];
+            outFrag.fadingOut = true;
+
+            // After fade-out, replace with new word
+            setTimeout(() => {
+                const newIndex = poolIndices.shift();
+                poolIndices.push(outFrag.dataIndex); // return old word to pool
+
+                const idx = fragments.indexOf(outFrag);
+                if (idx === -1) return;
+
+                const f = makeFragment(newIndex, outFrag.x, outFrag.y);
+                f.baseX = outFrag.baseX;
+                f.baseY = outFrag.baseY;
+                fragments[idx] = f;
+            }, 1200); // wait for fade-out animation
+        }
+
+        // ── Particles ─────────────────────────────────────────────────────────
+        let particles = [];
+        const particleCount = 800;
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                const depth = 0.2 + Math.random() * 0.8;
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    depth,
+                    size: 2 + depth * 4,
+                    phase: Math.random() * Math.PI * 2,
+                    speedX: (Math.random() - 0.5) * 0.3,
+                    speedY: (Math.random() - 0.5) * 0.3,
+                    orbitRadius: 10 + Math.random() * 30,
+                    orbitSpeed: 0.2 + Math.random() * 0.5,
+                    opacity: 0.15 + depth * 0.3,
+                    calm: 0,
+                });
+            }
+        }
+
+        // ── Color palettes ────────────────────────────────────────────────────
+        const palettes = {
+            blue: {
+                bg:        { r: 20,  g: 28,  b: 36  },
+                base:      { r: 55,  g: 75,  b: 100 },
+                clarity:   { r: 110, g: 145, b: 180 },
+                highlight: { r: 180, g: 200, b: 225 },
+                text:      { r: 160, g: 185, b: 215 },
+            },
+            red: {
+                bg:        { r: 28,  g: 18,  b: 20  },
+                base:      { r: 85,  g: 45,  b: 55  },
+                clarity:   { r: 160, g: 85,  b: 95  },
+                highlight: { r: 220, g: 140, b: 150 },
+                text:      { r: 210, g: 160, b: 165 },
+            },
+            warm: {
+                bg:        { r: 30,  g: 24,  b: 18  },
+                base:      { r: 95,  g: 70,  b: 50  },
+                clarity:   { r: 170, g: 125, b: 85  },
+                highlight: { r: 225, g: 185, b: 145 },
+                text:      { r: 215, g: 185, b: 155 },
+            },
+        };
+        let currentPalette = 'blue';
+
+        let params = {
+            breathSpeed: 1,
+            movementIntensity: 1.8,
+            fragmentVisibility: 1,
+            fragmentSize: 1,
+            networkIntensity: 1,
+        };
+
+        function lerp(a, b, t) { return a + (b - a) * t; }
+        function getHighlightColor() { return palettes[currentPalette].highlight; }
+        function getTextColor()      { return palettes[currentPalette].text; }
+        function getBgColor()        { return palettes[currentPalette].bg; }
+
+        // ── Resize ────────────────────────────────────────────────────────────
+        function resize() {
+            width  = mainCanvas.width  = fragmentsCanvas.width  = window.innerWidth;
+            height = mainCanvas.height = fragmentsCanvas.height = window.innerHeight;
+            mouseX = width / 2;
+            mouseY = height / 2;
+            initParticles();
+            initFragments();
+        }
+        window.addEventListener('resize', resize);
+
+        // ── Mouse ─────────────────────────────────────────────────────────────
+        document.addEventListener('mousemove', e => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        // ── Update particles ──────────────────────────────────────────────────
+        function updateParticles() {
+            const mi = params.movementIntensity;
+            particles.forEach(p => {
+                const dx = mouseX - p.x;
+                const dy = mouseY - p.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const influence = Math.max(0, 1 - dist / 300);
+                p.calm += (influence - p.calm) * 0.05;
+
+                const orbitX = Math.cos(time * p.orbitSpeed + p.phase) * p.orbitRadius * mi;
+                const orbitY = Math.sin(time * p.orbitSpeed * 0.7 + p.phase) * p.orbitRadius * mi;
+
+                p.x += p.speedX * mi + orbitX * 0.01;
+                p.y += p.speedY * mi + orbitY * 0.01;
+
+                if (p.x < 0) p.x = width;
+                if (p.x > width) p.x = 0;
+                if (p.y < 0) p.y = height;
+                if (p.y > height) p.y = 0;
+            });
+        }
+
+        // ── Update fragments ──────────────────────────────────────────────────
+        const fragmentTooltip = document.getElementById('fragment-tooltip');
+
+        function updateFragments(now) {
+            // Rotation timer
+            if (now - lastRotation > ROTATION_INTERVAL) {
+                lastRotation = now;
+                rotateSingleFragment();
+            }
+
+            const attentionRadius = 220;
+            let closestFragment = null;
+            let closestDist = Infinity;
+
+            fragments.forEach(f => {
+                // Fade out
+                if (f.fadingOut) {
+                    f.visibility = Math.max(0, f.visibility - 0.025);
+                    return;
+                }
+
+                const driftX = Math.sin(time * f.driftSpeed + f.driftPhase) * 18 * f.depth;
+                const driftY = Math.cos(time * f.driftSpeed * 0.7 + f.driftPhase) * 18 * f.depth;
+
+                f.currentX = f.baseX + driftX;
+                f.currentY = f.baseY + driftY;
+
+                const dx = f.currentX - mouseX;
+                const dy = f.currentY - mouseY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                // Frozen while hovered
+                if (f.frozen) {
+                    f.targetVisibility = 1.0;
+                } else {
+                    const proximity = Math.max(0, 1 - dist / attentionRadius);
+                    f.targetVisibility = 0.08 + proximity * proximity * (0.5 + dwellTime * 0.42);
+                }
+
+                f.visibility += (f.targetVisibility - f.visibility) * 0.05;
+
+                if (f.visibility > 0.35 && dist < closestDist) {
+                    closestDist = dist;
+                    closestFragment = f;
+                }
+            });
+
+            // Tooltip + hover state
+            fragments.forEach(f => { f.frozen = false; });
+
+            if (closestFragment && closestDist < 90) {
+                hoveredFragment = closestFragment;
+                closestFragment.frozen = true;
+                fragmentTooltip.textContent = closestFragment.explanation;
+                fragmentTooltip.style.left = (closestFragment.currentX - 120) + 'px';
+                fragmentTooltip.style.top  = (closestFragment.currentY + 38) + 'px';
+                fragmentTooltip.classList.add('visible');
+                fragmentsCanvas.style.cursor = 'pointer';
+            } else {
+                hoveredFragment = null;
+                fragmentTooltip.classList.remove('visible');
+                fragmentsCanvas.style.cursor = 'default';
+            }
+        }
+
+        // ── Draw particles ────────────────────────────────────────────────────
+        function drawMain() {
+            const bg = getBgColor();
+            mainCtx.fillStyle = `rgb(${bg.r},${bg.g},${bg.b})`;
+            mainCtx.fillRect(0, 0, width, height);
+
+            particles.forEach(p => {
+                const highlight = getHighlightColor();
+                const base = palettes[currentPalette].base;
+                const r = lerp(base.r, highlight.r, p.calm);
+                const g = lerp(base.g, highlight.g, p.calm);
+                const b = lerp(base.b, highlight.b, p.calm);
+                const alpha = p.opacity * (0.5 + p.calm * 0.5);
+
+                mainCtx.beginPath();
+                mainCtx.arc(p.x, p.y, p.size * p.depth * 0.5, 0, Math.PI * 2);
+                mainCtx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+                mainCtx.fill();
+            });
+        }
+
+        // ── Draw fragments ────────────────────────────────────────────────────
+        function drawFragments() {
+            fragmentsCtx.clearRect(0, 0, width, height);
+
+            const textColor  = getTextColor();
+            const highlight  = getHighlightColor();
+
+            // Network lines between visible fragments
+            const visible = fragments.filter(f => f.visibility > 0.1);
+            for (let i = 0; i < visible.length; i++) {
+                for (let j = i + 1; j < visible.length; j++) {
+                    const f1 = visible[i], f2 = visible[j];
+                    const dx = (f2.currentX || f2.baseX) - (f1.currentX || f1.baseX);
+                    const dy = (f2.currentY || f2.baseY) - (f1.currentY || f1.baseY);
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    const distFactor = Math.max(0, 1 - dist / 550);
+                    const linePhase = (i * 7 + j * 13) * 0.1;
+                    const pulse = 0.5 + 0.5 * Math.sin(time * 2 + linePhase);
+                    const alpha = distFactor * (0.06 + pulse * 0.1) * params.networkIntensity
+                                  * Math.min(f1.visibility, f2.visibility);
+                    if (alpha < 0.01) continue;
+                    const avgDepth = (f1.depth + f2.depth) / 2;
+                    const r = lerp(textColor.r, highlight.r, avgDepth * 0.5);
+                    const g = lerp(textColor.g, highlight.g, avgDepth * 0.5);
+                    const b = lerp(textColor.b, highlight.b, avgDepth * 0.5);
+                    fragmentsCtx.strokeStyle = `rgba(${r},${g},${b},${alpha})`;
+                    fragmentsCtx.lineWidth = 0.5 + pulse * 0.8;
+                    fragmentsCtx.beginPath();
+                    fragmentsCtx.moveTo(f1.currentX || f1.baseX, f1.currentY || f1.baseY);
+                    fragmentsCtx.lineTo(f2.currentX || f2.baseX, f2.currentY || f2.baseY);
+                    fragmentsCtx.stroke();
+                }
+            }
+
+            // Fragment labels
+            const sorted = [...fragments].sort((a, b) => a.depth - b.depth);
+            sorted.forEach(f => {
+                const vis = f.visibility * params.fragmentVisibility;
+                if (vis < 0.02) return;
+
+                const isHovered = hoveredFragment === f;
+                const depthScale = 0.65 + f.depth * 0.55;
+                const fontSize = (22 + vis * 10) * depthScale * params.fragmentSize;
+
+                fragmentsCtx.font = `${300 + vis * 200} ${fontSize}px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`;
+                fragmentsCtx.textAlign = 'center';
+                fragmentsCtx.textBaseline = 'middle';
+
+                const depthDim = 0.45 + f.depth * 0.55;
+                const r = lerp(textColor.r * 0.25 * depthDim, textColor.r * depthDim, vis);
+                const g = lerp(textColor.g * 0.25 * depthDim, textColor.g * depthDim, vis);
+                const b = lerp(textColor.b * 0.25 * depthDim, textColor.b * depthDim, vis);
+
+                if (isHovered) {
+                    fragmentsCtx.shadowColor = `rgba(${highlight.r},${highlight.g},${highlight.b},0.7)`;
+                    fragmentsCtx.shadowBlur = 32;
+                } else if (vis > 0.5) {
+                    fragmentsCtx.shadowColor = `rgba(${highlight.r},${highlight.g},${highlight.b},${(vis - 0.5) * 0.3})`;
+                    fragmentsCtx.shadowBlur = 18;
+                } else {
+                    fragmentsCtx.shadowColor = 'transparent';
+                    fragmentsCtx.shadowBlur = 0;
+                }
+
+                fragmentsCtx.fillStyle = `rgba(${r},${g},${b},${vis * 0.92})`;
+                fragmentsCtx.fillText(f.text, f.currentX || f.baseX, f.currentY || f.baseY);
+            });
+
+            fragmentsCtx.shadowColor = 'transparent';
+            fragmentsCtx.shadowBlur = 0;
+        }
+
+        // ── Main loop ─────────────────────────────────────────────────────────
+        function draw(now) {
+            time += 0.008 * params.breathSpeed;
+
+            const moveDist = Math.hypot(mouseX - lastMouseX, mouseY - lastMouseY);
+            dwellTime = moveDist < 5
+                ? Math.min(dwellTime + 0.015, 1)
+                : Math.max(dwellTime - 0.025, 0);
+            lastMouseX = mouseX;
+            lastMouseY = mouseY;
+
+            updateParticles();
+            updateFragments(now);
+            drawMain();
+            drawFragments();
+
+            requestAnimationFrame(draw);
+        }
+
+        // ── Click on fragment → fill chat input ───────────────────────────────
+        fragmentsCanvas.addEventListener('click', () => {
+            if (hoveredFragment) {
+                const input = document.getElementById('chat-input');
+                input.value = hoveredFragment.text;
+                input.focus();
+            }
+        });
+
+        // ── Chat ──────────────────────────────────────────────────────────────
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput    = document.getElementById('chat-input');
+        const chatSend     = document.getElementById('chat-send');
+
+        function appendMessage(text, role) {
+            const div = document.createElement('div');
+            div.className = `msg ${role}`;
+            div.textContent = text;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return div;
+        }
+
+        function showTyping() {
+            const div = document.createElement('div');
+            div.className = 'msg typing';
+            div.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return div;
+        }
+
+        // Placeholder bot logic – replace with real API call
+        async function getBotReply(userText) {
+            // TODO: connect to Claude API / Langdock
+            await new Promise(r => setTimeout(r, 1400 + Math.random() * 600));
+            const replies = {
+                'Selbstermächtigung': 'KI-First Selbstermächtigung bedeutet: Sie bleiben der Entscheider – KI gibt Ihnen die Werkzeuge, um das mit mehr Klarheit und Tempo zu tun. Wie sieht das in Ihrem Alltag aus?',
+                'Denkpartner': 'Ein KI-Denkpartner ist kein Assistent, der Aufgaben erledigt – er ist ein Gegenüber, das Ihre Gedanken schärft. Wollen Sie das einmal erleben?',
+                'Anfang': 'Der Anfang ist oft kleiner als gedacht. Ein Gespräch, ein konkreter Anwendungsfall, 90 Minuten. Soll ich Ihnen zeigen, wie das aussieht?',
+            };
+            return replies[userText.trim()] || 'Das ist eine gute Frage. Lassen Sie uns das gemeinsam durchdenken – was beschäftigt Sie dabei am meisten?';
+        }
+
+        async function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+            chatInput.value = '';
+            appendMessage(text, 'user');
+            const typing = showTyping();
+            const reply = await getBotReply(text);
+            typing.remove();
+            appendMessage(reply, 'bot');
+        }
+
+        chatSend.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
+
+        // ── Settings UI ───────────────────────────────────────────────────────
+        const toggle   = document.getElementById('toggle');
+        const controls = document.getElementById('controls');
+        toggle.addEventListener('click', () => controls.classList.toggle('visible'));
+
+        document.querySelectorAll('.color-preset').forEach(el => {
+            el.addEventListener('click', () => {
+                document.querySelectorAll('.color-preset').forEach(e => e.classList.remove('active'));
+                el.classList.add('active');
+                currentPalette = el.dataset.palette;
+            });
+        });
+
+        function bindRange(id, paramKey) {
+            const el = document.getElementById(id);
+            const val = document.getElementById(id + 'Value');
+            el.addEventListener('input', () => {
+                params[paramKey] = parseFloat(el.value);
+                if (val) val.textContent = el.value;
+            });
+        }
+        bindRange('movementIntensity', 'movementIntensity');
+        bindRange('breathSpeed', 'breathSpeed');
+        bindRange('fragmentVisibility', 'fragmentVisibility');
+        bindRange('fragmentSize', 'fragmentSize');
+        bindRange('networkIntensity', 'networkIntensity');
+
+        // ── Boot ──────────────────────────────────────────────────────────────
+        resize();
+        lastRotation = performance.now();
+        requestAnimationFrame(draw);
+    </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(110,145,180,0.04)"/>
+                <circle cx="65" cy="28" r="2" fill="rgba(110,145,180,0.5)"/>
+                <circle cx="78" cy="35" r="2" fill="rgba(110,145,180,0.45)"/>
+                <circle cx="85" cy="50" r="2" fill="rgba(110,145,180,0.4)"/>
+                <circle cx="82" cy="65" r="2" fill="rgba(110,145,180,0.4)"/>
+                <circle cx="72" cy="78" r="2" fill="rgba(110,145,180,0.35)"/>
+                <circle cx="60" cy="85" r="2" fill="rgba(110,145,180,0.35)"/>
+                <circle cx="62" cy="42" r="1.5" fill="rgba(110,145,180,0.3)"/>
+                <circle cx="70" cy="52" r="1.5" fill="rgba(110,145,180,0.35)"/>
+                <circle cx="68" cy="65" r="1.5" fill="rgba(110,145,180,0.3)"/>
+                <path d="M65,28 Q82,30 85,50 Q86,68 72,78 Q65,83 60,85" fill="none" stroke="rgba(110,145,180,0.15)" stroke-width="0.6"/>
+                <path d="M62,42 Q72,45 70,52 Q69,60 68,65" fill="none" stroke="rgba(110,145,180,0.1)" stroke-width="0.5"/>
+                <path d="M30,50 Q35,55 30,60" fill="none" stroke="rgba(225,185,145,0.2)" stroke-width="0.8" stroke-linecap="round">
+                    <animate attributeName="opacity" values="0.2;0.05;0.2" dur="2s" repeatCount="indefinite"/>
+                </path>
+                <path d="M22,45 Q30,55 22,65" fill="none" stroke="rgba(225,185,145,0.15)" stroke-width="0.6" stroke-linecap="round">
+                    <animate attributeName="opacity" values="0.15;0.03;0.15" dur="2.3s" repeatCount="indefinite"/>
+                </path>
+                <path d="M14,40 Q25,55 14,70" fill="none" stroke="rgba(225,185,145,0.1)" stroke-width="0.5" stroke-linecap="round">
+                    <animate attributeName="opacity" values="0.1;0.02;0.1" dur="2.6s" repeatCount="indefinite"/>
+                </path>
+</svg>

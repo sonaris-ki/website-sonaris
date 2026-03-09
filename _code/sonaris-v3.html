@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonaris</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            overflow: hidden;
+            background: #121820;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        canvas { display: block; position: absolute; top: 0; left: 0; }
+        #main { z-index: 1; }
+        #fragments { z-index: 2; pointer-events: none; }
+        #fx { z-index: 3; pointer-events: none; }
+
+        /* Branding */
+        #logo {
+            position: fixed;
+            top: 40px;
+            left: 45px;
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: rgba(140, 180, 220, 1);
+            z-index: 20;
+            cursor: default;
+            user-select: none;
+        }
+
+        /* Fragment tooltip */
+        #fragment-tooltip {
+            position: fixed;
+            background: rgba(20, 30, 42, 0.92);
+            border: 1px solid rgba(110, 145, 180, 0.25);
+            color: rgba(160, 185, 215, 0.95);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+            max-width: 260px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 30;
+        }
+        #fragment-tooltip.visible { opacity: 1; }
+
+        /* ── Chat panel ── */
+        #chat-panel {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 620px;
+            max-width: calc(100vw - 32px);
+            z-index: 20;
+            padding: 0 0 40px 0;
+        }
+
+        #chat-messages {
+            max-height: 380px;
+            overflow-y: auto;
+            margin-bottom: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 8px 4px;
+        }
+
+        #chat-messages::-webkit-scrollbar { width: 4px; }
+        #chat-messages::-webkit-scrollbar-track { background: transparent; }
+        #chat-messages::-webkit-scrollbar-thumb { background: rgba(110,145,180,0.25); border-radius: 2px; }
+
+        .msg {
+            max-width: 88%;
+            padding: 11px 16px;
+            border-radius: 14px;
+            font-size: 14.5px;
+            line-height: 1.6;
+            animation: fadeUp 0.35s ease;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .msg.user {
+            align-self: flex-end;
+            background: rgba(110, 145, 180, 0.18);
+            color: rgba(200, 220, 240, 0.95);
+            border: 1px solid rgba(110, 145, 180, 0.2);
+        }
+
+        .msg.bot {
+            align-self: flex-start;
+            background: rgba(20, 30, 42, 0.78);
+            color: rgba(175, 198, 222, 0.95);
+            border: 1px solid rgba(110, 145, 180, 0.14);
+        }
+
+        .msg.typing {
+            align-self: flex-start;
+            background: rgba(20, 30, 42, 0.75);
+            border: 1px solid rgba(110, 145, 180, 0.12);
+            padding: 13px 18px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .typing-dots span {
+            width: 6px;
+            height: 6px;
+            background: rgba(110, 145, 180, 0.6);
+            border-radius: 50%;
+            animation: bounce 1.2s infinite;
+        }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+
+        #chat-input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: rgba(16, 24, 34, 0.88);
+            border: 1px solid rgba(110, 145, 180, 0.22);
+            border-radius: 16px;
+            padding: 12px 16px;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 0 40px rgba(80, 120, 170, 0.06), 0 0 80px rgba(80, 120, 170, 0.03);
+        }
+
+        #chat-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: rgba(200, 220, 240, 0.95);
+            font-size: 15px;
+            font-family: inherit;
+        }
+
+        #chat-input::placeholder { color: rgba(110, 145, 180, 0.42); }
+
+        #chat-send {
+            background: rgba(110, 145, 180, 0.18);
+            border: 1px solid rgba(110, 145, 180, 0.25);
+            border-radius: 10px;
+            color: rgba(160, 185, 215, 0.9);
+            cursor: pointer;
+            padding: 7px 12px;
+            font-size: 16px;
+            transition: background 0.2s;
+            line-height: 1;
+        }
+
+        #chat-send:hover { background: rgba(110, 145, 180, 0.35); }
+
+        /* Learning badge */
+        #learning-badge {
+            position: fixed;
+            top: 40px;
+            right: 45px;
+            font-size: 11px;
+            color: rgba(110, 145, 180, 0.5);
+            letter-spacing: 0.5px;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        #learning-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: rgba(110, 180, 140, 0.65);
+            border-radius: 50%;
+            animation: pulse-dot 2.5s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 0.65; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.3); }
+        }
+
+        /* Settings toggle */
+        #toggle {
+            position: fixed;
+            bottom: 40px;
+            right: 45px;
+            width: 34px;
+            height: 34px;
+            cursor: pointer;
+            opacity: 0.3;
+            transition: opacity 0.2s;
+            z-index: 20;
+        }
+        #toggle:hover { opacity: 0.65; }
+        #toggle svg { width: 100%; height: 100%; stroke: rgba(160, 185, 215, 0.9); fill: none; stroke-width: 1.5; }
+
+        /* Controls panel */
+        #controls {
+            position: fixed;
+            bottom: 88px;
+            right: 45px;
+            width: 220px;
+            background: rgba(12, 18, 26, 0.94);
+            border: 1px solid rgba(80, 100, 130, 0.18);
+            border-radius: 12px;
+            padding: 20px;
+            z-index: 25;
+            display: none;
+            backdrop-filter: blur(16px);
+        }
+        #controls.visible { display: block; }
+
+        .control-group { margin-bottom: 14px; }
+        .control-label { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 12px; color: rgba(160, 185, 215, 0.55); }
+        .control-value { color: rgba(130, 155, 180, 0.6); font-size: 11px; }
+
+        input[type="range"] { width: 100%; height: 4px; -webkit-appearance: none; background: rgba(80, 100, 130, 0.2); border-radius: 2px; outline: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; background: rgba(110, 145, 180, 0.75); border-radius: 50%; cursor: pointer; }
+
+        .section-title { color: rgba(110, 145, 180, 0.45); font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid rgba(110, 145, 180, 0.08); }
+        .section { margin-bottom: 20px; }
+        .section:last-child { margin-bottom: 0; }
+
+        .color-presets { display: flex; gap: 8px; margin-bottom: 14px; }
+        .color-preset { flex: 1; height: 28px; border-radius: 6px; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; }
+        .color-preset:hover { transform: scale(1.05); }
+        .color-preset.active { border-color: rgba(255,255,255,0.35); }
+        .color-preset.blue { background: linear-gradient(135deg, #1a2530, #2a4055); }
+        .color-preset.red { background: linear-gradient(135deg, #251518, #4a2028); }
+        .color-preset.warm { background: linear-gradient(135deg, #252015, #4a3820); }
+
+        /* ── Mobile ── */
+        @media (max-width: 680px) {
+            #chat-panel { width: 100%; max-width: 100%; padding: 0 16px 24px 16px; }
+            #chat-messages { max-height: 280px; }
+            #chat-input-row { padding: 10px 12px; border-radius: 14px; }
+            #logo { top: 24px; left: 24px; font-size: 24px; }
+            #learning-badge { top: 24px; right: 24px; font-size: 10px; }
+            #toggle { bottom: 24px; right: 24px; }
+            #controls { bottom: 72px; right: 16px; }
+            .msg { font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="main"></canvas>
+    <canvas id="fragments"></canvas>
+    <canvas id="fx"></canvas>
+
+    <div id="logo">sonaris</div>
+    <div id="learning-badge">Assistent wird trainiert</div>
+    <div id="fragment-tooltip"></div>
+
+    <!-- Chat -->
+    <div id="chat-panel">
+        <div id="chat-messages"></div>
+        <div id="chat-input-row">
+            <input id="chat-input" type="text" placeholder="Schreib etwas …" autocomplete="off" />
+            <button id="chat-send">&#8593;</button>
+        </div>
+    </div>
+
+    <!-- Settings -->
+    <div id="toggle">
+        <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+        </svg>
+    </div>
+
+    <div id="controls">
+        <div class="section">
+            <div class="section-title">Farbwelt</div>
+            <div class="color-presets">
+                <div class="color-preset blue active" data-palette="blue" title="Kühl"></div>
+                <div class="color-preset red" data-palette="red" title="Tiefrot"></div>
+                <div class="color-preset warm" data-palette="warm" title="Warm"></div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title">Intensität</div>
+            <div class="control-group">
+                <div class="control-label"><span>Bewegungsstärke</span><span class="control-value" id="movementIntensityValue">1.0</span></div>
+                <input type="range" id="movementIntensity" min="0.3" max="2" step="0.1" value="1">
+            </div>
+            <div class="control-group">
+                <div class="control-label"><span>Atemgeschwindigkeit</span><span class="control-value" id="breathSpeedValue">1.0</span></div>
+                <input type="range" id="breathSpeed" min="0.2" max="3" step="0.1" value="1">
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title">Fragmente</div>
+            <div class="control-group">
+                <div class="control-label"><span>Sichtbarkeit</span><span class="control-value" id="fragmentVisibilityValue">1.0</span></div>
+                <input type="range" id="fragmentVisibility" min="0.1" max="2" step="0.1" value="1">
+            </div>
+            <div class="control-group">
+                <div class="control-label"><span>Größe</span><span class="control-value" id="fragmentSizeValue">1.0</span></div>
+                <input type="range" id="fragmentSize" min="0.5" max="2" step="0.1" value="1">
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title">Netzwerk</div>
+            <div class="control-group">
+                <div class="control-label"><span>Intensität</span><span class="control-value" id="networkIntensityValue">1.0</span></div>
+                <input type="range" id="networkIntensity" min="0" max="2" step="0.1" value="1">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ── Canvases ──────────────────────────────────────────────────────────
+        const mainCanvas = document.getElementById('main');
+        const mainCtx = mainCanvas.getContext('2d');
+        const fragmentsCanvas = document.getElementById('fragments');
+        const fragmentsCtx = fragmentsCanvas.getContext('2d');
+        const fxCanvas = document.getElementById('fx');
+        const fxCtx = fxCanvas.getContext('2d');
+
+        let width, height;
+        let mouseX = 0, mouseY = 0;
+        let targetMouseX = 0, targetMouseY = 0;
+        let time = 0;
+        let dwellTime = 0;
+        let lastMouseX = 0, lastMouseY = 0;
+
+        // ── Inactivity tracking ──────────────────────────────────────────────
+        let lastInteractionTime = 0;
+        let nudgeFragmentIndex = -1;      // which fragment gets the "whisper" pulse
+        let nudgeActive = false;
+        const NUDGE_DELAY = 30000;        // 30 seconds
+
+        // ── Click trail particles ────────────────────────────────────────────
+        let clickTrails = [];
+
+        // ── All 20 concept fragments (Du-Form) ──────────────────────────────
+        const allFragmentData = [
+            { text: 'Selbstermächtigung', explanation: 'Du triffst Entscheidungen, die wirklich von dir kommen.',
+              question: 'Wie treffe ich Entscheidungen, die wirklich meine eigenen sind?' },
+            { text: 'Denkpartner', explanation: 'Ein Gegenüber, das mitdenkt – jederzeit, ohne Agenda.',
+              question: 'Wie finde ich einen Denkpartner, der mitdenkt – ohne eigene Agenda?' },
+            { text: 'Führung', explanation: 'Deine Haltung wird sichtbar, bevor du ein Wort sagst.',
+              question: 'Was macht Führung in der KI-Ära aus?' },
+            { text: 'Klarheit', explanation: 'Du weißt, was zählt – und warum.',
+              question: 'Wie komme ich schneller zu Klarheit bei komplexen Entscheidungen?' },
+            { text: 'Tempo', explanation: 'Deine besten Gedanken kommen schneller zum Einsatz.',
+              question: 'Wie bringe ich meine besten Gedanken schneller in die Umsetzung?' },
+            { text: 'Entscheidung', explanation: 'Du entscheidest auf Basis von dem, was du wirklich weißt.',
+              question: 'Wie kann KI mir helfen, besser zu entscheiden?' },
+            { text: 'Delegation', explanation: 'Du übergibst mit Vertrauen – und behältst den Überblick.',
+              question: 'Wie delegiere ich besser und behalte trotzdem den Überblick?' },
+            { text: 'Wirksamkeit', explanation: 'Was du tust, hinterlässt Spuren, die du gewollt hast.',
+              question: 'Wie werde ich in meiner Rolle wirksamer?' },
+            { text: 'Transformation', explanation: 'Veränderung, die von dir ausgeht – und dich weiterbringt.',
+              question: 'Wie starte ich eine KI-Transformation, die wirklich von mir ausgeht?' },
+            { text: 'Kontrolle', explanation: 'Du behältst den Faden – auch wenn vieles gleichzeitig läuft.',
+              question: 'Wie behalte ich den Überblick, wenn alles gleichzeitig passiert?' },
+            { text: 'Vertrauen', explanation: 'Dein Team spürt, dass du weißt, wohin es geht.',
+              question: 'Wie schaffe ich Vertrauen in meinem Team durch KI-Kompetenz?' },
+            { text: 'Fokus', explanation: 'Deine Aufmerksamkeit landet dort, wo sie den größten Unterschied macht.',
+              question: 'Wie finde ich heraus, worauf ich mich wirklich fokussieren sollte?' },
+            { text: 'Verantwortung', explanation: 'Du trägst sie – und KI hilft dir, ihr gerecht zu werden.',
+              question: 'Wie hilft mir KI, meiner Verantwortung besser gerecht zu werden?' },
+            { text: 'Zukunft', explanation: 'Du gestaltest sie aktiv, statt auf sie zu reagieren.',
+              question: 'Wie gestalte ich die Zukunft meines Unternehmens aktiv mit KI?' },
+            { text: 'Kompetenz', explanation: 'Deine Erfahrung verbindet sich mit neuen Möglichkeiten.',
+              question: 'Wie verbinde ich meine Erfahrung mit den Möglichkeiten von KI?' },
+            { text: 'Orientierung', explanation: 'Du weißt, wo du stehst – und was als nächstes kommt.',
+              question: 'Wo stehe ich mit KI – und was wäre ein guter nächster Schritt?' },
+            { text: 'Eigenständigkeit', explanation: 'Du bleibst Herr deiner Werkzeuge.',
+              question: 'Wie nutze ich KI eigenständig, ohne von Dienstleistern abhängig zu sein?' },
+            { text: 'Haltung', explanation: 'Deine Überzeugungen prägen, wie KI bei dir wirkt.',
+              question: 'Welche Haltung brauche ich, damit KI bei mir wirklich wirkt?' },
+            { text: 'Souveränität', explanation: 'Du nutzt KI aus einer Position der Stärke.',
+              question: 'Wie nutze ich KI souverän – ohne mich davon treiben zu lassen?' },
+            { text: 'Anfang', explanation: 'Der erste Schritt gehört dir – und er ist kleiner als gedacht.',
+              question: 'Was ist ein guter erster Schritt, um KI für mich zu nutzen?' },
+        ];
+
+        // ── Bot replies: kurz, mit Gegenfrage ───────────────────────────────
+        const botReplies = {
+            'Selbstermächtigung': 'KI-Selbstermächtigung heißt: Du bleibst der Entscheider. KI gibt dir Werkzeuge für mehr Klarheit und Tempo. Was würde sich ändern, wenn du KI als Denkpartner hättest?',
+            'Denkpartner': 'Ein KI-Denkpartner erledigt keine Aufgaben – er schärft deine Gedanken. Jede strategische Überlegung sofort durchspielbar. Willst du das einmal erleben?',
+            'Führung': 'Führung heißt: verstehen, was möglich ist, und die Richtung vorgeben. Dafür musst du KI nicht programmieren – du musst sie denken können. Wie gehst du damit heute um?',
+            'Klarheit': 'Klarheit entsteht durch die richtigen Fragen – und schnelle, belastbare Antworten. KI beschleunigt diesen Prozess massiv. Was ist gerade dein dringlichstes Thema?',
+            'Tempo': 'Zwischen Gedanke und Umsetzung liegen oft zu viele Schleifen. KI verkürzt diesen Weg drastisch. Was bremst dich gerade am meisten?',
+            'Entscheidung': 'KI liefert dir in Minuten, wofür du sonst Tage brauchst: Recherche, Analyse, Szenarien. Welche Entscheidung steht bei dir gerade an?',
+            'Delegation': 'Delegation funktioniert besser mit Überblick. KI hilft dir, schneller zu prüfen und Zusammenhänge zu erkennen. Wo fällt dir Loslassen schwer?',
+            'Wirksamkeit': 'Wirksamkeit heißt: weniger sortieren, mehr gestalten. KI schafft Raum für das, was wirklich zählt. Was wäre dein erster Anwendungsfall?',
+            'Transformation': 'Transformation beginnt mit einem konkreten Moment. 90 Minuten, ein Anwendungsfall aus deinem Alltag. Das ist unser KI-Kickstart. Soll ich dir zeigen, wie das abläuft?',
+            'Kontrolle': 'KI hilft dir, komplexe Situationen schneller zu durchdringen – ohne dich in Details zu verlieren. Was beschäftigt dich dabei am meisten?',
+            'Vertrauen': 'Vertrauen entsteht, wenn dein Team sieht, dass du die Richtung kennst. KI hilft dir, schneller und fundierter zu kommunizieren. Wie setzt du heute Impulse?',
+            'Fokus': 'KI filtert aus der Informationsflut das Wesentliche – damit deine Aufmerksamkeit dort landet, wo sie zählt. Wo verlierst du aktuell am meisten Zeit?',
+            'Verantwortung': 'Verantwortung lässt sich nicht delegieren – aber du kannst dir Werkzeuge schaffen, die helfen. Genau da setzt Sonaris an. Was ist deine größte Verantwortung gerade?',
+            'Zukunft': 'KI ist kein Autopilot – sie ist ein Beschleuniger für dein Denken. Wie blickst du auf die nächsten 12 Monate?',
+            'Kompetenz': 'Deine Erfahrung ist dein größtes Asset. KI macht sie nicht überflüssig – sie erweitert, was du damit tun kannst. Welche Kompetenz würdest du gern verstärken?',
+            'Orientierung': 'KI kann dein persönliches Radar sein – für Markt, Team und Strategie. Was fehlt dir gerade an Überblick?',
+            'Eigenständigkeit': 'Eigenständigkeit heißt: du verstehst deine Werkzeuge. Sonaris zeigt dir, wie du KI selbst nutzt – souverän und kompetent. Wo möchtest du unabhängiger werden?',
+            'Haltung': 'Haltung entscheidet, ob KI Mehrwert schafft oder Komplexität. Wir helfen dir, eine fundierte Position zu entwickeln. Was ist deine aktuelle Haltung zum Thema?',
+            'Souveränität': 'Souveränität heißt: du nutzt KI, weil du es willst – kein Hype, kein Druck. Wie souverän fühlst du dich aktuell im Umgang mit KI?',
+            'Anfang': '90 Minuten, ein konkreter Anwendungsfall aus deinem Alltag, und du erlebst, was möglich ist. Das ist unser KI-Kickstart. Soll ich dir mehr erzählen?',
+        };
+
+        const VISIBLE_COUNT = 6;
+        const ROTATION_INTERVAL = 16000;
+
+        // ── Fragment state ────────────────────────────────────────────────────
+        let fragments = [];
+        let poolIndices = [];
+        let hoveredFragment = null;
+        let lastRotation = 0;
+
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function makeFragment(dataIndex) {
+            const d = allFragmentData[dataIndex];
+            return {
+                dataIndex,
+                text: d.text,
+                explanation: d.explanation,
+                question: d.question,
+                depth: 0.4 + Math.random() * 0.6,
+                x: 0.08 + Math.random() * 0.84,
+                y: 0.06 + Math.random() * 0.68,
+                baseX: 0,
+                baseY: 0,
+                currentX: 0,
+                currentY: 0,
+                driftPhase: Math.random() * Math.PI * 2,
+                driftSpeed: 0.18 + Math.random() * 0.25,
+                // Pulse: independent breathing per fragment
+                pulsePhase: Math.random() * Math.PI * 2,
+                pulseSpeed: 0.4 + Math.random() * 0.6,  // each fragment breathes at its own speed
+                visibility: 0,
+                targetVisibility: 0,
+                fadingOut: false,
+                frozen: false,
+                clickFlash: 0,   // flash on click (1 → 0)
+            };
+        }
+
+        function initFragments() {
+            const order = shuffle([...Array(allFragmentData.length).keys()]);
+            const active = order.slice(0, VISIBLE_COUNT);
+            poolIndices = order.slice(VISIBLE_COUNT);
+
+            fragments = active.map(i => {
+                const f = makeFragment(i);
+                f.baseX = f.x * width;
+                f.baseY = f.y * height;
+                return f;
+            });
+        }
+
+        function rotateSingleFragment() {
+            if (poolIndices.length === 0) return;
+            const candidates = fragments.filter(f => !f.frozen && !f.fadingOut);
+            if (candidates.length === 0) return;
+
+            const outFrag = candidates[Math.floor(Math.random() * candidates.length)];
+            outFrag.fadingOut = true;
+
+            setTimeout(() => {
+                const newIndex = poolIndices.shift();
+                poolIndices.push(outFrag.dataIndex);
+
+                const idx = fragments.indexOf(outFrag);
+                if (idx === -1) return;
+
+                const f = makeFragment(newIndex);
+                f.baseX = f.x * width;
+                f.baseY = f.y * height;
+                fragments[idx] = f;
+            }, 1200);
+        }
+
+        // ── Particles ─────────────────────────────────────────────────────────
+        let particles = [];
+        const particleCount = 800;
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                const depth = 0.2 + Math.random() * 0.8;
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    depth,
+                    size: 2 + depth * 4,
+                    phase: Math.random() * Math.PI * 2,
+                    speedX: (Math.random() - 0.5) * 0.3,
+                    speedY: (Math.random() - 0.5) * 0.3,
+                    orbitRadius: 10 + Math.random() * 30,
+                    orbitSpeed: 0.2 + Math.random() * 0.5,
+                    opacity: 0.15 + depth * 0.3,
+                    calm: 0,
+                });
+            }
+        }
+
+        // ── Color palettes ────────────────────────────────────────────────────
+        const palettes = {
+            blue: { bg: {r:20,g:28,b:36}, base: {r:55,g:75,b:100}, clarity: {r:110,g:145,b:180}, highlight: {r:180,g:200,b:225}, text: {r:160,g:185,b:215} },
+            red:  { bg: {r:28,g:18,b:20}, base: {r:85,g:45,b:55}, clarity: {r:160,g:85,b:95}, highlight: {r:220,g:140,b:150}, text: {r:210,g:160,b:165} },
+            warm: { bg: {r:30,g:24,b:18}, base: {r:95,g:70,b:50}, clarity: {r:170,g:125,b:85}, highlight: {r:225,g:185,b:145}, text: {r:215,g:185,b:155} },
+        };
+        let currentPalette = 'blue';
+
+        let params = { breathSpeed: 1, movementIntensity: 1.8, parallaxStrength: 1, fragmentVisibility: 1, fragmentSize: 1, networkIntensity: 1 };
+
+        function lerp(a, b, t) { return a + (b - a) * t; }
+        function getHighlightColor() { return palettes[currentPalette].highlight; }
+        function getTextColor()      { return palettes[currentPalette].text; }
+        function getBgColor()        { return palettes[currentPalette].bg; }
+
+        // ── Resize ────────────────────────────────────────────────────────────
+        function resize() {
+            width  = mainCanvas.width  = fragmentsCanvas.width  = fxCanvas.width  = window.innerWidth;
+            height = mainCanvas.height = fragmentsCanvas.height = fxCanvas.height = window.innerHeight;
+            if (!targetMouseX) { targetMouseX = width / 2; targetMouseY = height / 2; }
+            mouseX = width / 2;
+            mouseY = height / 2;
+            initParticles();
+            initFragments();
+        }
+        window.addEventListener('resize', resize);
+
+        // ── Mouse ─────────────────────────────────────────────────────────────
+        document.addEventListener('mousemove', e => {
+            targetMouseX = e.clientX;
+            targetMouseY = e.clientY;
+            lastInteractionTime = performance.now();
+            nudgeActive = false;
+        });
+        document.addEventListener('mouseleave', () => { targetMouseX = width / 2; targetMouseY = height / 2; });
+
+        // ── Touch ─────────────────────────────────────────────────────────────
+        document.addEventListener('touchmove', e => {
+            e.preventDefault();
+            targetMouseX = e.touches[0].clientX;
+            targetMouseY = e.touches[0].clientY;
+            lastInteractionTime = performance.now();
+            nudgeActive = false;
+        }, { passive: false });
+        document.addEventListener('touchend', () => { targetMouseX = width / 2; targetMouseY = height / 2; });
+
+        // ── Click trail FX ───────────────────────────────────────────────────
+        function spawnClickTrail(fromX, fromY) {
+            const chatPanel = document.getElementById('chat-panel');
+            const rect = chatPanel.getBoundingClientRect();
+            const toX = rect.left + rect.width / 2;
+            const toY = rect.top + 10;
+            const count = 12;
+
+            for (let i = 0; i < count; i++) {
+                const delay = i * 0.06;
+                const spread = 20;
+                clickTrails.push({
+                    x: fromX + (Math.random() - 0.5) * spread,
+                    y: fromY + (Math.random() - 0.5) * spread,
+                    toX: toX + (Math.random() - 0.5) * 40,
+                    toY: toY,
+                    progress: -delay,  // negative = delayed start
+                    speed: 0.025 + Math.random() * 0.015,
+                    size: 2 + Math.random() * 3,
+                    alpha: 0.8,
+                });
+            }
+        }
+
+        function updateClickTrails() {
+            for (let i = clickTrails.length - 1; i >= 0; i--) {
+                const t = clickTrails[i];
+                t.progress += t.speed;
+                if (t.progress > 1.2) {
+                    clickTrails.splice(i, 1);
+                }
+            }
+        }
+
+        function drawClickTrails() {
+            fxCtx.clearRect(0, 0, width, height);
+            const hl = getHighlightColor();
+
+            clickTrails.forEach(t => {
+                if (t.progress < 0) return; // still delayed
+                const p = Math.min(t.progress, 1);
+                // Ease-in-out cubic
+                const ease = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+
+                const x = lerp(t.x, t.toX, ease);
+                const y = lerp(t.y, t.toY, ease);
+                const alpha = t.alpha * (1 - p);
+                const size = t.size * (1 - p * 0.5);
+
+                fxCtx.beginPath();
+                fxCtx.arc(x, y, size, 0, Math.PI * 2);
+                fxCtx.fillStyle = `rgba(${hl.r},${hl.g},${hl.b},${alpha})`;
+                fxCtx.fill();
+            });
+        }
+
+        // ── Update particles ──────────────────────────────────────────────────
+        function updateParticles() {
+            const mi = params.movementIntensity;
+            const ps = params.parallaxStrength;
+
+            particles.forEach(p => {
+                const parallaxFactor = (1 - p.depth) * ps * 35;
+                const offsetX = (mouseX - width / 2) / width * parallaxFactor;
+                const offsetY = (mouseY - height / 2) / height * parallaxFactor;
+
+                const dx = mouseX - p.x;
+                const dy = mouseY - p.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const influence = Math.max(0, 1 - dist / 300);
+                p.calm += (influence - p.calm) * 0.05;
+
+                const orbitX = Math.cos(time * p.orbitSpeed + p.phase) * p.orbitRadius * mi;
+                const orbitY = Math.sin(time * p.orbitSpeed * 0.7 + p.phase) * p.orbitRadius * mi;
+
+                p.x += p.speedX * mi + orbitX * 0.01;
+                p.y += p.speedY * mi + orbitY * 0.01;
+
+                if (p.x < 0) p.x = width;
+                if (p.x > width) p.x = 0;
+                if (p.y < 0) p.y = height;
+                if (p.y > height) p.y = 0;
+
+                p.displayX = p.x + offsetX;
+                p.displayY = p.y + offsetY;
+            });
+        }
+
+        // ── Update fragments ──────────────────────────────────────────────────
+        const fragmentTooltip = document.getElementById('fragment-tooltip');
+
+        function updateFragments(now) {
+            if (now - lastRotation > ROTATION_INTERVAL) {
+                lastRotation = now;
+                rotateSingleFragment();
+            }
+
+            // Nudge check: after 30s inactivity, pick one fragment to pulse
+            if (!nudgeActive && now - lastInteractionTime > NUDGE_DELAY && fragments.length > 0) {
+                const eligible = fragments.filter(f => !f.fadingOut);
+                if (eligible.length > 0) {
+                    nudgeFragmentIndex = fragments.indexOf(eligible[Math.floor(Math.random() * eligible.length)]);
+                    nudgeActive = true;
+                }
+            }
+
+            const attentionRadius = 220;
+            const ps = params.parallaxStrength;
+            let closestFragment = null;
+            let closestDist = Infinity;
+
+            fragments.forEach((f, idx) => {
+                if (f.fadingOut) {
+                    f.visibility = Math.max(0, f.visibility - 0.025);
+                    return;
+                }
+
+                // Parallax
+                const parallaxFactor = (1 - f.depth) * ps * 45;
+                const offsetX = (mouseX - width / 2) / width * parallaxFactor;
+                const offsetY = (mouseY - height / 2) / height * parallaxFactor;
+
+                const driftX = Math.sin(time * f.driftSpeed + f.driftPhase) * 18 * f.depth;
+                const driftY = Math.cos(time * f.driftSpeed * 0.7 + f.driftPhase) * 18 * f.depth;
+
+                f.currentX = f.baseX + driftX + offsetX;
+                f.currentY = f.baseY + driftY + offsetY;
+
+                const dx = f.currentX - mouseX;
+                const dy = f.currentY - mouseY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                // Independent breathing pulse
+                const pulse = Math.sin(time * f.pulseSpeed + f.pulsePhase);
+                const pulseBoost = 0.04 + pulse * 0.04; // oscillates between 0 and 0.08
+
+                // Nudge: one fragment gets a stronger pulse when idle
+                const isNudged = nudgeActive && idx === nudgeFragmentIndex;
+                const nudgeBoost = isNudged ? 0.12 + Math.sin(time * 1.2) * 0.08 : 0;
+
+                if (f.frozen) {
+                    f.targetVisibility = 1.0;
+                } else {
+                    const proximity = Math.max(0, 1 - dist / attentionRadius);
+                    f.targetVisibility = pulseBoost + nudgeBoost + proximity * proximity * (0.5 + dwellTime * 0.42);
+                }
+
+                f.visibility += (f.targetVisibility - f.visibility) * 0.05;
+
+                // Click flash decay
+                if (f.clickFlash > 0) f.clickFlash *= 0.92;
+
+                if (f.visibility > 0.25 && dist < closestDist) {
+                    closestDist = dist;
+                    closestFragment = f;
+                }
+            });
+
+            // Tooltip + hover
+            fragments.forEach(f => { f.frozen = false; });
+
+            if (closestFragment && closestDist < 90) {
+                hoveredFragment = closestFragment;
+                closestFragment.frozen = true;
+                fragmentTooltip.textContent = closestFragment.explanation;
+
+                let tooltipX = closestFragment.currentX - 120;
+                let tooltipY = closestFragment.currentY + 38;
+                tooltipX = Math.max(8, Math.min(tooltipX, width - 280));
+                tooltipY = Math.min(tooltipY, height - 80);
+
+                fragmentTooltip.style.left = tooltipX + 'px';
+                fragmentTooltip.style.top  = tooltipY + 'px';
+                fragmentTooltip.classList.add('visible');
+                mainCanvas.style.cursor = 'pointer';
+            } else {
+                hoveredFragment = null;
+                fragmentTooltip.classList.remove('visible');
+                mainCanvas.style.cursor = 'default';
+            }
+        }
+
+        // ── Draw particles + vignette ────────────────────────────────────────
+        function drawMain() {
+            const bg = getBgColor();
+            mainCtx.fillStyle = `rgb(${bg.r},${bg.g},${bg.b})`;
+            mainCtx.fillRect(0, 0, width, height);
+
+            const highlight = getHighlightColor();
+            const base = palettes[currentPalette].base;
+
+            particles.forEach(p => {
+                const depthFactor = 0.5 + p.depth * 0.5;
+                const r = lerp(base.r, highlight.r, p.calm) * depthFactor;
+                const g = lerp(base.g, highlight.g, p.calm) * depthFactor;
+                const b = lerp(base.b, highlight.b, p.calm) * depthFactor;
+                const alpha = (p.opacity + p.calm * 0.2) * depthFactor;
+                const size = p.size * (1 - p.calm * 0.3);
+
+                mainCtx.beginPath();
+                mainCtx.arc(p.displayX, p.displayY, size, 0, Math.PI * 2);
+                mainCtx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+                mainCtx.fill();
+            });
+
+            // Vignette
+            const vignette = mainCtx.createRadialGradient(
+                width / 2, height / 2, Math.min(width, height) * 0.3,
+                width / 2, height / 2, Math.max(width, height) * 0.7
+            );
+            vignette.addColorStop(0, `rgba(${bg.r},${bg.g},${bg.b},0)`);
+            vignette.addColorStop(1, `rgba(${bg.r},${bg.g},${bg.b},0.45)`);
+            mainCtx.fillStyle = vignette;
+            mainCtx.fillRect(0, 0, width, height);
+        }
+
+        // ── Draw fragments + network lines ───────────────────────────────────
+        function drawFragments() {
+            fragmentsCtx.clearRect(0, 0, width, height);
+
+            const textColor = getTextColor();
+            const highlight = getHighlightColor();
+
+            // Network lines
+            const visible = fragments.filter(f => f.visibility > 0.1);
+            for (let i = 0; i < visible.length; i++) {
+                for (let j = i + 1; j < visible.length; j++) {
+                    const f1 = visible[i], f2 = visible[j];
+                    const dx = f2.currentX - f1.currentX;
+                    const dy = f2.currentY - f1.currentY;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    const distFactor = Math.max(0, 1 - dist / 550);
+                    const linePhase = (i * 7 + j * 13) * 0.1;
+                    const pulse = 0.5 + 0.5 * Math.sin(time * 2 + linePhase);
+                    const alpha = distFactor * (0.06 + pulse * 0.1) * params.networkIntensity * Math.min(f1.visibility, f2.visibility);
+                    if (alpha < 0.01) continue;
+                    const avgDepth = (f1.depth + f2.depth) / 2;
+                    const r = lerp(textColor.r, highlight.r, avgDepth * 0.5);
+                    const g = lerp(textColor.g, highlight.g, avgDepth * 0.5);
+                    const b = lerp(textColor.b, highlight.b, avgDepth * 0.5);
+                    fragmentsCtx.strokeStyle = `rgba(${r},${g},${b},${alpha})`;
+                    fragmentsCtx.lineWidth = 0.5 + pulse * 0.8;
+                    fragmentsCtx.beginPath();
+                    fragmentsCtx.moveTo(f1.currentX, f1.currentY);
+                    fragmentsCtx.lineTo(f2.currentX, f2.currentY);
+                    fragmentsCtx.stroke();
+                }
+            }
+
+            // Fragment labels
+            const sorted = [...fragments].sort((a, b) => a.depth - b.depth);
+            sorted.forEach(f => {
+                const vis = f.visibility * params.fragmentVisibility;
+                if (vis < 0.02) return;
+
+                const isHovered = hoveredFragment === f;
+                const depthScale = 0.65 + f.depth * 0.55;
+                const fontSize = (22 + vis * 10) * depthScale * params.fragmentSize;
+
+                fragmentsCtx.font = `${300 + vis * 200} ${fontSize}px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`;
+                fragmentsCtx.textAlign = 'center';
+                fragmentsCtx.textBaseline = 'middle';
+
+                const depthDim = 0.45 + f.depth * 0.55;
+                const flashBoost = f.clickFlash * 0.5;
+                const r = lerp(textColor.r * 0.25 * depthDim, textColor.r * depthDim, vis) + flashBoost * highlight.r;
+                const g = lerp(textColor.g * 0.25 * depthDim, textColor.g * depthDim, vis) + flashBoost * highlight.g;
+                const b = lerp(textColor.b * 0.25 * depthDim, textColor.b * depthDim, vis) + flashBoost * highlight.b;
+
+                const glowStrength = isHovered ? 0.7 : f.clickFlash > 0.1 ? f.clickFlash : (vis > 0.5 ? (vis - 0.5) * 0.3 : 0);
+
+                if (glowStrength > 0.01) {
+                    fragmentsCtx.shadowColor = `rgba(${highlight.r},${highlight.g},${highlight.b},${glowStrength})`;
+                    fragmentsCtx.shadowBlur = isHovered ? 32 : 20 + f.clickFlash * 40;
+                } else {
+                    fragmentsCtx.shadowColor = 'transparent';
+                    fragmentsCtx.shadowBlur = 0;
+                }
+
+                fragmentsCtx.fillStyle = `rgba(${Math.min(255,r)},${Math.min(255,g)},${Math.min(255,b)},${vis * 0.92})`;
+                fragmentsCtx.fillText(f.text, f.currentX, f.currentY);
+            });
+
+            fragmentsCtx.shadowColor = 'transparent';
+            fragmentsCtx.shadowBlur = 0;
+        }
+
+        // ── Main loop ─────────────────────────────────────────────────────────
+        function draw(now) {
+            time += 0.008 * params.breathSpeed;
+
+            mouseX += (targetMouseX - mouseX) * 0.06;
+            mouseY += (targetMouseY - mouseY) * 0.06;
+
+            const moveDist = Math.hypot(mouseX - lastMouseX, mouseY - lastMouseY);
+            dwellTime = moveDist < 5 ? Math.min(dwellTime + 0.015, 1) : Math.max(dwellTime - 0.025, 0);
+            lastMouseX = mouseX;
+            lastMouseY = mouseY;
+
+            updateParticles();
+            updateFragments(now);
+            updateClickTrails();
+            drawMain();
+            drawFragments();
+            drawClickTrails();
+
+            requestAnimationFrame(draw);
+        }
+
+        // ── Click on fragment → question in chat ─────────────────────────────
+        function triggerFragmentClick(fragment) {
+            if (!fragment) return;
+
+            // Visual: flash + trail
+            fragment.clickFlash = 1;
+            spawnClickTrail(fragment.currentX, fragment.currentY);
+
+            // Hide tooltip
+            fragmentTooltip.classList.remove('visible');
+
+            // After trail reaches chat, send the question
+            setTimeout(() => {
+                const question = fragment.question;
+                appendMessage(question, 'user');
+                triggerBotReply(fragment.text);
+            }, 500);
+
+            // Reset interaction timer
+            lastInteractionTime = performance.now();
+            nudgeActive = false;
+        }
+
+        // Clicks on #main canvas (which has pointer-events) check for hovered fragment
+        mainCanvas.addEventListener('click', () => {
+            if (hoveredFragment) triggerFragmentClick(hoveredFragment);
+        });
+
+        mainCanvas.addEventListener('touchstart', () => {
+            if (hoveredFragment) triggerFragmentClick(hoveredFragment);
+        });
+
+        // ── Chat ──────────────────────────────────────────────────────────────
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput    = document.getElementById('chat-input');
+        const chatSend     = document.getElementById('chat-send');
+
+        function appendMessage(text, role) {
+            const div = document.createElement('div');
+            div.className = `msg ${role}`;
+            div.textContent = text;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return div;
+        }
+
+        function showTyping() {
+            const div = document.createElement('div');
+            div.className = 'msg typing';
+            div.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return div;
+        }
+
+        async function triggerBotReply(key) {
+            const typing = showTyping();
+            await new Promise(r => setTimeout(r, 1000 + Math.random() * 600));
+            typing.remove();
+            const reply = botReplies[key] || 'Lass uns das gemeinsam durchdenken – was beschäftigt dich dabei am meisten?';
+            appendMessage(reply, 'bot');
+        }
+
+        async function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+            chatInput.value = '';
+            lastInteractionTime = performance.now();
+            nudgeActive = false;
+            appendMessage(text, 'user');
+
+            // Check if the text matches a known concept
+            const match = allFragmentData.find(d => d.text.toLowerCase() === text.toLowerCase());
+            if (match) {
+                triggerBotReply(match.text);
+            } else {
+                const typing = showTyping();
+                await new Promise(r => setTimeout(r, 1000 + Math.random() * 600));
+                typing.remove();
+                appendMessage('Lass uns das gemeinsam durchdenken – was beschäftigt dich dabei am meisten?', 'bot');
+            }
+        }
+
+        chatSend.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter') sendMessage();
+            lastInteractionTime = performance.now();
+            nudgeActive = false;
+        });
+
+        // ── Welcome message ──────────────────────────────────────────────────
+        function showWelcome() {
+            setTimeout(() => {
+                appendMessage('Was beschäftigt dich im Zusammenhang mit KI gerade?', 'bot');
+            }, 800);
+        }
+
+        // ── Settings UI ───────────────────────────────────────────────────────
+        const toggle   = document.getElementById('toggle');
+        const controls = document.getElementById('controls');
+        toggle.addEventListener('click', () => controls.classList.toggle('visible'));
+
+        document.querySelectorAll('.color-preset').forEach(el => {
+            el.addEventListener('click', () => {
+                document.querySelectorAll('.color-preset').forEach(e => e.classList.remove('active'));
+                el.classList.add('active');
+                currentPalette = el.dataset.palette;
+            });
+        });
+
+        function bindRange(id, paramKey) {
+            const el = document.getElementById(id);
+            const val = document.getElementById(id + 'Value');
+            el.addEventListener('input', () => {
+                params[paramKey] = parseFloat(el.value);
+                if (val) val.textContent = el.value;
+            });
+        }
+        bindRange('movementIntensity', 'movementIntensity');
+        bindRange('breathSpeed', 'breathSpeed');
+        bindRange('fragmentVisibility', 'fragmentVisibility');
+        bindRange('fragmentSize', 'fragmentSize');
+        bindRange('networkIntensity', 'networkIntensity');
+
+        // ── Boot ──────────────────────────────────────────────────────────────
+        resize();
+        lastRotation = performance.now();
+        lastInteractionTime = performance.now();
+        targetMouseX = width / 2;
+        targetMouseY = height / 2;
+        showWelcome();
+        requestAnimationFrame(draw);
+    </script>
+</body>
+</html>

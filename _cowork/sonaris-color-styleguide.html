@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sonaris – Color Style Guide</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0c121a;
+    color: rgba(180, 200, 225, 0.9);
+    padding: 40px;
+    line-height: 1.6;
+  }
+  h1 {
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    color: rgba(200, 220, 240, 0.95);
+  }
+  .subtitle {
+    font-size: 14px;
+    color: rgba(160, 185, 215, 0.6);
+    margin-bottom: 48px;
+    letter-spacing: 1px;
+  }
+  h2 {
+    font-size: 18px;
+    font-weight: 500;
+    color: rgba(200, 220, 240, 0.9);
+    margin: 48px 0 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(110, 145, 180, 0.15);
+  }
+  .semantic-label {
+    font-size: 12px;
+    color: rgba(160, 185, 215, 0.5);
+    margin-bottom: 20px;
+  }
+  .color-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .color-card {
+    width: 180px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(15, 25, 40, 0.6);
+    border: 1px solid rgba(110, 145, 180, 0.1);
+  }
+  .color-swatch {
+    height: 80px;
+    position: relative;
+  }
+  .color-swatch.bordered {
+    border: 1px dashed rgba(160, 185, 215, 0.3);
+    margin: 4px;
+    border-radius: 4px;
+    height: 72px;
+  }
+  .color-info {
+    padding: 12px;
+  }
+  .color-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(200, 220, 240, 0.9);
+    margin-bottom: 4px;
+  }
+  .color-value {
+    font-size: 11px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: rgba(160, 185, 215, 0.6);
+    margin-bottom: 2px;
+    cursor: pointer;
+    user-select: all;
+  }
+  .color-hex {
+    font-size: 11px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: rgba(140, 180, 220, 0.8);
+    font-weight: 600;
+  }
+  .color-usage {
+    font-size: 10px;
+    color: rgba(160, 185, 215, 0.45);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+  .opacity-strip {
+    display: flex;
+    gap: 2px;
+    margin-top: 8px;
+  }
+  .opacity-chip {
+    flex: 1;
+    height: 24px;
+    border-radius: 3px;
+    position: relative;
+    cursor: default;
+  }
+  .opacity-chip::after {
+    content: attr(data-opacity);
+    position: absolute;
+    bottom: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    color: rgba(160, 185, 215, 0.4);
+    font-family: monospace;
+  }
+  .section-note {
+    font-size: 12px;
+    color: rgba(160, 185, 215, 0.5);
+    background: rgba(110, 145, 180, 0.06);
+    padding: 12px 16px;
+    border-radius: 6px;
+    border-left: 3px solid rgba(110, 145, 180, 0.3);
+    margin: 16px 0 24px;
+  }
+  .gradient-bar {
+    height: 40px;
+    border-radius: 6px;
+    margin: 16px 0;
+  }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin: 24px 0;
+  }
+  @media (max-width: 800px) {
+    .two-col { grid-template-columns: 1fr; }
+    .color-row { justify-content: center; }
+  }
+  .text-sample {
+    padding: 16px;
+    background: rgba(15, 25, 40, 0.6);
+    border-radius: 8px;
+    border: 1px solid rgba(110, 145, 180, 0.1);
+    margin-bottom: 12px;
+  }
+  .text-sample .label {
+    font-size: 10px;
+    color: rgba(160, 185, 215, 0.4);
+    margin-bottom: 4px;
+    font-family: monospace;
+  }
+  .combo-demo {
+    padding: 20px;
+    border-radius: 8px;
+    margin: 12px 0;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 13px;
+  }
+  th {
+    text-align: left;
+    padding: 8px 12px;
+    background: rgba(110, 145, 180, 0.08);
+    color: rgba(200, 220, 240, 0.8);
+    font-weight: 500;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(110, 145, 180, 0.06);
+    vertical-align: middle;
+  }
+  .swatch-inline {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    vertical-align: middle;
+    margin-right: 6px;
+    border: 1px solid rgba(110, 145, 180, 0.15);
+  }
+  code {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 11px;
+    background: rgba(110, 145, 180, 0.08);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: rgba(140, 180, 220, 0.9);
+  }
+</style>
+</head>
+<body>
+
+<h1>SONARIS</h1>
+<div class="subtitle">COLOR STYLE GUIDE &middot; März 2026</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 1. PRIMÄRFARBEN (Basistöne) -->
+<!-- ═══════════════════════════════════════ -->
+
+<h2>1. Primärfarben – Basistöne</h2>
+<div class="semantic-label">Die 6 Kernfarben des Sonaris-Farbsystems, jeweils mit semantischer Zuordnung</div>
+
+<div class="color-row">
+
+  <div class="color-card">
+    <div class="color-swatch" style="background: rgb(110, 145, 180);"></div>
+    <div class="color-info">
+      <div class="color-name">Steel Blue</div>
+      <div class="color-hex">#6E91B4</div>
+      <div class="color-value">rgb(110, 145, 180)</div>
+      <div class="color-usage">Primärfarbe. KI/Tech-Elemente, Borders, Icons, UI-Akzente</div>
+    </div>
+  </div>
+
+  <div class="color-card">
+    <div class="color-swatch" style="background: rgb(170, 125, 85);"></div>
+    <div class="color-info">
+      <div class="color-name">Warm Copper</div>
+      <div class="color-hex">#AA7D55</div>
+      <div class="color-value">rgb(170, 125, 85)</div>
+      <div class="color-usage">Human-Elemente, Warm-Akzente, Borders, Hover-States</div>
+    </div>
+  </div>
+
+  <div class="color-card">
+    <div class="color-swatch" style="background: rgb(59, 130, 246);"></div>
+    <div class="color-info">
+      <div class="color-name">Electric Blue</div>
+      <div class="color-hex">#3B82F6</div>
+      <div class="color-value">rgb(59, 130, 246)</div>
+      <div class="color-usage">Tech-Highlight, CTAs, Links, Source-Tags, Foto-Borders</div>
+    </div>
+  </div>
+
+  <div class="color-card">
+    <div class="color-swatch" style="background: rgb(139, 92, 246);"></div>
+    <div class="color-info">
+      <div class="color-name">Vivid Purple</div>
+      <div class="color-hex">#8B5CF6</div>
+      <div class="color-value">rgb(139, 92, 246)</div>
+      <div class="color-usage">KI-Charakter (Elysium Echo), AI-Badge, AI-Karten</div>
+    </div>
+  </div>
+
+  <div class="color-card">
+    <div class="color-swatch" style="background: rgb(160, 85, 95);"></div>
+    <div class="color-info">
+      <div class="color-name">Muted Coral</div>
+      <div class="color-hex">#A0555F</div>
+      <div class="color-value">rgb(160, 85, 95)</div>
+      <div class="color-usage">Pain-Points, Error-States, Denkraum „Stagnation"-Elemente</div>
+    </div>
+  </div>
+
+  <div class="color-card">
+    <div class="color-swatch" style="background: rgb(110, 180, 140);"></div>
+    <div class="color-info">
+      <div class="color-name">Sage Green</div>
+      <div class="color-hex">#6EB48C</div>
+      <div class="color-value">rgb(110, 180, 140)</div>
+      <div class="color-usage">Success, Positive States, Fortschritt, Bestätigung</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 2. HELLE VARIANTEN (Text & Highlights) -->
+<!-- ═══════════════════════════════════════ -->
+
+<h2>2. Helle Varianten – Text &amp; Highlights</h2>
+<div class="semantic-label">Aufgehellte Versionen der Primärfarben für Text auf dunklem Hintergrund</div>
+
+<div class="color-row">
+
+  <div class="color-card">
+    <div class="color-swatch" style="background: rgb(160, 185, 215);"></div>
+    <div class="color-info">
+      <div class="color-name">Light Steel</div>
+      <div class="color-hex">#A0B9D7</div>
+      <div class="color-value">rgb(160, 185, 215)</div>
+      <div class="color-usage">Sub-Headlines, Absatztext, Navigation-Labels</div>
+    </div>
+  </div>
+
+  <div class="color-card">
+    <div class="color-swatch" style="background: rgb(225, 185, 145);"></div>
+    <div class="color-info">
+      <div class="color-name">Warm Sand</div>
+      <div class="color-hex">#E1B991</div>
+      <div class="color-value">rgb(225, 185, 145)</div>
+      <div class="color-usage">Warm-Text, Section-Headlines „Mensch", Denkraum-Text</div>
+    </div>
+  </div>
+
+  <div class="color-card">
+    <div class="color-swatch" style="background: rgb(215, 185, 155);"></div>
+    <div class="color-info">
+      <div class="color-name">Desert Tan</div>
+      <div class="color-hex">#D7B99B</div>
+      <div class="color-value">rgb(215, 185, 155)</div>
+      <div class="color-usage">Content-Text, Warm Highlights, FAQ-Text</div>
+    </div>
+  </div>
+
+  <div class="color-card">
+    <div class="color-swatch" style="background: rgb(220, 140, 150);"></div>
+    <div class="color-info">
+      <div class="color-name">Soft Rose</div>
+      <div class="color-hex">#DC8C96</div>
+      <div class="color-value">rgb(220, 140, 150)</div>
+      <div class="color-usage">Pain-Text, Stagnation-Headlines, CTA-Hover</div>
+    </div>
+  </div>
+
+  <div class="color-card">
+    <div class="color-swatch" style="background: rgb(167, 139, 250);"></div>
+    <div class="color-info">
+      <div class="color-name">Light Purple</div>
+      <div class="color-hex">#A78BFA</div>
+      <div class="color-value">rgb(167, 139, 250)</div>
+      <div class="color-usage">AI-Text auf Purple-Karten, Elysium Echo Name</div>
+    </div>
+  </div>
+
+  <div class="color-card">
+    <div class="color-swatch" style="background: rgb(140, 180, 220);"></div>
+    <div class="color-info">
+      <div class="color-name">Sky Blue</div>
+      <div class="color-hex">#8CB4DC</div>
+      <div class="color-value">rgb(140, 180, 220)</div>
+      <div class="color-usage">Source-Tag Text, Navigation Hover, Links</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 3. TEXT-HIERARCHIE -->
+<!-- ═══════════════════════════════════════ -->
+
+<h2>3. Text-Hierarchie</h2>
+<div class="semantic-label">5 Stufen von Headline bis Muted, auf dunklem Hintergrund</div>
+
+<div class="text-sample">
+  <div class="label">Headline – rgba(200, 220, 240, 0.95) → #C8DCF0</div>
+  <div style="font-size: 22px; font-weight: 600; color: rgba(200, 220, 240, 0.95);">KI-Integration für den Mittelstand</div>
+</div>
+
+<div class="text-sample">
+  <div class="label">Sub-Headline – rgba(180, 200, 225, 0.95) → #B4C8E1</div>
+  <div style="font-size: 17px; font-weight: 500; color: rgba(180, 200, 225, 0.95);">Strukturierte Transformation in drei Phasen</div>
+</div>
+
+<div class="text-sample">
+  <div class="label">Body Text – rgba(160, 185, 215, 0.8) → #A0B9D7</div>
+  <div style="font-size: 15px; color: rgba(160, 185, 215, 0.8);">Wir übersetzen KI in deine Sprache. Das bedeutet: Prozesse verstehen, Potenziale identifizieren, Lösungen implementieren – gemeinsam mit deinem Team.</div>
+</div>
+
+<div class="text-sample">
+  <div class="label">Secondary Text – rgba(160, 185, 215, 0.6) → #A0B9D7</div>
+  <div style="font-size: 13px; color: rgba(160, 185, 215, 0.6);">Sonaris GbR · kontakt@sonaris.de · Berlin</div>
+</div>
+
+<div class="text-sample">
+  <div class="label">Muted / Label – rgba(140, 160, 190, 0.6) → #8CA0BE</div>
+  <div style="font-size: 12px; color: rgba(140, 160, 190, 0.6);">ERFAHRUNGSBERICHTE</div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 4. HINTERGRÜNDE -->
+<!-- ═══════════════════════════════════════ -->
+
+<h2>4. Hintergründe</h2>
+<div class="semantic-label">Dark-Mode Foundations – von tief bis Card-Level</div>
+
+<div class="color-row">
+
+  <div class="color-card">
+    <div class="color-swatch" style="background: #0c121a; border: 1px solid rgba(110, 145, 180, 0.15);"></div>
+    <div class="color-info">
+      <div class="color-name">Deep Space</div>
+      <div class="color-hex">#0C121A</div>
+      <div class="color-value">Body Background</div>
+      <div class="color-usage">Basis-Hintergrund der gesamten Seite</div>
+    </div>
+  </div>
+
+  <div class="color-card">
+    <div class="color-swatch" style="background: #121820; border: 1px solid rgba(110, 145, 180, 0.15);"></div>
+    <div class="color-info">
+      <div class="color-name">Dark Navy</div>
+      <div class="color-hex">#121820</div>
+      <div class="color-value">Denkraum Background</div>
+      <div class="color-usage">Haupt-Canvas des Denkraums (Chat-Bereich)</div>
+    </div>
+  </div>
+
+  <div class="color-card">
+    <div class="color-swatch" style="background: rgba(20, 30, 42, 0.95); border: 1px solid rgba(110, 145, 180, 0.15);"></div>
+    <div class="color-info">
+      <div class="color-name">Card Dark</div>
+      <div class="color-hex">rgba(20, 30, 42, 0.95)</div>
+      <div class="color-value">Navigation, Overlays</div>
+      <div class="color-usage">Nav-Bar, Modals, Team-Overlays</div>
+    </div>
+  </div>
+
+  <div class="color-card">
+    <div class="color-swatch" style="background: rgba(15, 25, 40, 0.6); border: 1px solid rgba(110, 145, 180, 0.15);"></div>
+    <div class="color-info">
+      <div class="color-name">Card Medium</div>
+      <div class="color-hex">rgba(15, 25, 40, 0.6)</div>
+      <div class="color-value">Content Cards</div>
+      <div class="color-usage">Feature-Cards, Team-Cards, FAQ-Items</div>
+    </div>
+  </div>
+
+  <div class="color-card">
+    <div class="color-swatch" style="background: rgba(5, 10, 20, 0.92); border: 1px solid rgba(110, 145, 180, 0.15);"></div>
+    <div class="color-info">
+      <div class="color-name">Overlay Scrim</div>
+      <div class="color-hex">rgba(5, 10, 20, 0.92)</div>
+      <div class="color-value">Modal-Backdrop</div>
+      <div class="color-usage">Team-Detail-Overlay, Fullscreen-Modals</div>
+    </div>
+  </div>
+
+  <div class="color-card">
+    <div class="color-swatch" style="background: rgba(8, 12, 18, 0.6); border: 1px solid rgba(110, 145, 180, 0.15);"></div>
+    <div class="color-info">
+      <div class="color-name">Glass Dark</div>
+      <div class="color-hex">rgba(8, 12, 18, 0.6)</div>
+      <div class="color-value">Glassmorphism</div>
+      <div class="color-usage">Frosted-Glass-Effekte mit backdrop-blur</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 5. SEMANTISCHE ZUORDNUNG -->
+<!-- ═══════════════════════════════════════ -->
+
+<h2>5. Semantische Farbzuordnung</h2>
+<div class="semantic-label">Welche Farbe steht wofür – die Bedeutungsebene des Farbsystems</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Semantik</th>
+      <th>Primär</th>
+      <th>Hell-Variante</th>
+      <th>Verwendung</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>KI / Technologie</strong></td>
+      <td><span class="swatch-inline" style="background: rgb(110, 145, 180);"></span> <code>#6E91B4</code></td>
+      <td><span class="swatch-inline" style="background: rgb(160, 185, 215);"></span> <code>#A0B9D7</code></td>
+      <td>Alles Technische: Icons, Borders, Code-Elemente, Datenflüsse</td>
+    </tr>
+    <tr>
+      <td><strong>Mensch / Wärme</strong></td>
+      <td><span class="swatch-inline" style="background: rgb(170, 125, 85);"></span> <code>#AA7D55</code></td>
+      <td><span class="swatch-inline" style="background: rgb(225, 185, 145);"></span> <code>#E1B991</code></td>
+      <td>Menschliche Aspekte: Team, Beziehung, persönlicher Kontakt</td>
+    </tr>
+    <tr>
+      <td><strong>Tech-Highlight</strong></td>
+      <td><span class="swatch-inline" style="background: rgb(59, 130, 246);"></span> <code>#3B82F6</code></td>
+      <td><span class="swatch-inline" style="background: rgb(140, 180, 220);"></span> <code>#8CB4DC</code></td>
+      <td>CTAs, Links, interaktive Elemente, Source-Tags, Fotos</td>
+    </tr>
+    <tr>
+      <td><strong>KI-Charakter</strong></td>
+      <td><span class="swatch-inline" style="background: rgb(139, 92, 246);"></span> <code>#8B5CF6</code></td>
+      <td><span class="swatch-inline" style="background: rgb(167, 139, 250);"></span> <code>#A78BFA</code></td>
+      <td>Elysium Echo: AI-Badge, Purple-Karten, KI-Persona</td>
+    </tr>
+    <tr>
+      <td><strong>Pain / Warnung</strong></td>
+      <td><span class="swatch-inline" style="background: rgb(160, 85, 95);"></span> <code>#A0555F</code></td>
+      <td><span class="swatch-inline" style="background: rgb(220, 140, 150);"></span> <code>#DC8C96</code></td>
+      <td>Stagnation, Probleme, Error-States, „ohne KI"-Szenarien</td>
+    </tr>
+    <tr>
+      <td><strong>Erfolg / Positiv</strong></td>
+      <td><span class="swatch-inline" style="background: rgb(110, 180, 140);"></span> <code>#6EB48C</code></td>
+      <td>–</td>
+      <td>Fortschritt, Bestätigung, Erfolgsmeldungen</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 6. OPAZITÄTSSTUFEN -->
+<!-- ═══════════════════════════════════════ -->
+
+<h2>6. Opazitätsstufen</h2>
+<div class="semantic-label">Jede Primärfarbe wird über Opazität skaliert – hier die gängigsten Stufen</div>
+
+<div class="section-note">
+  Das Sonaris-Farbsystem nutzt konsequent RGBA statt fester Hex-Farben. Die gleiche Basisfarbe erscheint in 6–12 Opazitätsstufen je nach Kontext: von 0.06 (subtiler Hintergrund) bis 0.95 (voller Text).
+</div>
+
+<div style="margin: 20px 0;">
+  <div class="color-name" style="margin-bottom: 8px;">Steel Blue – rgb(110, 145, 180)</div>
+  <div class="opacity-strip" style="height: 32px;">
+    <div class="opacity-chip" style="background: rgba(110, 145, 180, 0.06);" data-opacity="0.06"></div>
+    <div class="opacity-chip" style="background: rgba(110, 145, 180, 0.1);" data-opacity="0.10"></div>
+    <div class="opacity-chip" style="background: rgba(110, 145, 180, 0.15);" data-opacity="0.15"></div>
+    <div class="opacity-chip" style="background: rgba(110, 145, 180, 0.25);" data-opacity="0.25"></div>
+    <div class="opacity-chip" style="background: rgba(110, 145, 180, 0.4);" data-opacity="0.40"></div>
+    <div class="opacity-chip" style="background: rgba(110, 145, 180, 0.6);" data-opacity="0.60"></div>
+    <div class="opacity-chip" style="background: rgba(110, 145, 180, 0.75);" data-opacity="0.75"></div>
+    <div class="opacity-chip" style="background: rgba(110, 145, 180, 1.0);" data-opacity="1.0"></div>
+  </div>
+</div>
+
+<div style="margin: 36px 0 20px;">
+  <div class="color-name" style="margin-bottom: 8px;">Warm Copper – rgb(170, 125, 85)</div>
+  <div class="opacity-strip" style="height: 32px;">
+    <div class="opacity-chip" style="background: rgba(170, 125, 85, 0.06);" data-opacity="0.06"></div>
+    <div class="opacity-chip" style="background: rgba(170, 125, 85, 0.12);" data-opacity="0.12"></div>
+    <div class="opacity-chip" style="background: rgba(170, 125, 85, 0.2);" data-opacity="0.20"></div>
+    <div class="opacity-chip" style="background: rgba(170, 125, 85, 0.3);" data-opacity="0.30"></div>
+    <div class="opacity-chip" style="background: rgba(170, 125, 85, 0.4);" data-opacity="0.40"></div>
+    <div class="opacity-chip" style="background: rgba(170, 125, 85, 0.6);" data-opacity="0.60"></div>
+    <div class="opacity-chip" style="background: rgba(170, 125, 85, 0.7);" data-opacity="0.70"></div>
+    <div class="opacity-chip" style="background: rgba(170, 125, 85, 1.0);" data-opacity="1.0"></div>
+  </div>
+</div>
+
+<div style="margin: 36px 0 20px;">
+  <div class="color-name" style="margin-bottom: 8px;">Electric Blue – rgb(59, 130, 246)</div>
+  <div class="opacity-strip" style="height: 32px;">
+    <div class="opacity-chip" style="background: rgba(59, 130, 246, 0.1);" data-opacity="0.10"></div>
+    <div class="opacity-chip" style="background: rgba(59, 130, 246, 0.15);" data-opacity="0.15"></div>
+    <div class="opacity-chip" style="background: rgba(59, 130, 246, 0.2);" data-opacity="0.20"></div>
+    <div class="opacity-chip" style="background: rgba(59, 130, 246, 0.3);" data-opacity="0.30"></div>
+    <div class="opacity-chip" style="background: rgba(59, 130, 246, 0.5);" data-opacity="0.50"></div>
+    <div class="opacity-chip" style="background: rgba(59, 130, 246, 0.7);" data-opacity="0.70"></div>
+    <div class="opacity-chip" style="background: rgba(59, 130, 246, 0.8);" data-opacity="0.80"></div>
+    <div class="opacity-chip" style="background: rgba(59, 130, 246, 1.0);" data-opacity="1.0"></div>
+  </div>
+</div>
+
+<div style="margin: 36px 0 20px;">
+  <div class="color-name" style="margin-bottom: 8px;">Vivid Purple – rgb(139, 92, 246)</div>
+  <div class="opacity-strip" style="height: 32px;">
+    <div class="opacity-chip" style="background: rgba(139, 92, 246, 0.03);" data-opacity="0.03"></div>
+    <div class="opacity-chip" style="background: rgba(139, 92, 246, 0.15);" data-opacity="0.15"></div>
+    <div class="opacity-chip" style="background: rgba(139, 92, 246, 0.2);" data-opacity="0.20"></div>
+    <div class="opacity-chip" style="background: rgba(139, 92, 246, 0.35);" data-opacity="0.35"></div>
+    <div class="opacity-chip" style="background: rgba(139, 92, 246, 0.5);" data-opacity="0.50"></div>
+    <div class="opacity-chip" style="background: rgba(139, 92, 246, 0.7);" data-opacity="0.70"></div>
+    <div class="opacity-chip" style="background: rgba(139, 92, 246, 0.85);" data-opacity="0.85"></div>
+    <div class="opacity-chip" style="background: rgba(139, 92, 246, 1.0);" data-opacity="1.0"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 7. PRÄSENTATIONS-QUICKREF -->
+<!-- ═══════════════════════════════════════ -->
+
+<h2>7. Quick Reference für Präsentationen</h2>
+<div class="semantic-label">Copy-Paste-Ready: Hex-Codes nach Funktion sortiert</div>
+
+<div class="two-col">
+
+  <div>
+    <table>
+      <thead><tr><th colspan="2">Hintergründe</th></tr></thead>
+      <tbody>
+        <tr><td><span class="swatch-inline" style="background: #0c121a;"></span> <code>#0C121A</code></td><td>Haupthintergrund</td></tr>
+        <tr><td><span class="swatch-inline" style="background: #121820;"></span> <code>#121820</code></td><td>Sekundär-BG</td></tr>
+        <tr><td><span class="swatch-inline" style="background: #151d28;"></span> <code>#151D28</code></td><td>Card-BG</td></tr>
+        <tr><td><span class="swatch-inline" style="background: #141E2A;"></span> <code>#141E2A</code></td><td>Content-Area</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div>
+    <table>
+      <thead><tr><th colspan="2">Text</th></tr></thead>
+      <tbody>
+        <tr><td><span class="swatch-inline" style="background: #C8DCF0;"></span> <code>#C8DCF0</code></td><td>Headline</td></tr>
+        <tr><td><span class="swatch-inline" style="background: #B4C8E1;"></span> <code>#B4C8E1</code></td><td>Sub-Headline</td></tr>
+        <tr><td><span class="swatch-inline" style="background: #A0B9D7;"></span> <code>#A0B9D7</code></td><td>Body Text</td></tr>
+        <tr><td><span class="swatch-inline" style="background: #8CA0BE;"></span> <code>#8CA0BE</code></td><td>Muted Text</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div>
+    <table>
+      <thead><tr><th colspan="2">Akzente / Primär</th></tr></thead>
+      <tbody>
+        <tr><td><span class="swatch-inline" style="background: #6E91B4;"></span> <code>#6E91B4</code></td><td>Steel Blue (KI)</td></tr>
+        <tr><td><span class="swatch-inline" style="background: #3B82F6;"></span> <code>#3B82F6</code></td><td>Electric Blue (CTA)</td></tr>
+        <tr><td><span class="swatch-inline" style="background: #AA7D55;"></span> <code>#AA7D55</code></td><td>Warm Copper (Mensch)</td></tr>
+        <tr><td><span class="swatch-inline" style="background: #E1B991;"></span> <code>#E1B991</code></td><td>Warm Sand (Text)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div>
+    <table>
+      <thead><tr><th colspan="2">Spezial</th></tr></thead>
+      <tbody>
+        <tr><td><span class="swatch-inline" style="background: #8B5CF6;"></span> <code>#8B5CF6</code></td><td>Purple (AI-Charakter)</td></tr>
+        <tr><td><span class="swatch-inline" style="background: #A78BFA;"></span> <code>#A78BFA</code></td><td>Light Purple (AI-Text)</td></tr>
+        <tr><td><span class="swatch-inline" style="background: #A0555F;"></span> <code>#A0555F</code></td><td>Coral (Pain)</td></tr>
+        <tr><td><span class="swatch-inline" style="background: #6EB48C;"></span> <code>#6EB48C</code></td><td>Sage (Success)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- 8. KOMBINATIONSBEISPIELE -->
+<!-- ═══════════════════════════════════════ -->
+
+<h2>8. Kombinationsbeispiele</h2>
+<div class="semantic-label">So sehen die Farben im Zusammenspiel aus</div>
+
+<div class="combo-demo" style="background: rgba(15, 25, 40, 0.6); border: 1px solid rgba(110, 145, 180, 0.15); border-radius: 8px;">
+  <div style="font-size: 11px; color: rgba(140, 160, 190, 0.6); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Tech-Card (KI/Blau)</div>
+  <div style="font-size: 18px; color: rgba(200, 220, 240, 0.95); margin-bottom: 6px;">Second Brain Architektur</div>
+  <div style="font-size: 14px; color: rgba(160, 185, 215, 0.8);">Dein Unternehmenswissen – strukturiert, abrufbar, lernfähig.</div>
+  <div style="margin-top: 12px;">
+    <span style="display: inline-block; padding: 4px 10px; background: rgba(59, 130, 246, 0.15); color: rgba(140, 180, 220, 0.9); border-radius: 4px; font-size: 12px; margin-right: 6px;">CRM</span>
+    <span style="display: inline-block; padding: 4px 10px; background: rgba(59, 130, 246, 0.15); color: rgba(140, 180, 220, 0.9); border-radius: 4px; font-size: 12px; margin-right: 6px;">E-Mail</span>
+    <span style="display: inline-block; padding: 4px 10px; background: rgba(59, 130, 246, 0.15); color: rgba(140, 180, 220, 0.9); border-radius: 4px; font-size: 12px;">Kalender</span>
+  </div>
+</div>
+
+<div class="combo-demo" style="background: rgba(170, 125, 85, 0.08); border: 1px solid rgba(170, 125, 85, 0.2); border-radius: 8px; margin-top: 16px;">
+  <div style="font-size: 11px; color: rgba(170, 125, 85, 0.6); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Warm-Card (Mensch)</div>
+  <div style="font-size: 18px; color: rgba(225, 185, 145, 0.95); margin-bottom: 6px;">Das Team hinter Sonaris</div>
+  <div style="font-size: 14px; color: rgba(215, 185, 155, 0.75);">Vier Gründer – ein gemeinsames Ziel: KI-Transformation greifbar machen.</div>
+</div>
+
+<div class="combo-demo" style="background: rgba(139, 92, 246, 0.03); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 8px; margin-top: 16px;">
+  <div style="display: inline-block; padding: 2px 8px; background: rgba(139, 92, 246, 0.15); color: rgba(167, 139, 250, 0.9); border-radius: 4px; font-size: 11px; margin-bottom: 8px;">KI-Charakter</div>
+  <div style="font-size: 18px; color: rgba(167, 139, 250, 0.9); margin-bottom: 6px;">Elysium Echo</div>
+  <div style="font-size: 14px; color: rgba(160, 185, 215, 0.7);">Die kollektive Stimme der KI – dokumentiert Muster, stellt Fragen, denkt weiter.</div>
+</div>
+
+<div class="combo-demo" style="background: rgba(160, 85, 95, 0.08); border: 1px solid rgba(160, 85, 95, 0.2); border-radius: 8px; margin-top: 16px;">
+  <div style="font-size: 11px; color: rgba(160, 85, 95, 0.55); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Pain-Element</div>
+  <div style="font-size: 18px; color: rgba(220, 140, 150, 0.92); margin-bottom: 6px;">Stillstand erkennen</div>
+  <div style="font-size: 14px; color: rgba(160, 185, 215, 0.65);">Manuelle Prozesse, isolierte Daten, ungenutzte Potenziale.</div>
+</div>
+
+<div style="margin-top: 48px; padding-top: 24px; border-top: 1px solid rgba(110, 145, 180, 0.1); font-size: 11px; color: rgba(160, 185, 215, 0.35);">
+  Sonaris Color Style Guide · Generiert aus dem CSS der Website sonaris.de · März 2026
+</div>
+
+</body>
+</html>

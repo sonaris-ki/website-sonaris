@@ -1,0 +1,466 @@
+/* ═══════════════════════════════════════════════════════════════════
+   QUIZ – CTA + Modal + Information Gap Selbsttest
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Quiz CTA (Reality Gap) ────────────────────────────────────── */
+.quiz-cta-block {
+    text-align: center;
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+    padding: 2rem 0;
+    pointer-events: auto;
+}
+
+.quiz-cta-lead {
+    font-size: 0.85rem;
+    color: rgba(160, 185, 215, 0.5);
+    margin-bottom: 1rem;
+    font-weight: 300;
+}
+
+.quiz-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: transparent;
+    border: 1px solid rgba(160, 85, 95, 0.4);
+    color: #DC8C96;
+    padding: 0.9rem 2rem;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 0.01em;
+    pointer-events: auto;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.quiz-cta-btn:hover {
+    background: rgba(160, 85, 95, 0.08);
+    border-color: rgba(160, 85, 95, 0.6);
+}
+
+.quiz-cta-arrow {
+    font-size: 1.1rem;
+}
+
+/* ── Quiz Modal ────────────────────────────────────────────────── */
+#quiz-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(12, 18, 26, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    overflow-y: auto;
+    padding: 2rem 1rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.quiz-modal-inner {
+    position: relative;
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.quiz-modal-close {
+    position: sticky;
+    top: 0;
+    float: right;
+    background: rgba(15, 25, 40, 0.8);
+    border: 1px solid rgba(110, 145, 180, 0.15);
+    color: rgba(160, 185, 215, 0.6);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: all 0.2s;
+}
+
+.quiz-modal-close:hover {
+    border-color: rgba(110, 145, 180, 0.4);
+    color: rgba(200, 220, 240, 0.9);
+}
+
+/* ── Quiz Content ──────────────────────────────────────────────── */
+.quiz-section {
+    max-width: 720px;
+    width: 100%;
+}
+
+.quiz-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.quiz-header .eyebrow {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #A0555F;
+    margin-bottom: 0.6rem;
+}
+
+.quiz-header h2 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: rgba(200, 220, 240, 0.95);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+}
+
+.quiz-header .lead {
+    font-size: 0.9rem;
+    color: rgba(160, 185, 215, 0.5);
+    font-weight: 300;
+    line-height: 1.55;
+}
+
+/* ─── Question Card ─── */
+.question-card {
+    background: #121820;
+    border: 1px solid rgba(110, 145, 180, 0.1);
+    border-radius: 14px;
+    padding: 1.8rem;
+    margin-bottom: 1.2rem;
+    transition: border-color 0.3s;
+}
+
+.question-card.answered-correct {
+    border-color: rgba(110, 180, 140, 0.3);
+}
+
+.question-card.answered-wrong {
+    border-color: rgba(160, 85, 95, 0.3);
+}
+
+.q-number {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgba(160, 185, 215, 0.35);
+    margin-bottom: 0.6rem;
+}
+
+.q-text {
+    font-size: 1rem;
+    font-weight: 500;
+    color: rgba(200, 220, 240, 0.9);
+    line-height: 1.5;
+    margin-bottom: 1.2rem;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    background: rgba(15, 25, 40, 0.5);
+    border: 1px solid rgba(110, 145, 180, 0.08);
+    border-radius: 10px;
+    padding: 0.9rem 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    width: 100%;
+    font-family: inherit;
+    color: inherit;
+}
+
+.option-btn:hover:not(.locked) {
+    border-color: rgba(110, 145, 180, 0.25);
+    background: rgba(15, 25, 40, 0.8);
+}
+
+.option-btn.locked { cursor: default; }
+
+.option-btn .letter {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: rgba(110, 145, 180, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: rgba(160, 185, 215, 0.5);
+    transition: all 0.3s;
+}
+
+.option-btn .option-text {
+    font-size: 0.88rem;
+    line-height: 1.45;
+    color: rgba(160, 185, 215, 0.7);
+    transition: color 0.3s;
+}
+
+.option-btn.selected-correct .letter {
+    background: rgba(110, 180, 140, 0.2);
+    color: #6EB48C;
+}
+.option-btn.selected-correct .option-text { color: #6EB48C; }
+.option-btn.selected-correct {
+    border-color: rgba(110, 180, 140, 0.3);
+    background: rgba(110, 180, 140, 0.05);
+}
+
+.option-btn.selected-wrong .letter {
+    background: rgba(160, 85, 95, 0.2);
+    color: #DC8C96;
+}
+.option-btn.selected-wrong .option-text { color: rgba(220, 140, 150, 0.8); }
+.option-btn.selected-wrong {
+    border-color: rgba(160, 85, 95, 0.25);
+    background: rgba(160, 85, 95, 0.04);
+}
+
+.option-btn.reveal-correct .letter {
+    background: rgba(110, 180, 140, 0.15);
+    color: #6EB48C;
+}
+.option-btn.reveal-correct {
+    border-color: rgba(110, 180, 140, 0.2);
+}
+
+.option-btn.dimmed {
+    opacity: 0.35;
+}
+
+/* ─── Feedback ─── */
+.feedback {
+    margin-top: 0.8rem;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: rgba(160, 185, 215, 0.6);
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.4s ease;
+}
+
+.feedback.visible {
+    opacity: 1;
+    max-height: 120px;
+    margin-top: 1rem;
+}
+
+.feedback strong {
+    color: rgba(200, 220, 240, 0.85);
+    font-weight: 500;
+}
+
+/* ─── Reality Check ─── */
+.reality-check {
+    margin-top: 0.8rem;
+    padding: 1rem 1.2rem;
+    background: rgba(160, 85, 95, 0.06);
+    border: 1px solid rgba(160, 85, 95, 0.2);
+    border-radius: 10px;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.5s ease;
+}
+
+.reality-check.visible {
+    opacity: 1;
+    max-height: 200px;
+    margin-top: 1rem;
+}
+
+.reality-check .rc-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #A0555F;
+    margin-bottom: 0.5rem;
+}
+
+.reality-check .rc-number {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #DC8C96;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.3rem;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.4s ease;
+}
+
+.reality-check.visible .rc-number {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.reality-check .rc-context {
+    font-size: 0.78rem;
+    color: rgba(160, 185, 215, 0.5);
+    line-height: 1.5;
+    font-weight: 300;
+}
+
+/* ─── Result / Ampel ─── */
+.result-section {
+    margin-top: 2rem;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+    pointer-events: none;
+}
+
+.result-section.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.ampel-container {
+    display: flex;
+    justify-content: center;
+    gap: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.ampel-dot {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    transition: all 0.5s ease;
+    position: relative;
+}
+
+.ampel-dot.inactive {
+    opacity: 0.1;
+}
+
+.ampel-dot.active {
+    opacity: 1;
+    box-shadow: 0 0 24px var(--glow), 0 0 48px var(--glow);
+}
+
+.ampel-dot.green {
+    background: #6EB48C;
+    --glow: rgba(110, 180, 140, 0.3);
+}
+.ampel-dot.yellow {
+    background: #E1B991;
+    --glow: rgba(225, 185, 145, 0.3);
+}
+.ampel-dot.red {
+    background: #A0555F;
+    --glow: rgba(160, 85, 95, 0.3);
+}
+
+.ampel-label {
+    font-size: 0.65rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(160, 185, 215, 0.35);
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+}
+
+.ampel-dot.active .ampel-label {
+    color: rgba(200, 220, 240, 0.7);
+}
+
+.result-headline {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: rgba(200, 220, 240, 0.95);
+    margin-bottom: 0.6rem;
+    margin-top: 1rem;
+}
+
+.result-text {
+    font-size: 0.9rem;
+    color: rgba(160, 185, 215, 0.6);
+    font-weight: 300;
+    line-height: 1.6;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+/* ─── Amara Quote ─── */
+.amara-quote {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: rgba(15, 25, 40, 0.5);
+    border-left: 2px solid rgba(160, 85, 95, 0.3);
+    border-radius: 0 10px 10px 0;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.5s ease 0.3s;
+}
+
+.amara-quote.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.amara-quote blockquote {
+    font-size: 0.95rem;
+    font-style: italic;
+    color: rgba(200, 220, 240, 0.8);
+    line-height: 1.55;
+    margin-bottom: 0.5rem;
+}
+
+.amara-quote cite {
+    font-size: 0.75rem;
+    font-style: normal;
+    color: rgba(160, 185, 215, 0.4);
+}
+
+/* ─── Progress Dots ─── */
+.progress-row {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.progress-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(110, 145, 180, 0.12);
+    transition: all 0.3s;
+}
+
+.progress-dot.done-correct { background: #6EB48C; }
+.progress-dot.done-wrong { background: #A0555F; }
+.progress-dot.current {
+    background: rgba(110, 145, 180, 0.3);
+    box-shadow: 0 0 6px rgba(110, 145, 180, 0.2);
+}
+
+@media (max-width: 480px) {
+    .quiz-header h2 { font-size: 1.3rem; }
+    .question-card { padding: 1.3rem; }
+    .q-text { font-size: 0.92rem; }
+}

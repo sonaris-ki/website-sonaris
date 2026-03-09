@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Denkraum – Sonaris</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            background: #121820;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #main {
+            z-index: 1;
+        }
+
+        #fragments {
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Branding */
+        #branding {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        #logo {
+            position: absolute;
+            top: 40px;
+            left: 45px;
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.9);
+            cursor: pointer;
+            pointer-events: auto;
+            transition: all 0.3s;
+        }
+
+        #logo:hover {
+            color: rgba(255, 255, 255, 1);
+        }
+
+        #logo.network-active {
+            color: rgba(140, 180, 220, 1);
+            text-shadow: 0 0 20px rgba(140, 180, 220, 0.5);
+        }
+
+        /* Phase indicator */
+        #phase-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            pointer-events: auto;
+        }
+
+        .phase-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .phase-dot:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .phase-dot.active {
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Central message overlay */
+        #central-message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 15;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.8s;
+        }
+
+        #central-message.visible {
+            opacity: 1;
+        }
+
+        #central-message.clickable {
+            pointer-events: auto;
+            cursor: pointer;
+        }
+
+        #central-message .message-text {
+            font-size: 32px;
+            font-weight: 400;
+            line-height: 1.12;
+            color: rgba(255, 255, 255, 0.85);
+            text-align: center;
+            max-width: 900px;
+            padding: 0 40px;
+        }
+
+        #central-message .message-text.normal-spacing {
+            line-height: 1.5;
+        }
+
+        #central-message .message-text .dim {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        #central-message .message-text .highlight {
+            color: rgba(255, 255, 255, 1);
+        }
+
+        #central-message .message-text .quote {
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        #central-message .message-text .small-label {
+            font-size: 22px;
+            color: rgba(255, 255, 255, 0.5);
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        #central-message .message-text .delayed {
+            opacity: 0;
+            transition: opacity 1s ease-in;
+        }
+
+        #central-message .message-text .delayed.show {
+            opacity: 1;
+        }
+
+        /* Final claim */
+        #final-claim {
+            position: absolute;
+            bottom: 50px;
+            left: 45px;
+            font-size: 19.5px;
+            font-weight: 400;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.55);
+            max-width: 700px;
+            opacity: 0;
+            transition: all 0.6s ease-out;
+            pointer-events: none;
+            cursor: pointer;
+        }
+
+        #final-claim.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #final-claim.centered {
+            bottom: 50%;
+            left: 50%;
+            transform: translate(-50%, 50%);
+            font-size: 32px;
+            text-align: center;
+            max-width: 900px;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        #final-claim .highlight {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        #final-claim.centered .highlight {
+            color: rgba(255, 255, 255, 1);
+        }
+
+        /* Fragment tooltip */
+        #fragment-tooltip {
+            position: fixed;
+            z-index: 25;
+            background: rgba(20, 28, 36, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            padding: 12px 18px;
+            max-width: 320px;
+            font-size: 15px;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.75);
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(5px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        #fragment-tooltip.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Controls - Full Panel */
+        #controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+            background: rgba(20, 24, 28, 0.92);
+            border: 1px solid rgba(120, 100, 100, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            width: 280px;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+        }
+
+        #controls.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        #toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 101;
+            background: rgba(20, 24, 28, 0.6);
+            border: 1px solid rgba(120, 100, 100, 0.2);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            pointer-events: auto;
+            opacity: 0.5;
+        }
+
+        #toggle:hover {
+            background: rgba(45, 35, 40, 0.9);
+            border-color: rgba(160, 120, 120, 0.5);
+            opacity: 1;
+        }
+
+        #toggle svg {
+            width: 18px;
+            height: 18px;
+            stroke: rgba(160, 130, 130, 0.7);
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .control-group {
+            margin-bottom: 18px;
+        }
+
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .control-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            color: rgba(180, 160, 160, 0.9);
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .control-value {
+            color: rgba(150, 130, 130, 0.7);
+            font-size: 11px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 4px;
+            -webkit-appearance: none;
+            background: rgba(80, 60, 65, 0.3);
+            border-radius: 2px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: rgba(180, 130, 130, 0.9);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+
+        .section-title {
+            color: rgba(200, 170, 170, 0.6);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(120, 100, 100, 0.15);
+        }
+
+        .section {
+            margin-bottom: 22px;
+        }
+
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        .color-presets {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .color-preset {
+            flex: 1;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .color-preset:hover {
+            transform: scale(1.05);
+        }
+
+        .color-preset.active {
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .color-preset.blue {
+            background: linear-gradient(135deg, #1a2530, #2a4055);
+        }
+
+        .color-preset.red {
+            background: linear-gradient(135deg, #251518, #4a2028);
+        }
+
+        .color-preset.warm {
+            background: linear-gradient(135deg, #252015, #4a3820);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="main"></canvas>
+    <canvas id="fragments"></canvas>
+
+    <div id="branding">
+        <div id="logo">sonaris</div>
+
+        <div id="central-message">
+            <div class="message-text"></div>
+        </div>
+
+        <div id="final-claim">
+            KI scheitert dort, wo sie Denken ersetzen soll –<br>
+            und <span class="highlight">wirkt dort, wo sie Denken beschleunigt</span>,<br>
+            aber Verantwortung beim Menschen lässt.
+        </div>
+
+        <div id="phase-indicator">
+            <div class="phase-dot active" data-phase="0"></div>
+            <div class="phase-dot" data-phase="1"></div>
+            <div class="phase-dot" data-phase="2"></div>
+        </div>
+    </div>
+
+    <div id="fragment-tooltip"></div>
+
+    <div id="toggle">
+        <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+        </svg>
+    </div>
+
+    <div id="controls">
+        <div class="section">
+            <div class="section-title">Farbwelt</div>
+            <div class="color-presets">
+                <div class="color-preset blue active" data-palette="blue" title="Kühl"></div>
+                <div class="color-preset red" data-palette="red" title="Tiefrot"></div>
+                <div class="color-preset warm" data-palette="warm" title="Warm"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Intensität</div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Bewegungsstärke</span>
+                    <span class="control-value" id="movementIntensityValue">1.0</span>
+                </div>
+                <input type="range" id="movementIntensity" min="0.3" max="2" step="0.1" value="1">
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Stillnesskontrast</span>
+                    <span class="control-value" id="stillnessContrastValue">1.0</span>
+                </div>
+                <input type="range" id="stillnessContrast" min="0.3" max="2" step="0.1" value="1">
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Atemgeschwindigkeit</span>
+                    <span class="control-value" id="breathSpeedValue">1.0</span>
+                </div>
+                <input type="range" id="breathSpeed" min="0.3" max="2" step="0.1" value="1">
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Tiefe</div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Parallaxstärke</span>
+                    <span class="control-value" id="parallaxStrengthValue">1.0</span>
+                </div>
+                <input type="range" id="parallaxStrength" min="0" max="2" step="0.1" value="1">
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Fragmente</div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Sichtbarkeit</span>
+                    <span class="control-value" id="fragmentVisibilityValue">1.0</span>
+                </div>
+                <input type="range" id="fragmentVisibility" min="0" max="2" step="0.1" value="1">
+            </div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Größe</span>
+                    <span class="control-value" id="fragmentSizeValue">1.0</span>
+                </div>
+                <input type="range" id="fragmentSize" min="0.5" max="1.5" step="0.1" value="1">
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Netzwerk</div>
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Intensität</span>
+                    <span class="control-value" id="networkIntensityValue">1.0</span>
+                </div>
+                <input type="range" id="networkIntensity" min="0.2" max="2" step="0.1" value="1">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const mainCanvas = document.getElementById('main');
+        const mainCtx = mainCanvas.getContext('2d');
+        const fragmentsCanvas = document.getElementById('fragments');
+        const fragmentsCtx = fragmentsCanvas.getContext('2d');
+
+        let width, height;
+        let mouseX, mouseY;
+        let time = 0;
+
+        let dwellTime = 0;
+        let lastMouseX = 0;
+        let lastMouseY = 0;
+
+        const maxEchoes = 5;
+        let echoes = [];
+
+        // Current phase
+        let currentPhase = 0;
+        let phaseTransition = 0;
+        let targetMovementIntensity = 1.8;
+
+        // Network mode
+        let networkMode = false;
+        let networkTransition = 0; // 0 = off, 1 = fully on
+
+        // All presentation steps (unified sequence)
+        const allSteps = [
+            // Phase 1: Ausgangssituation
+            { phase: 0, html: '<span class="highlight" style="cursor: pointer;">Ausgangssituation</span>' },
+            { phase: 0, html: '<span class="dim">KI?</span><br><span class="quote">„Das habe ich delegiert,<br>darum kümmert sich unsere IT-Abteilung."</span>' },
+            { phase: 0, html: '<span class="quote">„Wir haben aktuell keine Zeit dafür."</span>' },
+            { phase: 0, html: '<span class="dim">Man kann Ausführung delegieren.</span>', hasDelay: true, delayHtml: '<br><span class="highlight delayed" id="delayed-text">Verantwortung für Denken jedoch nicht.</span>', delayMs: 2000 },
+
+            // Phase 2: Bruch
+            { phase: 1, html: '<span class="dim">KI ist kein Tool. KI ist kein IT-Projekt.</span>', normalSpacing: true },
+            { phase: 1, html: '<span class="dim">KI ist kein Tool. KI ist kein IT-Projekt.</span><br><span class="highlight">KI ist eine tiefgreifende Veränderung der Arbeitswelt.</span>', normalSpacing: true },
+            { phase: 1, html: '<span class="dim">Die Frage ist nicht: Haben wir KI eingeführt?</span>', normalSpacing: true },
+            { phase: 1, html: '<span class="dim">Die Frage ist nicht: Haben wir KI eingeführt?</span><br><span class="highlight">Sondern: Ist meine Arbeit heute leichter, klarer, wirksamer?</span>', normalSpacing: true },
+
+            // Phase 3: Denkraum (no central message)
+            { phase: 2, html: null }
+        ];
+
+        let currentStep = 0;
+
+        // Phase 1: Hintergrund-Fragmente (leise, im Feld)
+        const phase1Fragments = [
+            { text: 'Delegiert', depth: 0.9 },
+            { text: 'IT-Abteilung', depth: 0.7 },
+            { text: 'Projekt läuft', depth: 0.5 },
+            { text: 'Keine Zeit', depth: 0.85 },
+            { text: 'Später', depth: 0.6 },
+            { text: 'Haben wir', depth: 0.75 },
+            { text: 'Zuständig ist...', depth: 0.4 },
+            { text: 'Budget steht', depth: 0.65 },
+            { text: 'Nächstes Jahr', depth: 0.55 },
+            { text: 'Läuft schon', depth: 0.8 },
+        ];
+
+        // Phase 3: CEO-Fragmente mit Erklärungen
+        const phase3Fragments = [
+            { text: 'M. Weber', depth: 0.9, explanation: 'Ihr wichtigster Ansprechpartner – alle Kontaktpunkte auf einen Blick.' },
+            { text: 'Dr. Schulze', depth: 0.7, explanation: 'Schlüsselkontakt aus dem Beirat – letzte Abstimmungen dokumentiert.' },
+            { text: 'Board', depth: 1.0, explanation: 'Nächste Sitzung vorbereitet, offene Punkte priorisiert.' },
+            { text: 'Projekt Aurora', depth: 0.8, explanation: 'Aktueller Status, kritischer Pfad, nächste Meilensteine.' },
+            { text: 'Integration', depth: 0.6, explanation: 'Stand der M&A-Integration – was braucht Ihre Aufmerksamkeit?' },
+            { text: 'Liquidität', depth: 0.95, explanation: 'Alle relevanten Zahlen, ohne danach zu suchen.' },
+            { text: 'Wachstum', depth: 0.85, explanation: 'Pipeline, Opportunities, Prognosen – verdichtet.' },
+            { text: 'Team', depth: 0.75, explanation: 'Wer braucht gerade Ihre Führung? Signale aus den letzten Wochen.' },
+            { text: 'Markt', depth: 0.55, explanation: 'Relevante Bewegungen, gefiltert nach Ihren Prioritäten.' },
+            { text: 'Q2', depth: 0.7, explanation: 'Quartalsziele im Blick – was ist on track, was nicht?' },
+            { text: 'Priorität', depth: 0.6, explanation: 'Die drei Dinge, die heute wirklich zählen.' },
+        ];
+
+        // Particles
+        let particles = [];
+        const particleCount = 800;
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                const depth = 0.2 + Math.random() * 0.8;
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    depth: depth,
+                    size: 2 + depth * 4,
+                    phase: Math.random() * Math.PI * 2,
+                    speedX: (Math.random() - 0.5) * 0.3,
+                    speedY: (Math.random() - 0.5) * 0.3,
+                    orbitRadius: 10 + Math.random() * 30,
+                    orbitSpeed: 0.2 + Math.random() * 0.5,
+                    opacity: 0.15 + depth * 0.3,
+                    calm: 0
+                });
+            }
+        }
+
+        // Texture
+        let textureGrid = null;
+        const textureResolution = 25;
+
+        // Active fragments
+        let fragments = [];
+        let hoveredFragment = null;
+
+        function initFragments(fragmentData) {
+            fragments = fragmentData.map((f, i) => {
+                const angle = (i / fragmentData.length) * Math.PI * 2 + Math.random() * 0.5;
+                const radius = 0.15 + Math.random() * 0.3;
+
+                return {
+                    text: f.text,
+                    explanation: f.explanation || null,
+                    depth: f.depth,
+                    x: 0.5 + Math.cos(angle) * radius,
+                    y: 0.5 + Math.sin(angle) * radius,
+                    baseX: 0,
+                    baseY: 0,
+                    visibility: 0,
+                    targetVisibility: 0,
+                    driftPhase: Math.random() * Math.PI * 2,
+                    driftSpeed: 0.2 + Math.random() * 0.3
+                };
+            });
+
+            fragments.forEach(f => {
+                f.baseX = f.x * width;
+                f.baseY = f.y * height;
+            });
+        }
+
+        // Color palettes
+        const palettes = {
+            blue: {
+                bg: { r: 20, g: 28, b: 36 },
+                base: { r: 55, g: 75, b: 100 },
+                clarity: { r: 110, g: 145, b: 180 },
+                highlight: { r: 180, g: 200, b: 225 },
+                text: { r: 160, g: 185, b: 215 }
+            },
+            red: {
+                bg: { r: 28, g: 18, b: 20 },
+                base: { r: 85, g: 45, b: 55 },
+                clarity: { r: 160, g: 85, b: 95 },
+                highlight: { r: 220, g: 140, b: 150 },
+                text: { r: 210, g: 160, b: 165 }
+            },
+            warm: {
+                bg: { r: 30, g: 24, b: 18 },
+                base: { r: 95, g: 70, b: 50 },
+                clarity: { r: 170, g: 125, b: 85 },
+                highlight: { r: 225, g: 185, b: 145 },
+                text: { r: 215, g: 185, b: 155 }
+            }
+        };
+
+        let currentPalette = 'blue';
+
+        // Parameters
+        let params = {
+            breathSpeed: 1,
+            movementIntensity: 1.8,
+            stillnessContrast: 1,
+            parallaxStrength: 1,
+            fragmentVisibility: 1,
+            fragmentSize: 1,
+            networkIntensity: 1
+        };
+
+        // UI Elements
+        const toggle = document.getElementById('toggle');
+        const controls = document.getElementById('controls');
+        const centralMessage = document.getElementById('central-message');
+        const messageText = centralMessage.querySelector('.message-text');
+        const finalClaim = document.getElementById('final-claim');
+        const phaseDots = document.querySelectorAll('.phase-dot');
+        const fragmentTooltip = document.getElementById('fragment-tooltip');
+        const logo = document.getElementById('logo');
+
+        let controlsVisible = false;
+
+        toggle.addEventListener('click', () => {
+            controlsVisible = !controlsVisible;
+            controls.classList.toggle('visible', controlsVisible);
+        });
+
+        // Logo click toggles network mode (only works in Phase 3)
+        logo.addEventListener('click', () => {
+            const step = allSteps[currentStep];
+            if (step.phase === 2) {
+                networkMode = !networkMode;
+                logo.classList.toggle('network-active', networkMode);
+            }
+        });
+
+        // Show current step
+        function showStep() {
+            const step = allSteps[currentStep];
+
+            // Update phase indicator
+            phaseDots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === step.phase);
+            });
+
+            // Set movement intensity based on phase
+            if (step.phase === 0) {
+                targetMovementIntensity = 1.8;
+                initFragments(phase1Fragments);
+                finalClaim.classList.remove('visible');
+                // Reset network mode when leaving phase 3
+                networkMode = false;
+                logo.classList.remove('network-active');
+            } else if (step.phase === 1) {
+                targetMovementIntensity = 0.8;
+                fragments = [];
+                finalClaim.classList.remove('visible');
+                // Reset network mode when leaving phase 3
+                networkMode = false;
+                logo.classList.remove('network-active');
+            } else if (step.phase === 2) {
+                targetMovementIntensity = 0.6;
+                initFragments(phase3Fragments);
+                finalClaim.classList.add('visible');
+            }
+
+            // Show/hide central message
+            if (step.html) {
+                let html = step.html;
+                if (step.hasDelay) {
+                    html += step.delayHtml;
+                }
+                messageText.innerHTML = html;
+
+                // Apply normal spacing if needed
+                if (step.normalSpacing) {
+                    messageText.classList.add('normal-spacing');
+                } else {
+                    messageText.classList.remove('normal-spacing');
+                }
+
+                centralMessage.classList.add('visible');
+                centralMessage.classList.add('clickable');
+
+                // Handle delayed text
+                if (step.hasDelay) {
+                    setTimeout(() => {
+                        const delayedEl = document.getElementById('delayed-text');
+                        if (delayedEl) delayedEl.classList.add('show');
+                    }, step.delayMs);
+                }
+            } else {
+                centralMessage.classList.remove('visible');
+                centralMessage.classList.remove('clickable');
+            }
+        }
+
+        // Handle clicks on central message to advance
+        centralMessage.addEventListener('click', () => {
+            if (currentStep < allSteps.length - 1) {
+                currentStep++;
+                showStep();
+            }
+        });
+
+        phaseDots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const targetPhase = parseInt(dot.dataset.phase);
+                // Find first step of this phase
+                for (let i = 0; i < allSteps.length; i++) {
+                    if (allSteps[i].phase === targetPhase) {
+                        currentStep = i;
+                        showStep();
+                        break;
+                    }
+                }
+            });
+        });
+
+        // Color presets
+        const presets = document.querySelectorAll('.color-preset');
+        presets.forEach(preset => {
+            preset.addEventListener('click', () => {
+                presets.forEach(p => p.classList.remove('active'));
+                preset.classList.add('active');
+                currentPalette = preset.dataset.palette;
+            });
+        });
+
+        // Final claim click to center
+        finalClaim.addEventListener('click', () => {
+            finalClaim.classList.toggle('centered');
+        });
+
+        // All Sliders
+        function setupSlider(id, paramName, valueId) {
+            const slider = document.getElementById(id);
+            const valueEl = document.getElementById(valueId);
+            if (slider && valueEl) {
+                slider.addEventListener('input', (e) => {
+                    const val = parseFloat(e.target.value);
+                    params[paramName] = val;
+                    valueEl.textContent = val.toFixed(1);
+                    if (paramName === 'movementIntensity') {
+                        targetMovementIntensity = val;
+                    }
+                });
+            }
+        }
+
+        setupSlider('movementIntensity', 'movementIntensity', 'movementIntensityValue');
+        setupSlider('stillnessContrast', 'stillnessContrast', 'stillnessContrastValue');
+        setupSlider('breathSpeed', 'breathSpeed', 'breathSpeedValue');
+        setupSlider('parallaxStrength', 'parallaxStrength', 'parallaxStrengthValue');
+        setupSlider('fragmentVisibility', 'fragmentVisibility', 'fragmentVisibilityValue');
+        setupSlider('fragmentSize', 'fragmentSize', 'fragmentSizeValue');
+        setupSlider('networkIntensity', 'networkIntensity', 'networkIntensityValue');
+
+        function resize() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            mainCanvas.width = width;
+            mainCanvas.height = height;
+            fragmentsCanvas.width = width;
+            fragmentsCanvas.height = height;
+            mouseX = width / 2;
+            mouseY = height / 2;
+
+            const cols = Math.ceil(width / textureResolution);
+            const rows = Math.ceil(height / textureResolution);
+            if (!textureGrid) {
+                textureGrid = [];
+                for (let i = 0; i < rows; i++) {
+                    textureGrid[i] = [];
+                    for (let j = 0; j < cols; j++) {
+                        textureGrid[i][j] = 0;
+                    }
+                }
+            }
+
+            if (particles.length === 0) {
+                initParticles();
+            }
+
+            fragments.forEach(f => {
+                f.baseX = f.x * width;
+                f.baseY = f.y * height;
+            });
+        }
+
+        function updateEchoes() {
+            const step = allSteps[currentStep];
+            if (dwellTime > 0.4 && step.phase === 2) {
+                const lastEcho = echoes[echoes.length - 1];
+                const dist = lastEcho ?
+                    Math.sqrt(Math.pow(mouseX - lastEcho.x, 2) + Math.pow(mouseY - lastEcho.y, 2)) :
+                    Infinity;
+
+                if (dist > 100) {
+                    echoes.push({
+                        x: mouseX,
+                        y: mouseY,
+                        strength: dwellTime,
+                        radius: 200 + dwellTime * 80,
+                        age: 0
+                    });
+
+                    if (echoes.length > maxEchoes) {
+                        echoes.shift();
+                    }
+                }
+            }
+
+            for (let i = echoes.length - 1; i >= 0; i--) {
+                echoes[i].age += 0.008;
+                echoes[i].strength *= 0.995;
+
+                if (echoes[i].strength < 0.05) {
+                    echoes.splice(i, 1);
+                }
+            }
+        }
+
+        function updateTexture() {
+            const step = allSteps[currentStep];
+            if (!textureGrid || step.phase !== 2) return;
+
+            const cols = Math.ceil(width / textureResolution);
+            const rows = Math.ceil(height / textureResolution);
+
+            if (dwellTime > 0.2) {
+                const gridX = Math.floor(mouseX / textureResolution);
+                const gridY = Math.floor(mouseY / textureResolution);
+                const radius = 8;
+
+                for (let dy = -radius; dy <= radius; dy++) {
+                    for (let dx = -radius; dx <= radius; dx++) {
+                        const gx = gridX + dx;
+                        const gy = gridY + dy;
+                        if (gy >= 0 && gy < rows && gx >= 0 && gx < cols) {
+                            const dist = Math.sqrt(dx * dx + dy * dy);
+                            if (dist <= radius) {
+                                const influence = Math.pow(1 - dist / radius, 2) * 0.008 * dwellTime;
+                                textureGrid[gy][gx] = Math.min(textureGrid[gy][gx] + influence, 1);
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (let y = 0; y < rows; y++) {
+                for (let x = 0; x < cols; x++) {
+                    textureGrid[y][x] *= 0.9995;
+                }
+            }
+        }
+
+        function getEchoInfluence(x, y) {
+            let totalInfluence = 0;
+            for (const echo of echoes) {
+                const dx = x - echo.x;
+                const dy = y - echo.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const normalizedDist = Math.min(dist / echo.radius, 1);
+                const influence = Math.pow(1 - normalizedDist, 2) * echo.strength * 0.6;
+                totalInfluence += influence;
+            }
+            return Math.min(totalInfluence, 0.8);
+        }
+
+        function updateParticles() {
+            const step = allSteps[currentStep];
+            params.movementIntensity += (targetMovementIntensity - params.movementIntensity) * 0.02;
+
+            const attentionRadius = 200 + dwellTime * 80;
+
+            particles.forEach(p => {
+                const parallaxFactor = (1 - p.depth) * params.parallaxStrength * 40;
+                const offsetX = (mouseX - width / 2) / width * parallaxFactor;
+                const offsetY = (mouseY - height / 2) / height * parallaxFactor;
+
+                const orbitX = Math.cos(time * p.orbitSpeed + p.phase) * p.orbitRadius * params.movementIntensity;
+                const orbitY = Math.sin(time * p.orbitSpeed * 0.7 + p.phase) * p.orbitRadius * params.movementIntensity;
+
+                p.x += p.speedX * params.movementIntensity * p.depth;
+                p.y += p.speedY * params.movementIntensity * p.depth;
+
+                if (p.x < -50) p.x = width + 50;
+                if (p.x > width + 50) p.x = -50;
+                if (p.y < -50) p.y = height + 50;
+                if (p.y > height + 50) p.y = -50;
+
+                const currentX = p.x + orbitX + offsetX;
+                const currentY = p.y + orbitY + offsetY;
+
+                const dx = currentX - mouseX;
+                const dy = currentY - mouseY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                let attentionCalm = 0;
+                if (step.phase === 2) {
+                    const normalizedDist = Math.min(dist / (attentionRadius * p.depth), 1);
+                    attentionCalm = Math.pow(1 - normalizedDist, 2) * (0.6 + dwellTime * 0.4);
+                }
+
+                const texGridX = Math.floor(currentX / textureResolution);
+                const texGridY = Math.floor(currentY / textureResolution);
+                let textureInfluence = 0;
+                if (textureGrid && texGridY >= 0 && texGridY < textureGrid.length &&
+                    texGridX >= 0 && texGridX < textureGrid[0].length) {
+                    textureInfluence = textureGrid[texGridY][texGridX];
+                }
+
+                const echoInfluence = getEchoInfluence(currentX, currentY) * p.depth;
+
+                p.calm = Math.min((attentionCalm + textureInfluence * 0.5 + echoInfluence) * params.stillnessContrast, 1);
+
+                const calmOrbitX = orbitX * (1 - p.calm * 0.9);
+                const calmOrbitY = orbitY * (1 - p.calm * 0.9);
+                p.displayX = p.x + calmOrbitX + offsetX;
+                p.displayY = p.y + calmOrbitY + offsetY;
+            });
+        }
+
+        function updateFragments() {
+            const step = allSteps[currentStep];
+            const attentionRadius = 250;
+            let closestFragment = null;
+            let closestDist = Infinity;
+
+            // Smooth network transition
+            const targetNetworkTransition = networkMode ? 1 : 0;
+            networkTransition += (targetNetworkTransition - networkTransition) * 0.03;
+
+            fragments.forEach(f => {
+                const parallaxFactor = (1 - f.depth) * params.parallaxStrength * 50;
+                const offsetX = (mouseX - width / 2) / width * parallaxFactor;
+                const offsetY = (mouseY - height / 2) / height * parallaxFactor;
+
+                const driftX = Math.sin(time * f.driftSpeed + f.driftPhase) * 15 * f.depth;
+                const driftY = Math.cos(time * f.driftSpeed * 0.7 + f.driftPhase) * 15 * f.depth;
+
+                const currentX = f.baseX + driftX + offsetX;
+                const currentY = f.baseY + driftY + offsetY;
+
+                const dx = currentX - mouseX;
+                const dy = currentY - mouseY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                // In network mode, all fragments are fully visible
+                if (networkMode) {
+                    f.targetVisibility = 1.0;
+                } else {
+                    const proximity = Math.max(0, 1 - dist / attentionRadius);
+                    f.targetVisibility = proximity * proximity * (0.3 + dwellTime * 0.7);
+                }
+
+                f.visibility += (f.targetVisibility - f.visibility) * 0.05;
+
+                f.currentX = currentX;
+                f.currentY = currentY;
+
+                // Track closest visible fragment for tooltip (only in phase 3, not in network mode)
+                if (step.phase === 2 && !networkMode && f.explanation && f.visibility > 0.4 && dist < closestDist) {
+                    closestDist = dist;
+                    closestFragment = f;
+                }
+            });
+
+            // Update tooltip (positioned below the fragment) - disabled in network mode
+            if (!networkMode && closestFragment && closestDist < 80) {
+                hoveredFragment = closestFragment;
+                fragmentTooltip.textContent = closestFragment.explanation;
+                fragmentTooltip.style.left = (closestFragment.currentX - 100) + 'px';
+                fragmentTooltip.style.top = (closestFragment.currentY + 35) + 'px';
+                fragmentTooltip.classList.add('visible');
+            } else {
+                hoveredFragment = null;
+                fragmentTooltip.classList.remove('visible');
+            }
+        }
+
+        function lerp(a, b, t) {
+            return a + (b - a) * t;
+        }
+
+        function getColor(calm, depthFactor = 1) {
+            const p = palettes[currentPalette];
+
+            let r = lerp(p.base.r, p.clarity.r, calm);
+            let g = lerp(p.base.g, p.clarity.g, calm);
+            let b = lerp(p.base.b, p.clarity.b, calm);
+
+            r *= depthFactor;
+            g *= depthFactor;
+            b *= depthFactor;
+
+            return {
+                r: Math.max(0, Math.min(255, r)),
+                g: Math.max(0, Math.min(255, g)),
+                b: Math.max(0, Math.min(255, b))
+            };
+        }
+
+        function getHighlightColor() {
+            return palettes[currentPalette].highlight;
+        }
+
+        function getTextColor() {
+            return palettes[currentPalette].text;
+        }
+
+        function getBgColor() {
+            return palettes[currentPalette].bg;
+        }
+
+        function drawMain() {
+            const bg = getBgColor();
+            const step = allSteps[currentStep];
+            mainCtx.fillStyle = `rgb(${bg.r}, ${bg.g}, ${bg.b})`;
+            mainCtx.fillRect(0, 0, width, height);
+
+            // Texture (only in phase 3)
+            if (textureGrid && step.phase === 2) {
+                const cols = Math.ceil(width / textureResolution);
+                const rows = Math.ceil(height / textureResolution);
+
+                for (let y = 0; y < rows; y++) {
+                    for (let x = 0; x < cols; x++) {
+                        const value = textureGrid[y][x];
+                        if (value > 0.01) {
+                            const px = x * textureResolution + textureResolution / 2;
+                            const py = y * textureResolution + textureResolution / 2;
+
+                            const color = getColor(value * 0.5, 0.6);
+                            const alpha = value * 0.2;
+
+                            mainCtx.fillStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${alpha})`;
+                            mainCtx.beginPath();
+                            mainCtx.arc(px, py, textureResolution * 0.8 + value * 4, 0, Math.PI * 2);
+                            mainCtx.fill();
+                        }
+                    }
+                }
+            }
+
+            // Particles
+            const sorted = [...particles].sort((a, b) => a.depth - b.depth);
+
+            sorted.forEach(p => {
+                const depthFactor = 0.5 + p.depth * 0.5;
+                const color = getColor(p.calm, depthFactor);
+                const alpha = (p.opacity + p.calm * 0.2) * depthFactor;
+                const size = p.size * (1 - p.calm * 0.3);
+
+                mainCtx.fillStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${alpha})`;
+                mainCtx.beginPath();
+                mainCtx.arc(p.displayX, p.displayY, size, 0, Math.PI * 2);
+                mainCtx.fill();
+            });
+
+            // Echoes (only phase 3)
+            if (step.phase === 2) {
+                for (const echo of echoes) {
+                    const echoAlpha = echo.strength * 0.15;
+                    const color = getColor(echo.strength * 0.7);
+                    const highlight = getHighlightColor();
+
+                    mainCtx.strokeStyle = `rgba(${lerp(color.r, highlight.r, 0.3)}, ${lerp(color.g, highlight.g, 0.3)}, ${lerp(color.b, highlight.b, 0.3)}, ${echoAlpha})`;
+                    mainCtx.lineWidth = 1 + echo.strength;
+                    mainCtx.beginPath();
+                    mainCtx.arc(echo.x, echo.y, echo.radius * 0.7, 0, Math.PI * 2);
+                    mainCtx.stroke();
+                }
+
+                // Attention circle (only phase 3)
+                if (mouseX > 0 && mouseY > 0) {
+                    const attentionRadius = 200 + dwellTime * 80;
+                    const circleRadius = attentionRadius * (0.7 + dwellTime * 0.3);
+                    const circleAlpha = 0.08 + dwellTime * 0.12;
+                    const color = getColor(0.8);
+                    const highlight = getHighlightColor();
+
+                    const outerGlow = mainCtx.createRadialGradient(
+                        mouseX, mouseY, circleRadius * 0.3,
+                        mouseX, mouseY, circleRadius * 1.3
+                    );
+                    outerGlow.addColorStop(0, `rgba(${color.r}, ${color.g}, ${color.b}, ${circleAlpha * 0.6})`);
+                    outerGlow.addColorStop(0.5, `rgba(${color.r * 0.8}, ${color.g * 0.8}, ${color.b * 0.8}, ${circleAlpha * 0.3})`);
+                    outerGlow.addColorStop(1, `rgba(${color.r * 0.6}, ${color.g * 0.6}, ${color.b * 0.6}, 0)`);
+                    mainCtx.fillStyle = outerGlow;
+                    mainCtx.fillRect(0, 0, width, height);
+
+                    mainCtx.strokeStyle = `rgba(${highlight.r}, ${highlight.g}, ${highlight.b}, ${0.18 + dwellTime * 0.22})`;
+                    mainCtx.lineWidth = 1.5 + dwellTime * 1.5;
+                    mainCtx.beginPath();
+                    mainCtx.arc(mouseX, mouseY, circleRadius, 0, Math.PI * 2);
+                    mainCtx.stroke();
+
+                    if (dwellTime > 0.3) {
+                        const centerAlpha = (dwellTime - 0.3) * 0.4;
+                        const centerGlow = mainCtx.createRadialGradient(
+                            mouseX, mouseY, 0,
+                            mouseX, mouseY, 30 + dwellTime * 20
+                        );
+                        centerGlow.addColorStop(0, `rgba(${highlight.r}, ${highlight.g}, ${highlight.b}, ${centerAlpha})`);
+                        centerGlow.addColorStop(1, `rgba(${color.r}, ${color.g}, ${color.b}, 0)`);
+                        mainCtx.fillStyle = centerGlow;
+                        mainCtx.beginPath();
+                        mainCtx.arc(mouseX, mouseY, 30 + dwellTime * 20, 0, Math.PI * 2);
+                        mainCtx.fill();
+                    }
+                }
+            }
+
+            // Vignette
+            const vignette = mainCtx.createRadialGradient(
+                width / 2, height / 2, Math.min(width, height) * 0.3,
+                width / 2, height / 2, Math.max(width, height) * 0.7
+            );
+            vignette.addColorStop(0, `rgba(${bg.r}, ${bg.g}, ${bg.b}, 0)`);
+            vignette.addColorStop(1, `rgba(${bg.r}, ${bg.g}, ${bg.b}, 0.45)`);
+            mainCtx.fillStyle = vignette;
+            mainCtx.fillRect(0, 0, width, height);
+        }
+
+        function drawFragments() {
+            fragmentsCtx.clearRect(0, 0, width, height);
+
+            if (fragments.length === 0) return;
+
+            const textColor = getTextColor();
+            const highlight = getHighlightColor();
+
+            // Draw neural network lines when in network mode
+            if (networkTransition > 0.01) {
+                drawNetworkLines();
+            }
+
+            const sorted = [...fragments].sort((a, b) => a.depth - b.depth);
+
+            sorted.forEach(f => {
+                const visibility = f.visibility * params.fragmentVisibility;
+                if (visibility < 0.02) return;
+
+                const alpha = visibility * 0.9 * (0.5 + f.depth * 0.5);
+
+                const depthScale = 0.7 + f.depth * 0.5;
+                const fontSize = (26 + visibility * 8) * depthScale * params.fragmentSize;
+                fragmentsCtx.font = `${300 + visibility * 200} ${fontSize}px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`;
+                fragmentsCtx.textAlign = 'center';
+                fragmentsCtx.textBaseline = 'middle';
+
+                const depthDim = 0.5 + f.depth * 0.5;
+                const r = lerp(textColor.r * 0.3 * depthDim, textColor.r * depthDim, visibility);
+                const g = lerp(textColor.g * 0.3 * depthDim, textColor.g * depthDim, visibility);
+                const b = lerp(textColor.b * 0.3 * depthDim, textColor.b * depthDim, visibility);
+
+                // Highlight hovered fragment
+                const isHovered = hoveredFragment === f;
+                if (visibility > 0.5 || isHovered) {
+                    const glowStrength = isHovered ? 0.6 : (visibility - 0.5) * 0.4 * f.depth;
+                    fragmentsCtx.shadowColor = `rgba(${highlight.r}, ${highlight.g}, ${highlight.b}, ${glowStrength})`;
+                    fragmentsCtx.shadowBlur = isHovered ? 30 : 20 * f.depth;
+                } else {
+                    fragmentsCtx.shadowColor = 'transparent';
+                    fragmentsCtx.shadowBlur = 0;
+                }
+
+                fragmentsCtx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                fragmentsCtx.fillText(f.text, f.currentX, f.currentY);
+            });
+
+            fragmentsCtx.shadowColor = 'transparent';
+            fragmentsCtx.shadowBlur = 0;
+        }
+
+        function drawNetworkLines() {
+            const highlight = getHighlightColor();
+            const textColor = getTextColor();
+            const intensity = params.networkIntensity;
+
+            // Draw lines connecting all fragments to each other
+            for (let i = 0; i < fragments.length; i++) {
+                for (let j = i + 1; j < fragments.length; j++) {
+                    const f1 = fragments[i];
+                    const f2 = fragments[j];
+
+                    // Calculate distance for varying line strength
+                    const dx = f2.currentX - f1.currentX;
+                    const dy = f2.currentY - f1.currentY;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    // Lines are stronger for closer fragments
+                    const distanceFactor = Math.max(0, 1 - dist / 600);
+
+                    // Pulsing/breathing effect - each line has a unique phase
+                    const linePhase = (i * 7 + j * 13) * 0.1;
+                    const pulse = 0.5 + 0.5 * Math.sin(time * 2 + linePhase);
+
+                    // Combined alpha with transition, distance, pulse, and intensity
+                    const alpha = networkTransition * distanceFactor * (0.15 + pulse * 0.25) * intensity;
+
+                    if (alpha < 0.02) continue;
+
+                    // Line width also pulses
+                    const lineWidth = (0.5 + pulse * 1.0) * intensity;
+
+                    // Color interpolation based on depth average
+                    const avgDepth = (f1.depth + f2.depth) / 2;
+                    const r = lerp(textColor.r, highlight.r, avgDepth * 0.6);
+                    const g = lerp(textColor.g, highlight.g, avgDepth * 0.6);
+                    const b = lerp(textColor.b, highlight.b, avgDepth * 0.6);
+
+                    fragmentsCtx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+                    fragmentsCtx.lineWidth = lineWidth;
+                    fragmentsCtx.beginPath();
+                    fragmentsCtx.moveTo(f1.currentX, f1.currentY);
+                    fragmentsCtx.lineTo(f2.currentX, f2.currentY);
+                    fragmentsCtx.stroke();
+                }
+            }
+        }
+
+        function draw() {
+            time += 0.008 * params.breathSpeed;
+
+            const moveDist = Math.sqrt(
+                Math.pow(mouseX - lastMouseX, 2) +
+                Math.pow(mouseY - lastMouseY, 2)
+            );
+            if (moveDist < 5) {
+                dwellTime = Math.min(dwellTime + 0.02, 1);
+            } else {
+                dwellTime = Math.max(dwellTime - 0.03, 0);
+            }
+            lastMouseX = mouseX;
+            lastMouseY = mouseY;
+
+            updateEchoes();
+            updateTexture();
+            updateParticles();
+            updateFragments();
+
+            drawMain();
+            drawFragments();
+
+            requestAnimationFrame(draw);
+        }
+
+        let targetX, targetY;
+
+        document.addEventListener('mousemove', (e) => {
+            targetX = e.clientX;
+            targetY = e.clientY;
+        });
+
+        document.addEventListener('mouseleave', () => {
+            targetX = width / 2;
+            targetY = height / 2;
+        });
+
+        function updateMouse() {
+            if (targetX !== undefined) {
+                mouseX += (targetX - mouseX) * 0.06;
+                mouseY += (targetY - mouseY) * 0.06;
+            }
+            requestAnimationFrame(updateMouse);
+        }
+
+        document.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            targetX = e.touches[0].clientX;
+            targetY = e.touches[0].clientY;
+        }, { passive: false });
+
+        document.addEventListener('touchend', () => {
+            targetX = width / 2;
+            targetY = height / 2;
+        });
+
+        // Initialize
+        resize();
+        initParticles();
+        showStep();
+        window.addEventListener('resize', resize);
+        targetX = width / 2;
+        targetY = height / 2;
+        updateMouse();
+        draw();
+    </script>
+</body>
+</html>

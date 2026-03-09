@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(160,165,160,0.03)"/>
+                <line x1="20" y1="55" x2="20" y2="65" stroke="rgba(225,185,145,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="28" y1="48" x2="28" y2="72" stroke="rgba(225,185,145,0.35)" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="36" y1="42" x2="36" y2="78" stroke="rgba(225,185,145,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="44" y1="48" x2="44" y2="72" stroke="rgba(225,185,145,0.25)" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="52" y1="52" x2="52" y2="68" stroke="rgba(225,185,145,0.2)" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="62" cy="60" r="1.5" fill="rgba(160,165,160,0.3)">
+                    <animate attributeName="cx" values="58;66;58" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="78" cy="42" r="2" fill="rgba(110,145,180,0.5)"/>
+                <circle cx="78" cy="55" r="2" fill="rgba(110,145,180,0.45)"/>
+                <circle cx="78" cy="68" r="2" fill="rgba(110,145,180,0.4)"/>
+                <circle cx="78" cy="80" r="2" fill="rgba(110,145,180,0.35)"/>
+                <line x1="78" y1="42" x2="78" y2="80" stroke="rgba(110,145,180,0.12)" stroke-width="0.5"/>
+                <line x1="78" y1="42" x2="98" y2="42" stroke="rgba(110,145,180,0.1)" stroke-width="0.4"/>
+                <line x1="78" y1="55" x2="95" y2="55" stroke="rgba(110,145,180,0.08)" stroke-width="0.4"/>
+                <line x1="78" y1="68" x2="98" y2="68" stroke="rgba(110,145,180,0.08)" stroke-width="0.4"/>
+                <line x1="78" y1="80" x2="92" y2="80" stroke="rgba(110,145,180,0.06)" stroke-width="0.4"/>
+</svg>

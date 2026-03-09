@@ -1,0 +1,12 @@
+{
+  "name": "website-sonaris",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently -n api,web -c blue,green \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:api": "cd ../sonaris-chat-api && npm run dev",
+    "dev:web": "npx serve -l 5500"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(160,165,160,0.03)"/>
+                <circle cx="60" cy="60" r="5" fill="rgba(160,165,160,0.1)" stroke="rgba(160,165,160,0.3)" stroke-width="0.8">
+                    <animate attributeName="r" values="5;6;5" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="60" r="2" fill="rgba(225,185,145,0.5)"/>
+                <circle cx="60" cy="60" r="18" fill="none" stroke="rgba(110,145,180,0.1)" stroke-width="0.5"/>
+                <circle cx="60" cy="42" r="1.5" fill="rgba(110,145,180,0.35)"/>
+                <circle cx="78" cy="60" r="1.5" fill="rgba(110,145,180,0.3)"/>
+                <circle cx="60" cy="78" r="1.5" fill="rgba(225,185,145,0.3)"/>
+                <circle cx="42" cy="60" r="1.5" fill="rgba(225,185,145,0.35)"/>
+                <circle cx="60" cy="60" r="32" fill="none" stroke="rgba(110,145,180,0.06)" stroke-width="0.4"/>
+                <circle cx="60" cy="28" r="1.2" fill="rgba(110,145,180,0.2)"/>
+                <circle cx="92" cy="60" r="1.2" fill="rgba(110,145,180,0.18)"/>
+                <circle cx="60" cy="92" r="1.2" fill="rgba(225,185,145,0.18)"/>
+                <circle cx="28" cy="60" r="1.2" fill="rgba(225,185,145,0.2)"/>
+                <line x1="60" y1="42" x2="60" y2="54" stroke="rgba(110,145,180,0.12)" stroke-width="0.4"/>
+                <line x1="78" y1="60" x2="66" y2="60" stroke="rgba(110,145,180,0.1)" stroke-width="0.4"/>
+                <line x1="60" y1="78" x2="60" y2="66" stroke="rgba(225,185,145,0.1)" stroke-width="0.4"/>
+                <line x1="42" y1="60" x2="54" y2="60" stroke="rgba(225,185,145,0.12)" stroke-width="0.4"/>
+                <circle cx="60" cy="35" r="0.8" fill="rgba(110,145,180,0.3)">
+                    <animate attributeName="cy" values="35;48;35" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.3;0.1;0.3" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="82" cy="60" r="0.8" fill="rgba(110,145,180,0.25)">
+                    <animate attributeName="cx" values="82;66;82" dur="3.5s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.25;0.08;0.25" dur="3.5s" repeatCount="indefinite"/>
+                </circle>
+</svg>

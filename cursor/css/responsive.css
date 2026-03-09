@@ -1,0 +1,137 @@
+/* ═══════════════════════════════════════════════════════════════════
+   RESPONSIVE – Media queries for all breakpoints
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Tablet (768–1200px) ───────────────────────────────────────── */
+
+@media (max-width: 1200px) {
+    .content-section h2 { font-size: 32px; }
+
+    .pain-grid { grid-template-columns: 1fr; gap: 32px; }
+
+    .product-grid { grid-template-columns: 1fr; }
+
+    .knowledge-layout { grid-template-columns: 1fr; }
+    .knowledge-fields { flex-direction: column; gap: 20px; }
+
+    .showcase-grid { grid-template-columns: 1fr; }
+
+    .team-section-grid { grid-template-columns: 1fr 1fr; }
+
+    .comparison-table { grid-template-columns: 1fr 1fr 1fr; }
+
+    .timeline-phase { flex: 0 0 180px; }
+
+    .case-card { flex: 0 0 300px; }
+}
+
+/* ── Mobile (< 768px) ─────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+    .content-section {
+        padding: 80px 20px;
+    }
+
+    .content-section h2 { font-size: 28px; }
+    .content-section .section-subtitle { font-size: 15px; }
+    .content-section .accent-quote { font-size: 17px; }
+
+    /* Denkraum */
+    #chat-panel { width: 100%; max-width: 100%; padding: 0 16px 120px 16px; }
+    #chat-messages { max-height: 280px; }
+    #chat-input-row { padding: 10px 12px; border-radius: 14px; }
+    #logo { top: 24px; left: 24px; font-size: 24px; }
+    #learning-badge { top: 24px; right: 24px; font-size: 10px; }
+    #toggle { bottom: 24px; right: 24px; }
+    #controls { bottom: 72px; right: 16px; }
+    .msg { font-size: 14px; }
+    #denkraum-footer { bottom: 28px; left: 24px; gap: 12px; font-size: 10px; }
+
+    /* Overlay */
+    .team-grid { grid-template-columns: 1fr; }
+    #overlay-content { padding: 36px 24px; }
+
+    /* Navigation */
+    .nav-hamburger { display: block; }
+    .nav-cta { display: none; }
+    #dot-nav { display: none; }
+    #floating-nav { padding: 12px 20px; }
+
+    /* Content sections */
+    .pain-grid { grid-template-columns: 1fr; gap: 28px; }
+    .product-grid { grid-template-columns: 1fr; }
+    .team-section-grid { grid-template-columns: repeat(2, 1fr); }
+    .showcase-grid { grid-template-columns: 1fr; }
+
+    .comparison-block {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    .comparison-block::after { display: none; }
+
+    .comparison-table {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+    .ct-header:first-child { display: none; }
+
+    .timeline {
+        flex-direction: column;
+        overflow-x: visible;
+    }
+    .timeline-phase {
+        flex: none;
+        width: 100%;
+    }
+
+    .knowledge-layout { grid-template-columns: 1fr; gap: 32px; }
+    .knowledge-fields { flex-direction: column; }
+
+    .case-card { flex: 0 0 280px; }
+
+    .entry-cta { padding: 32px 24px; }
+
+    .espresso-inner { padding: 100px 20px; }
+    .espresso-inner h2 { font-size: 28px; }
+
+    /* Footer */
+    .site-footer { flex-direction: column; gap: 16px; text-align: center; }
+
+    /* Chat float */
+    #chat-float-btn { bottom: 20px; right: 20px; width: 48px; height: 48px; }
+    #chat-overlay { right: 16px; bottom: 80px; width: calc(100vw - 32px); }
+
+    .closing-line { font-size: 17px; }
+}
+
+/* ── Small mobile (< 480px) ────────────────────────────────────── */
+
+@media (max-width: 480px) {
+    .content-section h2 { font-size: 24px; }
+    .content-section p { font-size: 15px; }
+    .content-section .accent-quote { font-size: 16px; }
+
+    .cta-button { padding: 14px 28px; font-size: 14px; }
+
+    #floating-nav { padding: 10px 16px; }
+    .nav-logo { font-size: 18px; }
+
+    .showcase-block { padding: 24px; }
+    .showcase-block .highlight-number { font-size: 24px; }
+
+    .timeline-phase { padding: 20px; }
+
+    .case-card { flex: 0 0 260px; padding: 24px; }
+}
+
+/* ── Testimonials responsive ───────────────────────────────────── */
+
+@media (max-width: 768px) {
+    .testimonial-grid { grid-template-columns: 1fr; }
+    .team-overlay-inner { padding: 24px; }
+}
+
+@media (max-width: 480px) {
+    .team-section-grid { grid-template-columns: 1fr; }
+    .source-tag { font-size: 11px; padding: 4px 10px; }
+}

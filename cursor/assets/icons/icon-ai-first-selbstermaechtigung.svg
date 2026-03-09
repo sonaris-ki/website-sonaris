@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <radialGradient id="g-aifirst" cx="50%" cy="50%" r="45%">
+                        <stop offset="0%" stop-color="rgba(110,145,180,0.1)"/>
+                        <stop offset="100%" stop-color="rgba(110,145,180,0)"/>
+                    </radialGradient>
+                </defs>
+                <circle cx="60" cy="60" r="45" fill="url(#g-aifirst)"/>
+                <circle cx="60" cy="60" r="6" fill="rgba(110,145,180,0.12)" stroke="rgba(110,145,180,0.4)" stroke-width="1">
+                    <animate attributeName="r" values="6;7.5;6" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="60" r="2.5" fill="rgba(110,145,180,0.7)"/>
+                <circle cx="60" cy="28" r="3" fill="rgba(110,145,180,0.55)">
+                    <animate attributeName="cy" values="28;26;28" dur="3.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="92" cy="60" r="3" fill="rgba(110,145,180,0.5)">
+                    <animate attributeName="cx" values="92;94;92" dur="3.2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="92" r="3" fill="rgba(225,185,145,0.5)">
+                    <animate attributeName="cy" values="92;94;92" dur="3.8s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="28" cy="60" r="3" fill="rgba(225,185,145,0.45)">
+                    <animate attributeName="cx" values="28;26;28" dur="3.4s" repeatCount="indefinite"/>
+                </circle>
+                <path d="M60,28 A32,32 0 0,1 92,60" fill="none" stroke="rgba(110,145,180,0.2)" stroke-width="0.8" stroke-dasharray="4 3">
+                    <animate attributeName="stroke-dashoffset" values="7;0" dur="2s" repeatCount="indefinite"/>
+                </path>
+                <path d="M92,60 A32,32 0 0,1 60,92" fill="none" stroke="rgba(160,165,160,0.15)" stroke-width="0.8" stroke-dasharray="4 3">
+                    <animate attributeName="stroke-dashoffset" values="7;0" dur="2.2s" repeatCount="indefinite"/>
+                </path>
+                <path d="M60,92 A32,32 0 0,1 28,60" fill="none" stroke="rgba(225,185,145,0.15)" stroke-width="0.8" stroke-dasharray="4 3">
+                    <animate attributeName="stroke-dashoffset" values="7;0" dur="2.4s" repeatCount="indefinite"/>
+                </path>
+                <path d="M28,60 A32,32 0 0,1 60,28" fill="none" stroke="rgba(110,145,180,0.15)" stroke-width="0.8" stroke-dasharray="4 3">
+                    <animate attributeName="stroke-dashoffset" values="7;0" dur="2.6s" repeatCount="indefinite"/>
+                </path>
+                <line x1="60" y1="60" x2="60" y2="28" stroke="rgba(110,145,180,0.1)" stroke-width="0.5"/>
+                <line x1="60" y1="60" x2="92" y2="60" stroke="rgba(110,145,180,0.1)" stroke-width="0.5"/>
+                <line x1="60" y1="60" x2="60" y2="92" stroke="rgba(225,185,145,0.08)" stroke-width="0.5"/>
+                <line x1="60" y1="60" x2="28" y2="60" stroke="rgba(225,185,145,0.08)" stroke-width="0.5"/>
+                <circle cx="45" cy="38" r="1" fill="rgba(110,145,180,0.2)">
+                    <animate attributeName="cy" values="38;35;38" dur="4s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="78" cy="42" r="0.8" fill="rgba(110,145,180,0.15)">
+                    <animate attributeName="cx" values="78;80;78" dur="3.6s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="75" cy="82" r="0.8" fill="rgba(225,185,145,0.15)">
+                    <animate attributeName="cy" values="82;84;82" dur="4.2s" repeatCount="indefinite"/>
+                </circle>
+</svg>

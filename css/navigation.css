@@ -1,0 +1,184 @@
+/* ═══════════════════════════════════════════════════════════════════
+   FLOATING NAVIGATION – Top bar + dot nav
+   ═══════════════════════════════════════════════════════════════════ */
+
+#floating-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 35;
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(18, 24, 32, 0.6);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(110, 145, 180, 0.12);
+    opacity: 0;
+    transform: translateY(-100%);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+}
+
+#floating-nav.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.nav-logo {
+    font-size: var(--fs-heading-sm);
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: rgba(140, 180, 220, 0.9);
+    cursor: pointer;
+    user-select: none;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.nav-logo:hover { color: rgba(140, 180, 220, 1); }
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.nav-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+    background: rgba(170, 125, 85, 0.2);
+    border: 1px solid rgba(225, 185, 145, 0.4);
+    border-radius: 8px;
+    color: rgba(240, 235, 225, 0.95);
+    font-size: var(--fs-body-sm);
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+.nav-cta:hover {
+    background: rgba(225, 185, 145, 0.06);
+    border-color: rgba(225, 185, 145, 0.6);
+    transform: scale(1.02);
+}
+.nav-cta .gap-espresso-btn-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: rgba(225, 185, 145, 0.9);
+}
+
+/* ── Dot navigation (right edge) ───────────────────────────────── */
+
+#dot-nav {
+    position: fixed;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 36;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+#dot-nav.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.dot-nav-item {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(110, 145, 180, 0.2);
+    border: 1px solid rgba(110, 145, 180, 0.15);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+}
+
+.dot-nav-item:hover,
+.dot-nav-item.active {
+    background: rgba(110, 145, 180, 0.5);
+    border-color: rgba(110, 145, 180, 0.4);
+    transform: scale(1.3);
+}
+
+.dot-nav-item .dot-tooltip {
+    position: absolute;
+    right: 22px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(20, 30, 42, 0.95);
+    border: 1px solid rgba(110, 145, 180, 0.2);
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: var(--fs-label);
+    color: rgba(160, 185, 215, 0.85);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
+.dot-nav-item:hover .dot-tooltip { opacity: 1; }
+
+/* ── Mobile hamburger ──────────────────────────────────────────── */
+
+.nav-hamburger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    width: 32px;
+    height: 32px;
+}
+
+.nav-hamburger span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: rgba(160, 185, 215, 0.7);
+    margin: 4px auto;
+    transition: all 0.3s ease;
+}
+
+.nav-hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(4px, 4px); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(4px, -4px); }
+
+/* Mobile nav overlay */
+.nav-mobile-menu {
+    display: none;
+    position: fixed;
+    top: 60px;
+    left: 0; right: 0; bottom: 0;
+    background: rgba(12, 18, 26, 0.97);
+    backdrop-filter: blur(20px);
+    z-index: 34;
+    padding: 32px;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.nav-mobile-menu.visible { display: flex; }
+
+.nav-mobile-link {
+    font-size: var(--fs-subhead);
+    color: rgba(160, 185, 215, 0.75);
+    text-decoration: none;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(110, 145, 180, 0.08);
+    transition: color 0.2s;
+}
+.nav-mobile-link:hover { color: rgba(200, 220, 240, 0.95); }

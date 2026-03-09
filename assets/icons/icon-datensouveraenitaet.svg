@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(110,145,180,0.03)"/>
+                <circle cx="60" cy="22" r="2.5" fill="rgba(110,145,180,0.5)"/>
+                <circle cx="30" cy="38" r="2" fill="rgba(110,145,180,0.45)"/>
+                <circle cx="90" cy="38" r="2" fill="rgba(110,145,180,0.45)"/>
+                <circle cx="30" cy="65" r="2" fill="rgba(110,145,180,0.4)"/>
+                <circle cx="90" cy="65" r="2" fill="rgba(110,145,180,0.4)"/>
+                <circle cx="60" cy="95" r="2.5" fill="rgba(110,145,180,0.5)">
+                    <animate attributeName="r" values="2.5;3;2.5" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <path d="M60,22 L90,38 L90,65 L60,95 L30,65 L30,38 Z" fill="rgba(110,145,180,0.04)" stroke="rgba(110,145,180,0.2)" stroke-width="0.7"/>
+                <circle cx="60" cy="55" r="3" fill="rgba(110,180,140,0.15)" stroke="rgba(110,180,140,0.35)" stroke-width="0.6">
+                    <animate attributeName="r" values="3;3.5;3" dur="2.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="55" r="1.2" fill="rgba(110,180,140,0.5)"/>
+                <circle cx="50" cy="45" r="1" fill="rgba(110,145,180,0.3)"/>
+                <circle cx="70" cy="45" r="1" fill="rgba(110,145,180,0.3)"/>
+                <circle cx="50" cy="68" r="1" fill="rgba(110,145,180,0.25)"/>
+                <circle cx="70" cy="68" r="1" fill="rgba(110,145,180,0.25)"/>
+                <line x1="50" y1="45" x2="60" y2="55" stroke="rgba(110,145,180,0.08)" stroke-width="0.3"/>
+                <line x1="70" y1="45" x2="60" y2="55" stroke="rgba(110,145,180,0.08)" stroke-width="0.3"/>
+                <line x1="50" y1="68" x2="60" y2="55" stroke="rgba(110,145,180,0.06)" stroke-width="0.3"/>
+                <line x1="70" y1="68" x2="60" y2="55" stroke="rgba(110,145,180,0.06)" stroke-width="0.3"/>
+                <circle cx="60" cy="55" r="12" fill="none" stroke="rgba(110,180,140,0.06)" stroke-width="0.3"/>
+</svg>

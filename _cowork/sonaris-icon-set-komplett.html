@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonaris – Komplettes Icon-Set (25 Icons)</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #121820;
+            color: rgba(160, 185, 215, 0.8);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            padding: 48px;
+            line-height: 1.6;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 300;
+            color: rgba(200, 220, 240, 0.95);
+            margin-bottom: 8px;
+        }
+        .page-subtitle {
+            font-size: 14px;
+            color: rgba(110, 145, 180, 0.5);
+            margin-bottom: 48px;
+        }
+        .section-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: rgba(110, 145, 180, 0.35);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            padding-top: 48px;
+            border-top: 1px solid rgba(110, 145, 180, 0.08);
+        }
+        .section-label:first-of-type { border-top: none; padding-top: 0; }
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+        .icon-card {
+            background: rgba(20, 30, 42, 0.5);
+            border: 1px solid rgba(110, 145, 180, 0.1);
+            border-radius: 14px;
+            padding: 28px 20px 20px;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+        .icon-card:hover { border-color: rgba(110, 145, 180, 0.25); }
+        .icon-card .icon-wrap {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 16px;
+        }
+        .icon-card h3 {
+            font-size: 14px;
+            font-weight: 400;
+            color: rgba(200, 220, 240, 0.85);
+            margin-bottom: 4px;
+        }
+        .icon-card .meta {
+            font-size: 11px;
+            color: rgba(110, 145, 180, 0.4);
+        }
+        .color-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+        .annotation {
+            background: rgba(110, 180, 140, 0.06);
+            border: 1px dashed rgba(110, 180, 140, 0.2);
+            border-radius: 10px;
+            padding: 20px 24px;
+            margin-bottom: 40px;
+            font-size: 13px;
+            color: rgba(110, 180, 140, 0.7);
+            line-height: 1.6;
+        }
+        .annotation strong { color: rgba(110, 180, 140, 0.9); }
+
+        /* Shared animations */
+        @keyframes pulse { 0%,100%{r:var(--r)} 50%{r:calc(var(--r) + 1)} }
+        @keyframes drift-x { 0%,100%{transform:translateX(0)} 50%{transform:translateX(2px)} }
+        @keyframes drift-y { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-2px)} }
+        @keyframes dash-flow { to { stroke-dashoffset: 0; } }
+        @keyframes pulse-sm { 0%,100%{ r: 2.5px; } 50%{ r: 3.5px; } }
+        @keyframes draw-line { from { stroke-dashoffset: var(--len); } to { stroke-dashoffset: 0; } }
+
+        @media (max-width: 768px) {
+            body { padding: 20px; }
+            .icon-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<h1>Sonaris – Komplettes Icon-Set</h1>
+<p class="page-subtitle">21 Icons · Generativ (Sternbild) + One-Line · Animiert · Farbkodiert nach Kontext</p>
+
+<div class="annotation">
+    <strong>Farbkodierung:</strong>
+    <span class="color-dot" style="background:rgba(110,145,180,0.7)"></span> Blau = KI / Tech &nbsp;&nbsp;
+    <span class="color-dot" style="background:rgba(225,185,145,0.7)"></span> Warm = Mensch / Wärme &nbsp;&nbsp;
+    <span class="color-dot" style="background:rgba(160,85,95,0.7)"></span> Rot = Schmerz / Druck &nbsp;&nbsp;
+    <span class="color-dot" style="background:rgba(110,180,140,0.7)"></span> Grün = Erfolg / Lösung
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 1: AI-FIRST PHILOSOPHIE                        -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section-label">Section 1 · AI-First Philosophie</div>
+<div class="icon-grid">
+
+    <!-- 1. AI-First Selbstermächtigung -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <radialGradient id="g-aifirst" cx="50%" cy="50%" r="45%">
+                        <stop offset="0%" stop-color="rgba(110,145,180,0.1)"/>
+                        <stop offset="100%" stop-color="rgba(110,145,180,0)"/>
+                    </radialGradient>
+                </defs>
+                <circle cx="60" cy="60" r="45" fill="url(#g-aifirst)"/>
+                <!-- Central node: pulsing -->
+                <circle cx="60" cy="60" r="6" fill="rgba(110,145,180,0.12)" stroke="rgba(110,145,180,0.4)" stroke-width="1">
+                    <animate attributeName="r" values="6;7.5;6" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="60" r="2.5" fill="rgba(110,145,180,0.7)"/>
+                <!-- 4 orbiting nodes (escalation levels) -->
+                <circle cx="60" cy="28" r="3" fill="rgba(110,145,180,0.55)">
+                    <animate attributeName="cy" values="28;26;28" dur="3.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="92" cy="60" r="3" fill="rgba(110,145,180,0.5)">
+                    <animate attributeName="cx" values="92;94;92" dur="3.2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="92" r="3" fill="rgba(225,185,145,0.5)">
+                    <animate attributeName="cy" values="92;94;92" dur="3.8s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="28" cy="60" r="3" fill="rgba(225,185,145,0.45)">
+                    <animate attributeName="cx" values="28;26;28" dur="3.4s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Connecting arcs -->
+                <path d="M60,28 A32,32 0 0,1 92,60" fill="none" stroke="rgba(110,145,180,0.2)" stroke-width="0.8" stroke-dasharray="4 3">
+                    <animate attributeName="stroke-dashoffset" values="7;0" dur="2s" repeatCount="indefinite"/>
+                </path>
+                <path d="M92,60 A32,32 0 0,1 60,92" fill="none" stroke="rgba(160,165,160,0.15)" stroke-width="0.8" stroke-dasharray="4 3">
+                    <animate attributeName="stroke-dashoffset" values="7;0" dur="2.2s" repeatCount="indefinite"/>
+                </path>
+                <path d="M60,92 A32,32 0 0,1 28,60" fill="none" stroke="rgba(225,185,145,0.15)" stroke-width="0.8" stroke-dasharray="4 3">
+                    <animate attributeName="stroke-dashoffset" values="7;0" dur="2.4s" repeatCount="indefinite"/>
+                </path>
+                <path d="M28,60 A32,32 0 0,1 60,28" fill="none" stroke="rgba(110,145,180,0.15)" stroke-width="0.8" stroke-dasharray="4 3">
+                    <animate attributeName="stroke-dashoffset" values="7;0" dur="2.6s" repeatCount="indefinite"/>
+                </path>
+                <!-- Radial spokes -->
+                <line x1="60" y1="60" x2="60" y2="28" stroke="rgba(110,145,180,0.1)" stroke-width="0.5"/>
+                <line x1="60" y1="60" x2="92" y2="60" stroke="rgba(110,145,180,0.1)" stroke-width="0.5"/>
+                <line x1="60" y1="60" x2="60" y2="92" stroke="rgba(225,185,145,0.08)" stroke-width="0.5"/>
+                <line x1="60" y1="60" x2="28" y2="60" stroke="rgba(225,185,145,0.08)" stroke-width="0.5"/>
+                <!-- Micro dust -->
+                <circle cx="45" cy="38" r="1" fill="rgba(110,145,180,0.2)">
+                    <animate attributeName="cy" values="38;35;38" dur="4s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="78" cy="42" r="0.8" fill="rgba(110,145,180,0.15)">
+                    <animate attributeName="cx" values="78;80;78" dur="3.6s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="75" cy="82" r="0.8" fill="rgba(225,185,145,0.15)">
+                    <animate attributeName="cy" values="82;84;82" dur="4.2s" repeatCount="indefinite"/>
+                </circle>
+            </svg>
+        </div>
+        <h3>AI-First-Selbstermächtigung</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(110,145,180,0.5)"></span>Generativ · Blau→Warm</div>
+    </div>
+
+    <!-- 2. Exploration (Stufe 1) -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(110,145,180,0.04)"/>
+                <!-- Expanding search/explore pattern -->
+                <circle cx="60" cy="60" r="5" fill="rgba(110,145,180,0.15)" stroke="rgba(110,145,180,0.35)" stroke-width="0.8">
+                    <animate attributeName="r" values="5;6;5" dur="2.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="60" r="2" fill="rgba(110,145,180,0.6)"/>
+                <!-- Radiating discovery particles -->
+                <circle cx="42" cy="42" r="2" fill="rgba(110,145,180,0.45)">
+                    <animate attributeName="cx" values="42;39;42" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="cy" values="42;39;42" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="78" cy="42" r="2" fill="rgba(110,145,180,0.4)">
+                    <animate attributeName="cx" values="78;81;78" dur="3.2s" repeatCount="indefinite"/>
+                    <animate attributeName="cy" values="42;39;42" dur="3.2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="78" cy="78" r="2" fill="rgba(110,145,180,0.35)">
+                    <animate attributeName="cx" values="78;81;78" dur="3.5s" repeatCount="indefinite"/>
+                    <animate attributeName="cy" values="78;81;78" dur="3.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="42" cy="78" r="2" fill="rgba(110,145,180,0.3)">
+                    <animate attributeName="cx" values="42;39;42" dur="3.8s" repeatCount="indefinite"/>
+                    <animate attributeName="cy" values="78;81;78" dur="3.8s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Discovery connections (dashed, expanding) -->
+                <line x1="60" y1="60" x2="42" y2="42" stroke="rgba(110,145,180,0.15)" stroke-width="0.6" stroke-dasharray="3 2">
+                    <animate attributeName="stroke-dashoffset" values="5;0" dur="2s" repeatCount="indefinite"/>
+                </line>
+                <line x1="60" y1="60" x2="78" y2="42" stroke="rgba(110,145,180,0.15)" stroke-width="0.6" stroke-dasharray="3 2">
+                    <animate attributeName="stroke-dashoffset" values="5;0" dur="2.2s" repeatCount="indefinite"/>
+                </line>
+                <line x1="60" y1="60" x2="78" y2="78" stroke="rgba(110,145,180,0.12)" stroke-width="0.6" stroke-dasharray="3 2">
+                    <animate attributeName="stroke-dashoffset" values="5;0" dur="2.4s" repeatCount="indefinite"/>
+                </line>
+                <line x1="60" y1="60" x2="42" y2="78" stroke="rgba(110,145,180,0.12)" stroke-width="0.6" stroke-dasharray="3 2">
+                    <animate attributeName="stroke-dashoffset" values="5;0" dur="2.6s" repeatCount="indefinite"/>
+                </line>
+                <!-- Outer micro particles -->
+                <circle cx="30" cy="55" r="1" fill="rgba(110,145,180,0.15)">
+                    <animate attributeName="cx" values="30;27;30" dur="5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="90" cy="65" r="1" fill="rgba(110,145,180,0.12)">
+                    <animate attributeName="cx" values="90;93;90" dur="4.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="55" cy="30" r="0.8" fill="rgba(110,145,180,0.1)"/>
+            </svg>
+        </div>
+        <h3>Exploration</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(110,145,180,0.5)"></span>Generativ · Blau · Stufe 1</div>
+    </div>
+
+    <!-- 3. Prototyping (Stufe 2) -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(110,145,180,0.04)"/>
+                <!-- Blueprint / prototype shape forming from particles -->
+                <!-- Forming rectangle outline -->
+                <circle cx="38" cy="38" r="2.5" fill="rgba(110,145,180,0.5)"/>
+                <circle cx="82" cy="38" r="2.5" fill="rgba(110,145,180,0.5)"/>
+                <circle cx="82" cy="82" r="2.5" fill="rgba(110,145,180,0.45)"/>
+                <circle cx="38" cy="82" r="2.5" fill="rgba(110,145,180,0.45)"/>
+                <!-- Edges building up -->
+                <line x1="38" y1="38" x2="82" y2="38" stroke="rgba(110,145,180,0.25)" stroke-width="0.8" stroke-dasharray="44" stroke-dashoffset="44">
+                    <animate attributeName="stroke-dashoffset" from="44" to="0" dur="2s" fill="freeze"/>
+                </line>
+                <line x1="82" y1="38" x2="82" y2="82" stroke="rgba(110,145,180,0.2)" stroke-width="0.8" stroke-dasharray="44" stroke-dashoffset="44">
+                    <animate attributeName="stroke-dashoffset" from="44" to="0" dur="2s" begin="0.5s" fill="freeze"/>
+                </line>
+                <line x1="82" y1="82" x2="38" y2="82" stroke="rgba(110,145,180,0.2)" stroke-width="0.8" stroke-dasharray="44" stroke-dashoffset="44">
+                    <animate attributeName="stroke-dashoffset" from="44" to="0" dur="2s" begin="1s" fill="freeze"/>
+                </line>
+                <line x1="38" y1="82" x2="38" y2="38" stroke="rgba(110,145,180,0.2)" stroke-width="0.8" stroke-dasharray="44" stroke-dashoffset="44">
+                    <animate attributeName="stroke-dashoffset" from="44" to="0" dur="2s" begin="1.5s" fill="freeze"/>
+                </line>
+                <!-- Internal structure lines -->
+                <line x1="50" y1="38" x2="50" y2="82" stroke="rgba(110,145,180,0.08)" stroke-width="0.5"/>
+                <line x1="38" y1="55" x2="82" y2="55" stroke="rgba(110,145,180,0.08)" stroke-width="0.5"/>
+                <!-- Central forming element -->
+                <circle cx="60" cy="60" r="4" fill="rgba(110,145,180,0.1)" stroke="rgba(110,145,180,0.3)" stroke-width="0.8">
+                    <animate attributeName="r" values="4;5;4" dur="2.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="60" r="1.5" fill="rgba(110,145,180,0.5)"/>
+                <!-- Flying assembly particles -->
+                <circle cx="48" cy="48" r="1" fill="rgba(110,145,180,0.3)">
+                    <animate attributeName="cx" values="48;55;48" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="72" cy="70" r="1" fill="rgba(110,145,180,0.25)">
+                    <animate attributeName="cy" values="70;65;70" dur="3.5s" repeatCount="indefinite"/>
+                </circle>
+            </svg>
+        </div>
+        <h3>Prototyping</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(110,145,180,0.5)"></span>Generativ · Blau · Stufe 2</div>
+    </div>
+
+    <!-- 4. Architekturentscheidung (Stufe 3) -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(160,165,160,0.03)"/>
+                <!-- Fork / decision tree -->
+                <circle cx="60" cy="30" r="3.5" fill="rgba(110,145,180,0.5)">
+                    <animate attributeName="r" values="3.5;4;3.5" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Left branch (option A) -->
+                <circle cx="35" cy="60" r="2.5" fill="rgba(110,145,180,0.4)"/>
+                <circle cx="25" cy="85" r="2" fill="rgba(110,145,180,0.3)"/>
+                <circle cx="45" cy="85" r="2" fill="rgba(110,145,180,0.3)"/>
+                <!-- Right branch (option B) -->
+                <circle cx="85" cy="60" r="2.5" fill="rgba(225,185,145,0.4)"/>
+                <circle cx="75" cy="85" r="2" fill="rgba(225,185,145,0.3)"/>
+                <circle cx="95" cy="85" r="2" fill="rgba(225,185,145,0.3)"/>
+                <!-- Trunk -->
+                <line x1="60" y1="30" x2="35" y2="60" stroke="rgba(110,145,180,0.2)" stroke-width="0.8"/>
+                <line x1="60" y1="30" x2="85" y2="60" stroke="rgba(225,185,145,0.15)" stroke-width="0.8"/>
+                <!-- Left branches -->
+                <line x1="35" y1="60" x2="25" y2="85" stroke="rgba(110,145,180,0.12)" stroke-width="0.6"/>
+                <line x1="35" y1="60" x2="45" y2="85" stroke="rgba(110,145,180,0.12)" stroke-width="0.6"/>
+                <!-- Right branches -->
+                <line x1="85" y1="60" x2="75" y2="85" stroke="rgba(225,185,145,0.1)" stroke-width="0.6"/>
+                <line x1="85" y1="60" x2="95" y2="85" stroke="rgba(225,185,145,0.1)" stroke-width="0.6"/>
+                <!-- Decision highlight pulse on selected path -->
+                <circle cx="85" cy="60" r="6" fill="none" stroke="rgba(225,185,145,0.15)" stroke-width="0.5">
+                    <animate attributeName="r" values="6;9;6" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.3;0;0.3" dur="3s" repeatCount="indefinite"/>
+                </circle>
+            </svg>
+        </div>
+        <h3>Architekturentscheidung</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(160,165,160,0.5)"></span>Generativ · Blau→Warm · Stufe 3</div>
+    </div>
+
+    <!-- 5. Tiefintegration (Stufe 4) -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(225,185,145,0.04)"/>
+                <!-- Deep mesh / integration network -->
+                <!-- Outer ring of specialist nodes -->
+                <circle cx="60" cy="25" r="2.5" fill="rgba(225,185,145,0.5)"/>
+                <circle cx="90" cy="45" r="2.5" fill="rgba(225,185,145,0.45)"/>
+                <circle cx="90" cy="78" r="2.5" fill="rgba(225,185,145,0.4)"/>
+                <circle cx="60" cy="95" r="2.5" fill="rgba(225,185,145,0.4)"/>
+                <circle cx="30" cy="78" r="2.5" fill="rgba(225,185,145,0.45)"/>
+                <circle cx="30" cy="45" r="2.5" fill="rgba(225,185,145,0.5)"/>
+                <!-- Dense interconnections (deep integration) -->
+                <line x1="60" y1="25" x2="90" y2="45" stroke="rgba(225,185,145,0.12)" stroke-width="0.5"/>
+                <line x1="90" y1="45" x2="90" y2="78" stroke="rgba(225,185,145,0.1)" stroke-width="0.5"/>
+                <line x1="90" y1="78" x2="60" y2="95" stroke="rgba(225,185,145,0.1)" stroke-width="0.5"/>
+                <line x1="60" y1="95" x2="30" y2="78" stroke="rgba(225,185,145,0.1)" stroke-width="0.5"/>
+                <line x1="30" y1="78" x2="30" y2="45" stroke="rgba(225,185,145,0.12)" stroke-width="0.5"/>
+                <line x1="30" y1="45" x2="60" y2="25" stroke="rgba(225,185,145,0.12)" stroke-width="0.5"/>
+                <!-- Cross connections -->
+                <line x1="60" y1="25" x2="60" y2="95" stroke="rgba(225,185,145,0.06)" stroke-width="0.4"/>
+                <line x1="30" y1="45" x2="90" y2="78" stroke="rgba(225,185,145,0.06)" stroke-width="0.4"/>
+                <line x1="90" y1="45" x2="30" y2="78" stroke="rgba(225,185,145,0.06)" stroke-width="0.4"/>
+                <!-- Center hub -->
+                <circle cx="60" cy="60" r="5" fill="rgba(225,185,145,0.1)" stroke="rgba(225,185,145,0.3)" stroke-width="0.8">
+                    <animate attributeName="r" values="5;6;5" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="60" r="2" fill="rgba(225,185,145,0.6)"/>
+                <!-- Spokes to center -->
+                <line x1="60" y1="25" x2="60" y2="60" stroke="rgba(225,185,145,0.08)" stroke-width="0.4"/>
+                <line x1="90" y1="45" x2="60" y2="60" stroke="rgba(225,185,145,0.08)" stroke-width="0.4"/>
+                <line x1="90" y1="78" x2="60" y2="60" stroke="rgba(225,185,145,0.08)" stroke-width="0.4"/>
+                <line x1="60" y1="95" x2="60" y2="60" stroke="rgba(225,185,145,0.08)" stroke-width="0.4"/>
+                <line x1="30" y1="78" x2="60" y2="60" stroke="rgba(225,185,145,0.08)" stroke-width="0.4"/>
+                <line x1="30" y1="45" x2="60" y2="60" stroke="rgba(225,185,145,0.08)" stroke-width="0.4"/>
+                <!-- Pulsing data flow on spokes -->
+                <circle cx="45" cy="42" r="1" fill="rgba(225,185,145,0.4)">
+                    <animate attributeName="cx" values="45;60;45" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="cy" values="42;60;42" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="75" cy="70" r="1" fill="rgba(225,185,145,0.35)">
+                    <animate attributeName="cx" values="75;60;75" dur="3.5s" repeatCount="indefinite"/>
+                    <animate attributeName="cy" values="70;60;70" dur="3.5s" repeatCount="indefinite"/>
+                </circle>
+            </svg>
+        </div>
+        <h3>Tiefintegration</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(225,185,145,0.5)"></span>Generativ · Warm · Stufe 4</div>
+    </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 2: SCHMERZPUNKTE                               -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section-label">Section 2 · Schmerzpunkte</div>
+<div class="icon-grid">
+
+    <!-- 6. Makro-Druck -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(160,85,95,0.04)"/>
+                <!-- Downward trend from constellation points -->
+                <circle cx="25" cy="35" r="2.5" fill="rgba(160,85,95,0.5)"/>
+                <circle cx="42" cy="42" r="2" fill="rgba(160,85,95,0.45)"/>
+                <circle cx="55" cy="52" r="2" fill="rgba(160,85,95,0.5)"/>
+                <circle cx="68" cy="62" r="2.5" fill="rgba(160,85,95,0.55)"/>
+                <circle cx="82" cy="75" r="2.5" fill="rgba(160,85,95,0.6)">
+                    <animate attributeName="r" values="2.5;3;2.5" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="95" cy="90" r="3" fill="rgba(160,85,95,0.65)">
+                    <animate attributeName="r" values="3;3.5;3" dur="2.2s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Trend line -->
+                <polyline points="25,35 42,42 55,52 68,62 82,75 95,90" fill="none" stroke="rgba(160,85,95,0.3)" stroke-width="1" stroke-linecap="round"/>
+                <!-- Pressure arrows pointing down -->
+                <line x1="55" y1="25" x2="55" y2="45" stroke="rgba(160,85,95,0.15)" stroke-width="0.5" stroke-dasharray="3 2">
+                    <animate attributeName="stroke-dashoffset" values="5;0" dur="1.5s" repeatCount="indefinite"/>
+                </line>
+                <line x1="75" y1="30" x2="75" y2="55" stroke="rgba(160,85,95,0.12)" stroke-width="0.5" stroke-dasharray="3 2">
+                    <animate attributeName="stroke-dashoffset" values="5;0" dur="1.7s" repeatCount="indefinite"/>
+                </line>
+                <!-- Scattered loss particles -->
+                <circle cx="35" cy="80" r="1" fill="rgba(160,85,95,0.2)">
+                    <animate attributeName="cy" values="80;85;80" dur="4s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="50" cy="88" r="0.8" fill="rgba(160,85,95,0.15)"/>
+            </svg>
+        </div>
+        <h3>Makro-Druck</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(160,85,95,0.6)"></span>Generativ · Rot</div>
+    </div>
+
+    <!-- 7. KI-Chaos -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(160,85,95,0.04)"/>
+                <!-- Disconnected scattered nodes (no coherent structure) -->
+                <circle cx="28" cy="35" r="2.5" fill="rgba(160,85,95,0.5)">
+                    <animate attributeName="cx" values="28;30;28" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="72" cy="28" r="2" fill="rgba(160,85,95,0.4)">
+                    <animate attributeName="cy" values="28;26;28" dur="2.8s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="95" cy="50" r="2" fill="rgba(160,85,95,0.35)">
+                    <animate attributeName="cx" values="95;97;95" dur="3.2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="45" cy="60" r="2.5" fill="rgba(160,85,95,0.45)">
+                    <animate attributeName="cy" values="60;58;60" dur="2.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="85" cy="80" r="2" fill="rgba(160,85,95,0.4)">
+                    <animate attributeName="cx" values="85;83;85" dur="3.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="35" cy="88" r="2.5" fill="rgba(160,85,95,0.5)">
+                    <animate attributeName="cy" values="88;90;88" dur="2.7s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="65" cy="75" r="1.5" fill="rgba(160,85,95,0.3)">
+                    <animate attributeName="cx" values="65;67;65" dur="3.8s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="55" cy="40" r="1.5" fill="rgba(160,85,95,0.35)"/>
+                <!-- Broken/fragmented connections (chaos) -->
+                <line x1="28" y1="35" x2="40" y2="45" stroke="rgba(160,85,95,0.12)" stroke-width="0.5" stroke-dasharray="2 4"/>
+                <line x1="72" y1="28" x2="60" y2="38" stroke="rgba(160,85,95,0.1)" stroke-width="0.5" stroke-dasharray="2 4"/>
+                <line x1="95" y1="50" x2="80" y2="60" stroke="rgba(160,85,95,0.08)" stroke-width="0.5" stroke-dasharray="2 4"/>
+                <line x1="45" y1="60" x2="55" y2="70" stroke="rgba(160,85,95,0.08)" stroke-width="0.5" stroke-dasharray="2 4"/>
+                <line x1="85" y1="80" x2="70" y2="78" stroke="rgba(160,85,95,0.08)" stroke-width="0.5" stroke-dasharray="2 4"/>
+                <!-- No center, no structure – intentionally loose -->
+            </svg>
+        </div>
+        <h3>KI-Chaos</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(160,85,95,0.6)"></span>Generativ · Rot</div>
+    </div>
+
+    <!-- 8. Kognitive Überlastung (refined from styleguide) -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="55" r="42" fill="rgba(170,125,85,0.05)"/>
+                <!-- Head outline – constellation -->
+                <circle cx="60" cy="25" r="2.5" fill="rgba(225,185,145,0.55)">
+                    <animate attributeName="r" values="2.5;2.8;2.5" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="42" cy="32" r="2" fill="rgba(225,185,145,0.45)"/>
+                <circle cx="78" cy="32" r="2" fill="rgba(225,185,145,0.45)"/>
+                <circle cx="36" cy="50" r="1.8" fill="rgba(225,185,145,0.35)"/>
+                <circle cx="84" cy="50" r="1.8" fill="rgba(225,185,145,0.35)"/>
+                <circle cx="40" cy="65" r="1.8" fill="rgba(225,185,145,0.3)"/>
+                <circle cx="80" cy="65" r="1.8" fill="rgba(225,185,145,0.3)"/>
+                <circle cx="50" cy="75" r="1.5" fill="rgba(225,185,145,0.25)"/>
+                <circle cx="70" cy="75" r="1.5" fill="rgba(225,185,145,0.25)"/>
+                <circle cx="60" cy="78" r="2" fill="rgba(225,185,145,0.35)"/>
+                <!-- Head connections -->
+                <line x1="60" y1="25" x2="42" y2="32" stroke="rgba(225,185,145,0.15)" stroke-width="0.6"/>
+                <line x1="60" y1="25" x2="78" y2="32" stroke="rgba(225,185,145,0.15)" stroke-width="0.6"/>
+                <line x1="42" y1="32" x2="36" y2="50" stroke="rgba(225,185,145,0.12)" stroke-width="0.6"/>
+                <line x1="78" y1="32" x2="84" y2="50" stroke="rgba(225,185,145,0.12)" stroke-width="0.6"/>
+                <line x1="36" y1="50" x2="40" y2="65" stroke="rgba(225,185,145,0.1)" stroke-width="0.5"/>
+                <line x1="84" y1="50" x2="80" y2="65" stroke="rgba(225,185,145,0.1)" stroke-width="0.5"/>
+                <line x1="40" y1="65" x2="50" y2="75" stroke="rgba(225,185,145,0.08)" stroke-width="0.5"/>
+                <line x1="80" y1="65" x2="70" y2="75" stroke="rgba(225,185,145,0.08)" stroke-width="0.5"/>
+                <line x1="50" y1="75" x2="60" y2="78" stroke="rgba(225,185,145,0.08)" stroke-width="0.5"/>
+                <line x1="70" y1="75" x2="60" y2="78" stroke="rgba(225,185,145,0.08)" stroke-width="0.5"/>
+                <!-- Inner chaos particles (red, nervous) -->
+                <circle cx="52" cy="42" r="1.2" fill="rgba(160,85,95,0.55)">
+                    <animate attributeName="cx" values="52;54;50;52" dur="1.8s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="68" cy="40" r="1.2" fill="rgba(160,85,95,0.5)">
+                    <animate attributeName="cy" values="40;38;42;40" dur="1.6s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="50" r="1.2" fill="rgba(160,85,95,0.5)">
+                    <animate attributeName="cx" values="60;62;58;60" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="48" cy="55" r="1" fill="rgba(160,85,95,0.4)">
+                    <animate attributeName="cy" values="55;53;57;55" dur="1.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="72" cy="55" r="1" fill="rgba(160,85,95,0.4)">
+                    <animate attributeName="cx" values="72;74;70;72" dur="1.9s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="56" cy="63" r="1" fill="rgba(160,85,95,0.35)">
+                    <animate attributeName="cy" values="63;61;65;63" dur="1.7s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Inner chaos connections -->
+                <line x1="52" y1="42" x2="68" y2="40" stroke="rgba(160,85,95,0.12)" stroke-width="0.4"/>
+                <line x1="60" y1="50" x2="52" y2="42" stroke="rgba(160,85,95,0.1)" stroke-width="0.4"/>
+                <line x1="60" y1="50" x2="68" y2="40" stroke="rgba(160,85,95,0.1)" stroke-width="0.4"/>
+                <line x1="48" y1="55" x2="72" y2="55" stroke="rgba(160,85,95,0.08)" stroke-width="0.4"/>
+                <!-- Escaping particles -->
+                <circle cx="30" cy="28" r="0.8" fill="rgba(160,85,95,0.25)">
+                    <animate attributeName="cy" values="28;24;28" dur="4s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="88" cy="25" r="0.8" fill="rgba(160,85,95,0.2)">
+                    <animate attributeName="cx" values="88;92;88" dur="3.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="15" r="0.8" fill="rgba(160,85,95,0.2)">
+                    <animate attributeName="cy" values="15;11;15" dur="4.5s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Shoulders hint -->
+                <circle cx="38" cy="90" r="1.2" fill="rgba(225,185,145,0.15)"/>
+                <circle cx="82" cy="90" r="1.2" fill="rgba(225,185,145,0.15)"/>
+                <line x1="50" y1="75" x2="38" y2="90" stroke="rgba(225,185,145,0.06)" stroke-width="0.4"/>
+                <line x1="70" y1="75" x2="82" y2="90" stroke="rgba(225,185,145,0.06)" stroke-width="0.4"/>
+            </svg>
+        </div>
+        <h3>Kognitive Überlastung</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(225,185,145,0.5)"></span>Generativ · Warm + Rot</div>
+    </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 3: REALITY GAP                                 -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section-label">Section 3 · Reality Gap</div>
+<div class="icon-grid">
+
+    <!-- 9. Reality Gap -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(110,145,180,0.03)"/>
+                <!-- Left cluster: "Wahrnehmung" (dim) -->
+                <circle cx="25" cy="45" r="2.5" fill="rgba(110,145,180,0.25)"/>
+                <circle cx="18" cy="60" r="2" fill="rgba(110,145,180,0.2)"/>
+                <circle cx="30" cy="68" r="2" fill="rgba(110,145,180,0.2)"/>
+                <circle cx="35" cy="50" r="1.5" fill="rgba(110,145,180,0.18)"/>
+                <line x1="25" y1="45" x2="18" y2="60" stroke="rgba(110,145,180,0.1)" stroke-width="0.5"/>
+                <line x1="25" y1="45" x2="35" y2="50" stroke="rgba(110,145,180,0.08)" stroke-width="0.5"/>
+                <line x1="18" y1="60" x2="30" y2="68" stroke="rgba(110,145,180,0.08)" stroke-width="0.5"/>
+                <!-- Right cluster: "Realität" (bright) -->
+                <circle cx="95" cy="45" r="2.5" fill="rgba(110,145,180,0.65)">
+                    <animate attributeName="r" values="2.5;3;2.5" dur="2.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="102" cy="60" r="2" fill="rgba(110,145,180,0.55)"/>
+                <circle cx="90" cy="68" r="2" fill="rgba(110,145,180,0.5)"/>
+                <circle cx="85" cy="50" r="1.5" fill="rgba(110,145,180,0.45)"/>
+                <line x1="95" y1="45" x2="102" y2="60" stroke="rgba(110,145,180,0.25)" stroke-width="0.6"/>
+                <line x1="95" y1="45" x2="85" y2="50" stroke="rgba(110,145,180,0.2)" stroke-width="0.6"/>
+                <line x1="102" y1="60" x2="90" y2="68" stroke="rgba(110,145,180,0.2)" stroke-width="0.6"/>
+                <!-- THE GAP – vertical broken line in the middle -->
+                <line x1="60" y1="25" x2="60" y2="95" stroke="rgba(160,85,95,0.2)" stroke-width="1" stroke-dasharray="3 5"/>
+                <!-- Gap label particles -->
+                <circle cx="60" cy="40" r="1" fill="rgba(160,85,95,0.3)">
+                    <animate attributeName="r" values="1;1.5;1" dur="2s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.3;0.1;0.3" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="60" r="1" fill="rgba(160,85,95,0.3)">
+                    <animate attributeName="r" values="1;1.5;1" dur="2.3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.3;0.1;0.3" dur="2.3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="80" r="1" fill="rgba(160,85,95,0.3)">
+                    <animate attributeName="r" values="1;1.5;1" dur="2.6s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.3;0.1;0.3" dur="2.6s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Faint bridge attempts (not connecting) -->
+                <line x1="35" y1="50" x2="50" y2="55" stroke="rgba(110,145,180,0.06)" stroke-width="0.4" stroke-dasharray="2 3"/>
+                <line x1="70" y1="55" x2="85" y2="50" stroke="rgba(110,145,180,0.12)" stroke-width="0.4" stroke-dasharray="2 3"/>
+            </svg>
+        </div>
+        <h3>Reality Gap</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(160,85,95,0.5)"></span>Generativ · Blau + Rot</div>
+    </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 4: METHODE – KI-DOLMETSCHER (5 Phasen)        -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section-label">Section 4 · KI-Dolmetscher Methode (5 Phasen)</div>
+<div class="icon-grid">
+
+    <!-- 10. Zuhören (Phase 1) -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(110,145,180,0.04)"/>
+                <!-- Ear shape from constellation points -->
+                <circle cx="65" cy="28" r="2" fill="rgba(110,145,180,0.5)"/>
+                <circle cx="78" cy="35" r="2" fill="rgba(110,145,180,0.45)"/>
+                <circle cx="85" cy="50" r="2" fill="rgba(110,145,180,0.4)"/>
+                <circle cx="82" cy="65" r="2" fill="rgba(110,145,180,0.4)"/>
+                <circle cx="72" cy="78" r="2" fill="rgba(110,145,180,0.35)"/>
+                <circle cx="60" cy="85" r="2" fill="rgba(110,145,180,0.35)"/>
+                <!-- Inner ear curve -->
+                <circle cx="62" cy="42" r="1.5" fill="rgba(110,145,180,0.3)"/>
+                <circle cx="70" cy="52" r="1.5" fill="rgba(110,145,180,0.35)"/>
+                <circle cx="68" cy="65" r="1.5" fill="rgba(110,145,180,0.3)"/>
+                <!-- Connections -->
+                <path d="M65,28 Q82,30 85,50 Q86,68 72,78 Q65,83 60,85" fill="none" stroke="rgba(110,145,180,0.15)" stroke-width="0.6"/>
+                <path d="M62,42 Q72,45 70,52 Q69,60 68,65" fill="none" stroke="rgba(110,145,180,0.1)" stroke-width="0.5"/>
+                <!-- Sound waves coming in -->
+                <path d="M30,50 Q35,55 30,60" fill="none" stroke="rgba(225,185,145,0.2)" stroke-width="0.8" stroke-linecap="round">
+                    <animate attributeName="opacity" values="0.2;0.05;0.2" dur="2s" repeatCount="indefinite"/>
+                </path>
+                <path d="M22,45 Q30,55 22,65" fill="none" stroke="rgba(225,185,145,0.15)" stroke-width="0.6" stroke-linecap="round">
+                    <animate attributeName="opacity" values="0.15;0.03;0.15" dur="2.3s" repeatCount="indefinite"/>
+                </path>
+                <path d="M14,40 Q25,55 14,70" fill="none" stroke="rgba(225,185,145,0.1)" stroke-width="0.5" stroke-linecap="round">
+                    <animate attributeName="opacity" values="0.1;0.02;0.1" dur="2.6s" repeatCount="indefinite"/>
+                </path>
+            </svg>
+        </div>
+        <h3>Zuhören</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(110,145,180,0.5)"></span>Generativ · Blau · Phase 1</div>
+    </div>
+
+    <!-- 11. Wörterbuch (Phase 2) -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(110,145,180,0.04)"/>
+                <!-- Open book shape from points -->
+                <!-- Spine -->
+                <line x1="60" y1="30" x2="60" y2="90" stroke="rgba(110,145,180,0.2)" stroke-width="0.8"/>
+                <!-- Left page points -->
+                <circle cx="30" cy="35" r="2" fill="rgba(110,145,180,0.4)"/>
+                <circle cx="30" cy="90" r="2" fill="rgba(110,145,180,0.35)"/>
+                <line x1="30" y1="35" x2="60" y2="30" stroke="rgba(110,145,180,0.15)" stroke-width="0.6"/>
+                <line x1="30" y1="90" x2="60" y2="90" stroke="rgba(110,145,180,0.12)" stroke-width="0.6"/>
+                <line x1="30" y1="35" x2="30" y2="90" stroke="rgba(110,145,180,0.12)" stroke-width="0.6"/>
+                <!-- Right page points -->
+                <circle cx="90" cy="35" r="2" fill="rgba(110,145,180,0.4)"/>
+                <circle cx="90" cy="90" r="2" fill="rgba(110,145,180,0.35)"/>
+                <line x1="90" y1="35" x2="60" y2="30" stroke="rgba(110,145,180,0.15)" stroke-width="0.6"/>
+                <line x1="90" y1="90" x2="60" y2="90" stroke="rgba(110,145,180,0.12)" stroke-width="0.6"/>
+                <line x1="90" y1="35" x2="90" y2="90" stroke="rgba(110,145,180,0.12)" stroke-width="0.6"/>
+                <!-- Text lines on left page -->
+                <line x1="36" y1="48" x2="54" y2="48" stroke="rgba(110,145,180,0.12)" stroke-width="0.5"/>
+                <line x1="36" y1="56" x2="52" y2="56" stroke="rgba(110,145,180,0.1)" stroke-width="0.5"/>
+                <line x1="36" y1="64" x2="54" y2="64" stroke="rgba(110,145,180,0.08)" stroke-width="0.5"/>
+                <!-- Translation arrows on right page -->
+                <circle cx="72" cy="48" r="1" fill="rgba(225,185,145,0.4)"/>
+                <circle cx="84" cy="48" r="1" fill="rgba(110,145,180,0.4)"/>
+                <line x1="73" y1="48" x2="83" y2="48" stroke="rgba(160,165,160,0.15)" stroke-width="0.5" stroke-dasharray="2 1">
+                    <animate attributeName="stroke-dashoffset" values="3;0" dur="1.5s" repeatCount="indefinite"/>
+                </line>
+                <circle cx="72" cy="58" r="1" fill="rgba(225,185,145,0.35)"/>
+                <circle cx="84" cy="58" r="1" fill="rgba(110,145,180,0.35)"/>
+                <line x1="73" y1="58" x2="83" y2="58" stroke="rgba(160,165,160,0.12)" stroke-width="0.5" stroke-dasharray="2 1">
+                    <animate attributeName="stroke-dashoffset" values="3;0" dur="1.7s" repeatCount="indefinite"/>
+                </line>
+            </svg>
+        </div>
+        <h3>Wörterbuch</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(110,145,180,0.5)"></span>Generativ · Blau · Phase 2</div>
+    </div>
+
+    <!-- 12. Satzbau (Phase 3) -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(110,145,180,0.04)"/>
+                <!-- Connected building blocks / syntax structure -->
+                <!-- Block 1 -->
+                <rect x="15" y="50" width="22" height="18" rx="3" fill="rgba(110,145,180,0.08)" stroke="rgba(110,145,180,0.25)" stroke-width="0.6"/>
+                <circle cx="26" cy="59" r="2" fill="rgba(110,145,180,0.4)"/>
+                <!-- Block 2 -->
+                <rect x="42" y="50" width="22" height="18" rx="3" fill="rgba(110,145,180,0.1)" stroke="rgba(110,145,180,0.3)" stroke-width="0.6"/>
+                <circle cx="53" cy="59" r="2" fill="rgba(110,145,180,0.5)"/>
+                <!-- Block 3 -->
+                <rect x="70" y="50" width="22" height="18" rx="3" fill="rgba(225,185,145,0.08)" stroke="rgba(225,185,145,0.25)" stroke-width="0.6"/>
+                <circle cx="81" cy="59" r="2" fill="rgba(225,185,145,0.4)"/>
+                <!-- Connecting flow -->
+                <line x1="37" y1="59" x2="42" y2="59" stroke="rgba(110,145,180,0.25)" stroke-width="0.8" stroke-dasharray="2 1">
+                    <animate attributeName="stroke-dashoffset" values="3;0" dur="1.5s" repeatCount="indefinite"/>
+                </line>
+                <line x1="64" y1="59" x2="70" y2="59" stroke="rgba(160,165,160,0.2)" stroke-width="0.8" stroke-dasharray="2 1">
+                    <animate attributeName="stroke-dashoffset" values="3;0" dur="1.7s" repeatCount="indefinite"/>
+                </line>
+                <!-- Structure lines above and below -->
+                <line x1="26" y1="40" x2="81" y2="40" stroke="rgba(110,145,180,0.08)" stroke-width="0.4"/>
+                <line x1="26" y1="78" x2="81" y2="78" stroke="rgba(110,145,180,0.06)" stroke-width="0.4"/>
+                <!-- Mini nodes on structure lines -->
+                <circle cx="40" cy="40" r="1" fill="rgba(110,145,180,0.2)"/>
+                <circle cx="65" cy="40" r="1" fill="rgba(110,145,180,0.15)"/>
+                <circle cx="53" cy="78" r="1" fill="rgba(225,185,145,0.15)"/>
+            </svg>
+        </div>
+        <h3>Satzbau</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(110,145,180,0.5)"></span>Generativ · Blau→Warm · Phase 3</div>
+    </div>
+
+    <!-- 13. Kontext (Phase 4) -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(160,165,160,0.03)"/>
+                <!-- Central knowledge node surrounded by context layers -->
+                <circle cx="60" cy="60" r="5" fill="rgba(160,165,160,0.1)" stroke="rgba(160,165,160,0.3)" stroke-width="0.8">
+                    <animate attributeName="r" values="5;6;5" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="60" r="2" fill="rgba(225,185,145,0.5)"/>
+                <!-- Context ring 1 -->
+                <circle cx="60" cy="60" r="18" fill="none" stroke="rgba(110,145,180,0.1)" stroke-width="0.5"/>
+                <circle cx="60" cy="42" r="1.5" fill="rgba(110,145,180,0.35)"/>
+                <circle cx="78" cy="60" r="1.5" fill="rgba(110,145,180,0.3)"/>
+                <circle cx="60" cy="78" r="1.5" fill="rgba(225,185,145,0.3)"/>
+                <circle cx="42" cy="60" r="1.5" fill="rgba(225,185,145,0.35)"/>
+                <!-- Context ring 2 -->
+                <circle cx="60" cy="60" r="32" fill="none" stroke="rgba(110,145,180,0.06)" stroke-width="0.4"/>
+                <circle cx="60" cy="28" r="1.2" fill="rgba(110,145,180,0.2)"/>
+                <circle cx="92" cy="60" r="1.2" fill="rgba(110,145,180,0.18)"/>
+                <circle cx="60" cy="92" r="1.2" fill="rgba(225,185,145,0.18)"/>
+                <circle cx="28" cy="60" r="1.2" fill="rgba(225,185,145,0.2)"/>
+                <!-- Radial connections -->
+                <line x1="60" y1="42" x2="60" y2="54" stroke="rgba(110,145,180,0.12)" stroke-width="0.4"/>
+                <line x1="78" y1="60" x2="66" y2="60" stroke="rgba(110,145,180,0.1)" stroke-width="0.4"/>
+                <line x1="60" y1="78" x2="60" y2="66" stroke="rgba(225,185,145,0.1)" stroke-width="0.4"/>
+                <line x1="42" y1="60" x2="54" y2="60" stroke="rgba(225,185,145,0.12)" stroke-width="0.4"/>
+                <!-- Outer→inner flow particles -->
+                <circle cx="60" cy="35" r="0.8" fill="rgba(110,145,180,0.3)">
+                    <animate attributeName="cy" values="35;48;35" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.3;0.1;0.3" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="82" cy="60" r="0.8" fill="rgba(110,145,180,0.25)">
+                    <animate attributeName="cx" values="82;66;82" dur="3.5s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.25;0.08;0.25" dur="3.5s" repeatCount="indefinite"/>
+                </circle>
+            </svg>
+        </div>
+        <h3>Kontext</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(225,185,145,0.4)"></span>Generativ · Blau→Warm · Phase 4</div>
+    </div>
+
+    <!-- 14. Muttersprachler (Phase 5) -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(225,185,145,0.04)"/>
+                <!-- Confident, stable network – fluency achieved -->
+                <!-- Harmonious hexagonal structure -->
+                <circle cx="60" cy="30" r="2.5" fill="rgba(225,185,145,0.5)"/>
+                <circle cx="86" cy="45" r="2.5" fill="rgba(225,185,145,0.5)"/>
+                <circle cx="86" cy="75" r="2.5" fill="rgba(225,185,145,0.45)"/>
+                <circle cx="60" cy="90" r="2.5" fill="rgba(225,185,145,0.45)"/>
+                <circle cx="34" cy="75" r="2.5" fill="rgba(225,185,145,0.5)"/>
+                <circle cx="34" cy="45" r="2.5" fill="rgba(225,185,145,0.5)"/>
+                <!-- Clean, solid connections (stable – no dashes) -->
+                <line x1="60" y1="30" x2="86" y2="45" stroke="rgba(225,185,145,0.2)" stroke-width="0.7"/>
+                <line x1="86" y1="45" x2="86" y2="75" stroke="rgba(225,185,145,0.18)" stroke-width="0.7"/>
+                <line x1="86" y1="75" x2="60" y2="90" stroke="rgba(225,185,145,0.18)" stroke-width="0.7"/>
+                <line x1="60" y1="90" x2="34" y2="75" stroke="rgba(225,185,145,0.2)" stroke-width="0.7"/>
+                <line x1="34" y1="75" x2="34" y2="45" stroke="rgba(225,185,145,0.2)" stroke-width="0.7"/>
+                <line x1="34" y1="45" x2="60" y2="30" stroke="rgba(225,185,145,0.2)" stroke-width="0.7"/>
+                <!-- Inner web (all connected = fluency) -->
+                <line x1="60" y1="30" x2="60" y2="90" stroke="rgba(225,185,145,0.06)" stroke-width="0.4"/>
+                <line x1="34" y1="45" x2="86" y2="75" stroke="rgba(225,185,145,0.06)" stroke-width="0.4"/>
+                <line x1="86" y1="45" x2="34" y2="75" stroke="rgba(225,185,145,0.06)" stroke-width="0.4"/>
+                <!-- Calm center -->
+                <circle cx="60" cy="60" r="4" fill="rgba(225,185,145,0.08)" stroke="rgba(225,185,145,0.25)" stroke-width="0.6">
+                    <animate attributeName="r" values="4;4.5;4" dur="4s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="60" r="1.5" fill="rgba(225,185,145,0.5)"/>
+                <!-- Gentle glow pulse (confidence) -->
+                <circle cx="60" cy="60" r="20" fill="none" stroke="rgba(225,185,145,0.05)" stroke-width="0.5">
+                    <animate attributeName="r" values="20;24;20" dur="4s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.1;0;0.1" dur="4s" repeatCount="indefinite"/>
+                </circle>
+            </svg>
+        </div>
+        <h3>Muttersprachler</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(225,185,145,0.5)"></span>Generativ · Warm · Phase 5</div>
+    </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 5: PRODUKTE                                    -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section-label">Section 5 · Produkte</div>
+<div class="icon-grid">
+
+    <!-- 15. KI-Dolmetscher (Product) -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="42" fill="rgba(110,145,180,0.04)"/>
+                <!-- Two clusters connected by bridge (from styleguide, refined) -->
+                <circle cx="30" cy="48" r="2.5" fill="rgba(110,145,180,0.6)">
+                    <animate attributeName="r" values="2.5;2.8;2.5" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="22" cy="62" r="2" fill="rgba(110,145,180,0.4)"/>
+                <circle cx="35" cy="70" r="1.5" fill="rgba(110,145,180,0.35)"/>
+                <circle cx="32" cy="38" r="1.5" fill="rgba(110,145,180,0.3)"/>
+                <line x1="30" y1="48" x2="22" y2="62" stroke="rgba(110,145,180,0.15)" stroke-width="0.6"/>
+                <line x1="30" y1="48" x2="35" y2="70" stroke="rgba(110,145,180,0.12)" stroke-width="0.6"/>
+                <line x1="30" y1="48" x2="32" y2="38" stroke="rgba(110,145,180,0.15)" stroke-width="0.6"/>
+                <circle cx="90" cy="52" r="2.5" fill="rgba(110,145,180,0.6)">
+                    <animate attributeName="r" values="2.5;2.8;2.5" dur="3.2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="98" cy="65" r="2" fill="rgba(110,145,180,0.4)"/>
+                <circle cx="85" cy="72" r="1.5" fill="rgba(110,145,180,0.35)"/>
+                <circle cx="88" cy="40" r="1.5" fill="rgba(110,145,180,0.3)"/>
+                <line x1="90" y1="52" x2="98" y2="65" stroke="rgba(110,145,180,0.15)" stroke-width="0.6"/>
+                <line x1="90" y1="52" x2="85" y2="72" stroke="rgba(110,145,180,0.12)" stroke-width="0.6"/>
+                <line x1="90" y1="52" x2="88" y2="40" stroke="rgba(110,145,180,0.15)" stroke-width="0.6"/>
+                <!-- Central bridge node -->
+                <circle cx="60" cy="58" r="4.5" fill="rgba(110,145,180,0.12)" stroke="rgba(110,145,180,0.35)" stroke-width="0.8">
+                    <animate attributeName="r" values="4.5;5.5;4.5" dur="2.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="58" r="1.8" fill="rgba(110,145,180,0.6)"/>
+                <!-- Bridge lines -->
+                <line x1="30" y1="48" x2="60" y2="58" stroke="rgba(110,145,180,0.12)" stroke-width="0.5"/>
+                <line x1="90" y1="52" x2="60" y2="58" stroke="rgba(110,145,180,0.12)" stroke-width="0.5"/>
+                <!-- Animated data flow -->
+                <line x1="35" y1="70" x2="60" y2="80" stroke="rgba(110,145,180,0.18)" stroke-width="0.7" stroke-dasharray="3 2">
+                    <animate attributeName="stroke-dashoffset" values="5;0" dur="2s" repeatCount="indefinite"/>
+                </line>
+                <line x1="60" y1="80" x2="85" y2="72" stroke="rgba(110,145,180,0.18)" stroke-width="0.7" stroke-dasharray="3 2">
+                    <animate attributeName="stroke-dashoffset" values="5;0" dur="2s" repeatCount="indefinite"/>
+                </line>
+            </svg>
+        </div>
+        <h3>KI-Dolmetscher</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(110,145,180,0.5)"></span>Generativ · Blau · Produkt</div>
+    </div>
+
+    <!-- 16. CEO-KI-Coaching -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(225,185,145,0.04)"/>
+                <!-- Two figures in dialogue – one-line style -->
+                <!-- Person left (CEO) -->
+                <circle cx="38" cy="42" r="5" fill="none" stroke="rgba(225,185,145,0.4)" stroke-width="1"/>
+                <line x1="38" y1="47" x2="38" y2="72" stroke="rgba(225,185,145,0.3)" stroke-width="1" stroke-linecap="round"/>
+                <line x1="38" y1="55" x2="28" y2="65" stroke="rgba(225,185,145,0.25)" stroke-width="0.8" stroke-linecap="round"/>
+                <line x1="38" y1="55" x2="48" y2="62" stroke="rgba(225,185,145,0.25)" stroke-width="0.8" stroke-linecap="round"/>
+                <!-- Person right (KI-Sparring) -->
+                <circle cx="82" cy="42" r="5" fill="none" stroke="rgba(110,145,180,0.4)" stroke-width="1"/>
+                <line x1="82" y1="47" x2="82" y2="72" stroke="rgba(110,145,180,0.3)" stroke-width="1" stroke-linecap="round"/>
+                <line x1="82" y1="55" x2="72" y2="62" stroke="rgba(110,145,180,0.25)" stroke-width="0.8" stroke-linecap="round"/>
+                <line x1="82" y1="55" x2="92" y2="65" stroke="rgba(110,145,180,0.25)" stroke-width="0.8" stroke-linecap="round"/>
+                <!-- Dialogue particles flowing between them -->
+                <circle cx="55" cy="45" r="1.2" fill="rgba(225,185,145,0.35)">
+                    <animate attributeName="cx" values="50;70;50" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="65" cy="50" r="1" fill="rgba(110,145,180,0.3)">
+                    <animate attributeName="cx" values="70;50;70" dur="3.2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="55" r="0.8" fill="rgba(225,185,145,0.25)">
+                    <animate attributeName="cx" values="52;68;52" dur="3.5s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Connection line -->
+                <line x1="48" y1="62" x2="72" y2="62" stroke="rgba(160,165,160,0.1)" stroke-width="0.4" stroke-dasharray="3 2"/>
+                <!-- Label hints -->
+                <text x="32" y="88" fill="rgba(225,185,145,0.15)" font-size="7" font-family="inherit">CEO</text>
+                <text x="76" y="88" fill="rgba(110,145,180,0.15)" font-size="7" font-family="inherit">KI</text>
+            </svg>
+        </div>
+        <h3>CEO-KI-Coaching</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(225,185,145,0.5)"></span>One-Line · Warm + Blau</div>
+    </div>
+
+    <!-- 17. KI-Strategie -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(110,145,180,0.04)"/>
+                <!-- Strategic map / compass with constellation -->
+                <!-- Compass rose from constellation points -->
+                <circle cx="60" cy="25" r="2.5" fill="rgba(110,145,180,0.55)"/>
+                <circle cx="95" cy="60" r="2.5" fill="rgba(110,145,180,0.5)"/>
+                <circle cx="60" cy="95" r="2.5" fill="rgba(110,145,180,0.45)"/>
+                <circle cx="25" cy="60" r="2.5" fill="rgba(110,145,180,0.5)"/>
+                <!-- Cross lines (compass) -->
+                <line x1="60" y1="25" x2="60" y2="95" stroke="rgba(110,145,180,0.12)" stroke-width="0.5"/>
+                <line x1="25" y1="60" x2="95" y2="60" stroke="rgba(110,145,180,0.12)" stroke-width="0.5"/>
+                <!-- Diagonal markers -->
+                <circle cx="80" cy="38" r="1.5" fill="rgba(110,145,180,0.3)"/>
+                <circle cx="80" cy="82" r="1.5" fill="rgba(225,185,145,0.25)"/>
+                <circle cx="40" cy="82" r="1.5" fill="rgba(225,185,145,0.3)"/>
+                <circle cx="40" cy="38" r="1.5" fill="rgba(110,145,180,0.25)"/>
+                <!-- Strategic path (highlighted route) -->
+                <path d="M60,60 L80,38 L95,60" fill="none" stroke="rgba(110,180,140,0.25)" stroke-width="1" stroke-linecap="round" stroke-dasharray="4 2">
+                    <animate attributeName="stroke-dashoffset" values="6;0" dur="2s" repeatCount="indefinite"/>
+                </path>
+                <!-- Center -->
+                <circle cx="60" cy="60" r="4" fill="rgba(110,145,180,0.1)" stroke="rgba(110,145,180,0.3)" stroke-width="0.6">
+                    <animate attributeName="r" values="4;5;4" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="60" r="1.5" fill="rgba(110,145,180,0.55)"/>
+            </svg>
+        </div>
+        <h3>KI-Strategie</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(110,145,180,0.5)"></span>Generativ · Blau</div>
+    </div>
+
+    <!-- 18. Gesprächsintelligenz -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(160,165,160,0.03)"/>
+                <!-- Sound wave / conversation captured and structured -->
+                <!-- Waveform lines (conversation) -->
+                <line x1="20" y1="55" x2="20" y2="65" stroke="rgba(225,185,145,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="28" y1="48" x2="28" y2="72" stroke="rgba(225,185,145,0.35)" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="36" y1="42" x2="36" y2="78" stroke="rgba(225,185,145,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="44" y1="48" x2="44" y2="72" stroke="rgba(225,185,145,0.25)" stroke-width="1.5" stroke-linecap="round"/>
+                <line x1="52" y1="52" x2="52" y2="68" stroke="rgba(225,185,145,0.2)" stroke-width="1.5" stroke-linecap="round"/>
+                <!-- Transformation arrow zone -->
+                <circle cx="62" cy="60" r="1.5" fill="rgba(160,165,160,0.3)">
+                    <animate attributeName="cx" values="58;66;58" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Structured output (blue nodes) -->
+                <circle cx="78" cy="42" r="2" fill="rgba(110,145,180,0.5)"/>
+                <circle cx="78" cy="55" r="2" fill="rgba(110,145,180,0.45)"/>
+                <circle cx="78" cy="68" r="2" fill="rgba(110,145,180,0.4)"/>
+                <circle cx="78" cy="80" r="2" fill="rgba(110,145,180,0.35)"/>
+                <line x1="78" y1="42" x2="78" y2="80" stroke="rgba(110,145,180,0.12)" stroke-width="0.5"/>
+                <!-- Structure lines from nodes -->
+                <line x1="78" y1="42" x2="98" y2="42" stroke="rgba(110,145,180,0.1)" stroke-width="0.4"/>
+                <line x1="78" y1="55" x2="95" y2="55" stroke="rgba(110,145,180,0.08)" stroke-width="0.4"/>
+                <line x1="78" y1="68" x2="98" y2="68" stroke="rgba(110,145,180,0.08)" stroke-width="0.4"/>
+                <line x1="78" y1="80" x2="92" y2="80" stroke="rgba(110,145,180,0.06)" stroke-width="0.4"/>
+            </svg>
+        </div>
+        <h3>Gesprächsintelligenz</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(225,185,145,0.4)"></span>Generativ · Warm→Blau</div>
+    </div>
+
+    <!-- 19. Prozess-Intelligenz -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <radialGradient id="glow-prozess" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="#60A5FA" stop-opacity="0.25"/>
+                        <stop offset="100%" stop-color="#60A5FA" stop-opacity="0"/>
+                    </radialGradient>
+                </defs>
+                <!-- Glow halo around center node -->
+                <circle cx="60" cy="60" r="18" fill="url(#glow-prozess)"/>
+                <!-- Connection lines (dashed, animated flow) -->
+                <line x1="60" y1="60" x2="32" y2="34" stroke="#60A5FA" stroke-width="0.8" stroke-opacity="0.35" stroke-dasharray="4 3" stroke-dashoffset="28" style="animation: dash-flow 2.4s linear infinite reverse"/>
+                <line x1="60" y1="60" x2="88" y2="34" stroke="#60A5FA" stroke-width="0.8" stroke-opacity="0.35" stroke-dasharray="4 3" stroke-dashoffset="28" style="animation: dash-flow 2.8s linear infinite reverse"/>
+                <line x1="60" y1="60" x2="32" y2="86" stroke="#60A5FA" stroke-width="0.8" stroke-opacity="0.35" stroke-dasharray="4 3" stroke-dashoffset="28" style="animation: dash-flow 3.2s linear infinite reverse"/>
+                <line x1="60" y1="60" x2="88" y2="86" stroke="#60A5FA" stroke-width="0.8" stroke-opacity="0.35" stroke-dasharray="4 3" stroke-dashoffset="28" style="animation: dash-flow 2.6s linear infinite reverse"/>
+                <!-- Cross-connections between outer nodes (lighter) -->
+                <line x1="32" y1="34" x2="88" y2="34" stroke="#60A5FA" stroke-width="0.5" stroke-opacity="0.15" stroke-dasharray="3 4"/>
+                <line x1="32" y1="86" x2="88" y2="86" stroke="#60A5FA" stroke-width="0.5" stroke-opacity="0.15" stroke-dasharray="3 4"/>
+                <line x1="32" y1="34" x2="32" y2="86" stroke="#60A5FA" stroke-width="0.5" stroke-opacity="0.15" stroke-dasharray="3 4"/>
+                <line x1="88" y1="34" x2="88" y2="86" stroke="#60A5FA" stroke-width="0.5" stroke-opacity="0.15" stroke-dasharray="3 4"/>
+                <!-- Outer nodes (small, drifting) -->
+                <g style="animation: drift-x 4s ease-in-out infinite">
+                    <circle cx="32" cy="34" r="2.5" fill="#60A5FA" fill-opacity="0.5" style="animation: pulse-sm 3s ease-in-out infinite"/>
+                </g>
+                <g style="animation: drift-y 3.5s ease-in-out infinite">
+                    <circle cx="88" cy="34" r="2.5" fill="#60A5FA" fill-opacity="0.5" style="animation: pulse-sm 3.5s ease-in-out infinite 0.5s"/>
+                </g>
+                <g style="animation: drift-x 4.5s ease-in-out infinite reverse">
+                    <circle cx="32" cy="86" r="2.5" fill="#60A5FA" fill-opacity="0.5" style="animation: pulse-sm 4s ease-in-out infinite 1s"/>
+                </g>
+                <g style="animation: drift-y 3.8s ease-in-out infinite reverse">
+                    <circle cx="88" cy="86" r="2.5" fill="#60A5FA" fill-opacity="0.5" style="animation: pulse-sm 3.2s ease-in-out infinite 0.8s"/>
+                </g>
+                <!-- Center node – highlighted -->
+                <circle cx="60" cy="60" r="4" fill="#60A5FA" fill-opacity="0.9" style="animation: pulse 2.5s ease-in-out infinite"/>
+                <circle cx="60" cy="60" r="1.5" fill="white" fill-opacity="0.9"/>
+            </svg>
+        </div>
+        <h3>Prozess-Intelligenz</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(96,165,250,0.7)"></span>Generativ · Blau</div>
+    </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 7: KNOWLEDGE LAYER                             -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section-label">Section 7 · Knowledge Layer</div>
+<div class="icon-grid">
+
+    <!-- 20. Knowledge Layer (Main) -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="42" fill="rgba(110,145,180,0.04)"/>
+                <!-- Layered knowledge graph -->
+                <!-- Layer 3 (back, faint) -->
+                <rect x="28" y="28" width="64" height="20" rx="4" fill="rgba(110,145,180,0.04)" stroke="rgba(110,145,180,0.08)" stroke-width="0.4"/>
+                <!-- Layer 2 (middle) -->
+                <rect x="25" y="45" width="70" height="22" rx="4" fill="rgba(110,145,180,0.06)" stroke="rgba(110,145,180,0.15)" stroke-width="0.5"/>
+                <circle cx="38" cy="56" r="1.5" fill="rgba(110,145,180,0.3)"/>
+                <circle cx="52" cy="56" r="1.5" fill="rgba(110,145,180,0.35)"/>
+                <circle cx="68" cy="56" r="1.5" fill="rgba(110,145,180,0.3)"/>
+                <circle cx="82" cy="56" r="1.5" fill="rgba(110,145,180,0.25)"/>
+                <line x1="38" y1="56" x2="52" y2="56" stroke="rgba(110,145,180,0.12)" stroke-width="0.4"/>
+                <line x1="52" y1="56" x2="68" y2="56" stroke="rgba(110,145,180,0.1)" stroke-width="0.4"/>
+                <line x1="68" y1="56" x2="82" y2="56" stroke="rgba(110,145,180,0.08)" stroke-width="0.4"/>
+                <!-- Layer 1 (front, brightest) -->
+                <rect x="22" y="72" width="76" height="24" rx="5" fill="rgba(110,145,180,0.08)" stroke="rgba(110,145,180,0.25)" stroke-width="0.6"/>
+                <circle cx="38" cy="84" r="2" fill="rgba(110,145,180,0.45)">
+                    <animate attributeName="r" values="2;2.4;2" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="55" cy="84" r="2" fill="rgba(110,145,180,0.5)">
+                    <animate attributeName="r" values="2;2.4;2" dur="3.3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="72" cy="84" r="2" fill="rgba(225,185,145,0.4)">
+                    <animate attributeName="r" values="2;2.4;2" dur="3.6s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="88" cy="84" r="2" fill="rgba(225,185,145,0.35)"/>
+                <line x1="38" y1="84" x2="55" y2="84" stroke="rgba(110,145,180,0.2)" stroke-width="0.5"/>
+                <line x1="55" y1="84" x2="72" y2="84" stroke="rgba(160,165,160,0.15)" stroke-width="0.5"/>
+                <line x1="72" y1="84" x2="88" y2="84" stroke="rgba(225,185,145,0.12)" stroke-width="0.5"/>
+                <!-- Cross-connections between layers -->
+                <line x1="52" y1="56" x2="55" y2="72" stroke="rgba(110,145,180,0.08)" stroke-width="0.3" stroke-dasharray="2 2">
+                    <animate attributeName="stroke-dashoffset" values="4;0" dur="2s" repeatCount="indefinite"/>
+                </line>
+                <line x1="68" y1="56" x2="72" y2="72" stroke="rgba(110,145,180,0.06)" stroke-width="0.3" stroke-dasharray="2 2">
+                    <animate attributeName="stroke-dashoffset" values="4;0" dur="2.3s" repeatCount="indefinite"/>
+                </line>
+            </svg>
+        </div>
+        <h3>Knowledge Layer</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(110,145,180,0.5)"></span>Generativ · Blau</div>
+    </div>
+
+    <!-- 21. Search & Find -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(110,145,180,0.03)"/>
+                <!-- Magnifying glass from constellation + connected results -->
+                <!-- Lens ring -->
+                <circle cx="50" cy="50" r="20" fill="none" stroke="rgba(110,145,180,0.25)" stroke-width="1"/>
+                <!-- Handle -->
+                <line x1="64" y1="64" x2="88" y2="88" stroke="rgba(110,145,180,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+                <!-- Search particles inside lens -->
+                <circle cx="42" cy="42" r="1.5" fill="rgba(110,145,180,0.35)">
+                    <animate attributeName="opacity" values="0.35;0.15;0.35" dur="2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="55" cy="45" r="1.5" fill="rgba(110,145,180,0.4)">
+                    <animate attributeName="opacity" values="0.4;0.2;0.4" dur="2.3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="48" cy="58" r="1.5" fill="rgba(110,145,180,0.3)">
+                    <animate attributeName="opacity" values="0.3;0.12;0.3" dur="2.6s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Found connections -->
+                <line x1="42" y1="42" x2="55" y2="45" stroke="rgba(110,145,180,0.12)" stroke-width="0.4"/>
+                <line x1="55" y1="45" x2="48" y2="58" stroke="rgba(110,145,180,0.1)" stroke-width="0.4"/>
+                <line x1="42" y1="42" x2="48" y2="58" stroke="rgba(110,145,180,0.08)" stroke-width="0.4"/>
+                <!-- Constellation points on lens border -->
+                <circle cx="50" cy="30" r="1.2" fill="rgba(110,145,180,0.3)"/>
+                <circle cx="30" cy="50" r="1.2" fill="rgba(110,145,180,0.25)"/>
+                <circle cx="70" cy="50" r="1.2" fill="rgba(110,145,180,0.25)"/>
+            </svg>
+        </div>
+        <h3>Search & Find</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(110,145,180,0.5)"></span>Generativ · Blau</div>
+    </div>
+
+    <!-- 22. Entscheidungsvorbereitung -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(110,145,180,0.03)"/>
+                <!-- Data flowing into a decision point -->
+                <!-- Input data streams (left) -->
+                <circle cx="20" cy="35" r="1.5" fill="rgba(110,145,180,0.3)"/>
+                <circle cx="20" cy="55" r="1.5" fill="rgba(110,145,180,0.35)"/>
+                <circle cx="20" cy="75" r="1.5" fill="rgba(110,145,180,0.3)"/>
+                <!-- Funnel/converge lines -->
+                <line x1="20" y1="35" x2="55" y2="55" stroke="rgba(110,145,180,0.12)" stroke-width="0.5" stroke-dasharray="3 2">
+                    <animate attributeName="stroke-dashoffset" values="5;0" dur="2s" repeatCount="indefinite"/>
+                </line>
+                <line x1="20" y1="55" x2="55" y2="58" stroke="rgba(110,145,180,0.15)" stroke-width="0.5" stroke-dasharray="3 2">
+                    <animate attributeName="stroke-dashoffset" values="5;0" dur="2.2s" repeatCount="indefinite"/>
+                </line>
+                <line x1="20" y1="75" x2="55" y2="62" stroke="rgba(110,145,180,0.12)" stroke-width="0.5" stroke-dasharray="3 2">
+                    <animate attributeName="stroke-dashoffset" values="5;0" dur="2.4s" repeatCount="indefinite"/>
+                </line>
+                <!-- Decision node -->
+                <circle cx="60" cy="58" r="6" fill="rgba(225,185,145,0.1)" stroke="rgba(225,185,145,0.35)" stroke-width="0.8">
+                    <animate attributeName="r" values="6;7;6" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="58" r="2.5" fill="rgba(225,185,145,0.5)"/>
+                <!-- Output: clear decision path -->
+                <line x1="66" y1="58" x2="100" y2="58" stroke="rgba(110,180,140,0.25)" stroke-width="1" stroke-linecap="round"/>
+                <circle cx="100" cy="58" r="2" fill="rgba(110,180,140,0.4)">
+                    <animate attributeName="r" values="2;2.5;2" dur="2.5s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Arrow head hint -->
+                <line x1="95" y1="53" x2="100" y2="58" stroke="rgba(110,180,140,0.3)" stroke-width="0.8"/>
+                <line x1="95" y1="63" x2="100" y2="58" stroke="rgba(110,180,140,0.3)" stroke-width="0.8"/>
+            </svg>
+        </div>
+        <h3>Entscheidungsvorbereitung</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(110,145,180,0.4)"></span>Generativ · Blau→Grün</div>
+    </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 8: DSGVO & DATENSOUVERÄNITÄT                   -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section-label">Section 8 · DSGVO & Datensouveränität</div>
+<div class="icon-grid">
+
+    <!-- 23. Datensouveränität -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(110,145,180,0.03)"/>
+                <!-- Shield shape from constellation points -->
+                <circle cx="60" cy="22" r="2.5" fill="rgba(110,145,180,0.5)"/>
+                <circle cx="30" cy="38" r="2" fill="rgba(110,145,180,0.45)"/>
+                <circle cx="90" cy="38" r="2" fill="rgba(110,145,180,0.45)"/>
+                <circle cx="30" cy="65" r="2" fill="rgba(110,145,180,0.4)"/>
+                <circle cx="90" cy="65" r="2" fill="rgba(110,145,180,0.4)"/>
+                <circle cx="60" cy="95" r="2.5" fill="rgba(110,145,180,0.5)">
+                    <animate attributeName="r" values="2.5;3;2.5" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Shield outline -->
+                <path d="M60,22 L90,38 L90,65 L60,95 L30,65 L30,38 Z" fill="rgba(110,145,180,0.04)" stroke="rgba(110,145,180,0.2)" stroke-width="0.7"/>
+                <!-- Inner secure data -->
+                <circle cx="60" cy="55" r="3" fill="rgba(110,180,140,0.15)" stroke="rgba(110,180,140,0.35)" stroke-width="0.6">
+                    <animate attributeName="r" values="3;3.5;3" dur="2.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="55" r="1.2" fill="rgba(110,180,140,0.5)"/>
+                <!-- Data nodes inside shield -->
+                <circle cx="50" cy="45" r="1" fill="rgba(110,145,180,0.3)"/>
+                <circle cx="70" cy="45" r="1" fill="rgba(110,145,180,0.3)"/>
+                <circle cx="50" cy="68" r="1" fill="rgba(110,145,180,0.25)"/>
+                <circle cx="70" cy="68" r="1" fill="rgba(110,145,180,0.25)"/>
+                <line x1="50" y1="45" x2="60" y2="55" stroke="rgba(110,145,180,0.08)" stroke-width="0.3"/>
+                <line x1="70" y1="45" x2="60" y2="55" stroke="rgba(110,145,180,0.08)" stroke-width="0.3"/>
+                <line x1="50" y1="68" x2="60" y2="55" stroke="rgba(110,145,180,0.06)" stroke-width="0.3"/>
+                <line x1="70" y1="68" x2="60" y2="55" stroke="rgba(110,145,180,0.06)" stroke-width="0.3"/>
+                <!-- EU hint: ring of stars (subtle) -->
+                <circle cx="60" cy="55" r="12" fill="none" stroke="rgba(110,180,140,0.06)" stroke-width="0.3"/>
+            </svg>
+        </div>
+        <h3>Datensouveränität</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(110,180,140,0.5)"></span>Generativ · Blau + Grün</div>
+    </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION CTA: VIRTUELLER ESPRESSO (NEU)                 -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section-label">CTA · Virtueller Espresso</div>
+<div class="icon-grid">
+
+    <!-- 24. Virtueller Espresso (REDESIGNED – proper cup silhouette) -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <radialGradient id="g-espresso" cx="50%" cy="60%" r="40%">
+                        <stop offset="0%" stop-color="rgba(225,185,145,0.08)"/>
+                        <stop offset="100%" stop-color="rgba(225,185,145,0)"/>
+                    </radialGradient>
+                </defs>
+                <circle cx="60" cy="65" r="45" fill="url(#g-espresso)"/>
+
+                <!-- Espresso cup – proper thick-walled small cup silhouette -->
+                <!-- Cup body (trapezoid, slightly tapered) -->
+                <path d="M 38 58 L 35 88 Q 35 95, 45 96 L 75 96 Q 85 95, 85 88 L 82 58"
+                    fill="none" stroke="rgba(225,185,145,0.45)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <!-- Cup rim (wide) -->
+                <path d="M 35 58 Q 60 54, 85 58" fill="none" stroke="rgba(225,185,145,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+                <!-- Handle (thick, characteristic espresso handle) -->
+                <path d="M 82 63 Q 98 63, 98 76 Q 98 88, 85 88"
+                    fill="none" stroke="rgba(225,185,145,0.35)" stroke-width="1.5" stroke-linecap="round"/>
+                <!-- Saucer -->
+                <path d="M 25 100 Q 60 106, 95 100" fill="none" stroke="rgba(225,185,145,0.2)" stroke-width="1" stroke-linecap="round"/>
+
+                <!-- Steam → transforms to blue network particles -->
+                <!-- Steam line 1 -->
+                <path d="M 48 55 Q 44 42, 50 32 Q 56 22, 48 12" fill="none" stroke="rgba(225,185,145,0.2)" stroke-width="0.8" stroke-linecap="round">
+                    <animate attributeName="d"
+                        values="M 48 55 Q 44 42, 50 32 Q 56 22, 48 12;M 48 55 Q 52 40, 46 30 Q 40 20, 48 10;M 48 55 Q 44 42, 50 32 Q 56 22, 48 12"
+                        dur="4s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.2;0.08;0.2" dur="4s" repeatCount="indefinite"/>
+                </path>
+                <!-- Steam line 2 -->
+                <path d="M 60 52 Q 56 38, 62 28 Q 68 18, 60 8" fill="none" stroke="rgba(225,185,145,0.18)" stroke-width="0.8" stroke-linecap="round">
+                    <animate attributeName="d"
+                        values="M 60 52 Q 56 38, 62 28 Q 68 18, 60 8;M 60 52 Q 64 36, 58 26 Q 52 16, 60 6;M 60 52 Q 56 38, 62 28 Q 68 18, 60 8"
+                        dur="4.5s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.18;0.06;0.18" dur="4.5s" repeatCount="indefinite"/>
+                </path>
+                <!-- Steam line 3 -->
+                <path d="M 72 55 Q 68 44, 74 34 Q 80 24, 72 16" fill="none" stroke="rgba(225,185,145,0.15)" stroke-width="0.8" stroke-linecap="round">
+                    <animate attributeName="d"
+                        values="M 72 55 Q 68 44, 74 34 Q 80 24, 72 16;M 72 55 Q 76 42, 70 32 Q 64 22, 72 14;M 72 55 Q 68 44, 74 34 Q 80 24, 72 16"
+                        dur="5s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.15;0.05;0.15" dur="5s" repeatCount="indefinite"/>
+                </path>
+
+                <!-- Blue network particles emerging from steam -->
+                <circle cx="48" cy="10" r="1.5" fill="rgba(110,145,180,0.4)">
+                    <animate attributeName="cy" values="10;6;10" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.4;0.15;0.4" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="6" r="1.8" fill="rgba(110,145,180,0.45)">
+                    <animate attributeName="cy" values="6;2;6" dur="3.5s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.45;0.15;0.45" dur="3.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="72" cy="12" r="1.3" fill="rgba(110,145,180,0.35)">
+                    <animate attributeName="cy" values="12;7;12" dur="4s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Network connections between steam-particles -->
+                <line x1="48" y1="10" x2="60" y2="6" stroke="rgba(110,145,180,0.15)" stroke-width="0.4"/>
+                <line x1="60" y1="6" x2="72" y2="12" stroke="rgba(110,145,180,0.12)" stroke-width="0.4"/>
+            </svg>
+        </div>
+        <h3>Virtueller Espresso</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(225,185,145,0.5)"></span>One-Line · Warm→Blau</div>
+    </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION 11: FAQ                                        -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section-label">Section 11 · FAQ</div>
+<div class="icon-grid">
+
+    <!-- 25. FAQ / Fragen -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(110,145,180,0.03)"/>
+                <!-- Question mark from constellation points -->
+                <!-- Curve of ? -->
+                <circle cx="55" cy="28" r="2" fill="rgba(110,145,180,0.45)"/>
+                <circle cx="70" cy="30" r="2" fill="rgba(110,145,180,0.5)"/>
+                <circle cx="78" cy="40" r="2" fill="rgba(110,145,180,0.45)"/>
+                <circle cx="72" cy="52" r="2" fill="rgba(110,145,180,0.4)"/>
+                <circle cx="60" cy="58" r="2" fill="rgba(110,145,180,0.45)"/>
+                <path d="M55,28 Q55,25 70,30 Q82,34 78,40 Q75,48 72,52 Q65,56 60,58" fill="none" stroke="rgba(110,145,180,0.2)" stroke-width="0.7"/>
+                <!-- Dot of ? -->
+                <circle cx="60" cy="72" r="3" fill="rgba(110,145,180,0.15)" stroke="rgba(110,145,180,0.35)" stroke-width="0.6">
+                    <animate attributeName="r" values="3;3.5;3" dur="2.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="72" r="1.2" fill="rgba(110,145,180,0.5)"/>
+                <!-- Floating answer particles nearby -->
+                <circle cx="38" cy="45" r="1" fill="rgba(225,185,145,0.2)">
+                    <animate attributeName="cx" values="38;35;38" dur="3.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="88" cy="60" r="1" fill="rgba(225,185,145,0.18)">
+                    <animate attributeName="cy" values="60;57;60" dur="4s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="45" cy="82" r="0.8" fill="rgba(225,185,145,0.15)"/>
+                <circle cx="80" cy="78" r="0.8" fill="rgba(225,185,145,0.12)"/>
+            </svg>
+        </div>
+        <h3>FAQ</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(110,145,180,0.5)"></span>Generativ · Blau</div>
+    </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- SECTION: AI-FIRST SZENARIEN                             -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="section-label">AI-First Szenarien · Szenario-Switcher</div>
+<div class="icon-grid">
+
+    <!-- 26. EU-Verordnung / Dokument-Stack -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <radialGradient id="glow-eu-doc" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="rgba(110,145,180,0.06)"/>
+                        <stop offset="100%" stop-color="transparent"/>
+                    </radialGradient>
+                </defs>
+                <circle cx="60" cy="60" r="45" fill="url(#glow-eu-doc)"/>
+                <!-- Hintere Seite (Stack-Effekt) -->
+                <rect x="38" y="22" width="36" height="50" rx="4" fill="rgba(110,145,180,0.04)" stroke="rgba(110,145,180,0.15)" stroke-width="0.7"/>
+                <!-- Vordere Seite -->
+                <rect x="42" y="18" width="36" height="50" rx="4" fill="#121820" stroke="rgba(110,145,180,0.35)" stroke-width="0.9"/>
+                <!-- Textzeilen als Sternbild-Punkte -->
+                <circle cx="52" cy="30" r="1.2" fill="rgba(110,145,180,0.45)"/>
+                <circle cx="60" cy="30" r="1" fill="rgba(110,145,180,0.35)"/>
+                <circle cx="68" cy="30" r="1.2" fill="rgba(110,145,180,0.4)"/>
+                <line x1="52" y1="30" x2="68" y2="30" stroke="rgba(110,145,180,0.15)" stroke-width="0.6"/>
+
+                <circle cx="52" cy="38" r="1" fill="rgba(110,145,180,0.35)"/>
+                <circle cx="64" cy="38" r="1" fill="rgba(110,145,180,0.3)"/>
+                <line x1="52" y1="38" x2="64" y2="38" stroke="rgba(110,145,180,0.12)" stroke-width="0.5"/>
+
+                <circle cx="52" cy="46" r="1.2" fill="rgba(110,145,180,0.4)"/>
+                <circle cx="60" cy="46" r="1" fill="rgba(110,145,180,0.3)"/>
+                <circle cx="70" cy="46" r="1" fill="rgba(110,145,180,0.35)"/>
+                <line x1="52" y1="46" x2="70" y2="46" stroke="rgba(110,145,180,0.12)" stroke-width="0.5"/>
+
+                <circle cx="52" cy="54" r="1" fill="rgba(110,145,180,0.25)"/>
+                <circle cx="62" cy="54" r="1" fill="rgba(110,145,180,0.2)"/>
+                <line x1="52" y1="54" x2="62" y2="54" stroke="rgba(110,145,180,0.1)" stroke-width="0.5"/>
+
+                <!-- "47" als schwebende Zahl -->
+                <text x="82" y="28" font-size="11" font-weight="700" fill="rgba(110,145,180,0.25)" font-family="Inter, sans-serif">47</text>
+
+                <!-- EU-Stern-Andeutung (generativ) -->
+                <circle cx="32" cy="78" r="1.5" fill="rgba(225,185,145,0.2)">
+                    <animate attributeName="r" values="1.5;2;1.5" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="40" cy="82" r="1" fill="rgba(225,185,145,0.15)">
+                    <animate attributeName="cx" values="40;38;40" dur="4s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="36" cy="86" r="0.8" fill="rgba(225,185,145,0.12)"/>
+                <path d="M32,78 Q36,80 40,82 Q38,84 36,86" fill="none" stroke="rgba(225,185,145,0.1)" stroke-width="0.5"/>
+            </svg>
+        </div>
+        <h3>EU-Verordnung</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(110,145,180,0.5)"></span>Generativ · Blau</div>
+    </div>
+
+    <!-- 27. Preisanstieg / Zulieferer +12% -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <radialGradient id="glow-preis" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="rgba(160,85,95,0.05)"/>
+                        <stop offset="100%" stop-color="transparent"/>
+                    </radialGradient>
+                </defs>
+                <circle cx="60" cy="60" r="45" fill="url(#glow-preis)"/>
+                <!-- Aufsteigende Trend-Linie als Sternbild -->
+                <circle cx="22" cy="82" r="2" fill="rgba(110,145,180,0.3)"/>
+                <circle cx="38" cy="68" r="1.8" fill="rgba(110,145,180,0.35)"/>
+                <circle cx="52" cy="72" r="1.5" fill="rgba(110,145,180,0.3)"/>
+                <circle cx="68" cy="52" r="2" fill="rgba(110,145,180,0.4)"/>
+                <circle cx="82" cy="38" r="2" fill="rgba(160,85,95,0.5)"/>
+                <circle cx="95" cy="28" r="2.5" fill="rgba(160,85,95,0.4)" stroke="rgba(160,85,95,0.3)" stroke-width="0.6">
+                    <animate attributeName="r" values="2.5;3.2;2.5" dur="2.5s" repeatCount="indefinite"/>
+                </circle>
+                <!-- Verbindungslinien -->
+                <polyline points="22,82 38,68 52,72 68,52 82,38 95,28" fill="none" stroke="rgba(110,145,180,0.18)" stroke-width="0.8" stroke-dasharray="3 2">
+                    <animate attributeName="stroke-dashoffset" values="0;-10" dur="3s" repeatCount="indefinite"/>
+                </polyline>
+                <!-- Steilerer letzter Abschnitt (Preisanstieg) -->
+                <line x1="68" y1="52" x2="95" y2="28" stroke="rgba(160,85,95,0.25)" stroke-width="1"/>
+                <!-- +12% Label -->
+                <text x="78" y="22" font-size="10" font-weight="700" fill="rgba(160,85,95,0.35)" font-family="Inter, sans-serif">+12%</text>
+                <!-- Warnsignal-Puls -->
+                <circle cx="95" cy="28" r="8" fill="none" stroke="rgba(160,85,95,0.1)" stroke-width="0.5">
+                    <animate attributeName="r" values="5;10;5" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.3;0;0.3" dur="3s" repeatCount="indefinite"/>
+                </circle>
+            </svg>
+        </div>
+        <h3>Preisanstieg</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(160,85,95,0.5)"></span>Generativ · Rot/Blau</div>
+    </div>
+
+    <!-- 28. Gesellschafterversammlung / Präsentation -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <radialGradient id="glow-praes" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="rgba(110,145,180,0.05)"/>
+                        <stop offset="100%" stop-color="transparent"/>
+                    </radialGradient>
+                </defs>
+                <circle cx="60" cy="60" r="45" fill="url(#glow-praes)"/>
+                <!-- Leinwand / Präsentationsfläche -->
+                <rect x="22" y="26" width="76" height="48" rx="5" fill="rgba(110,145,180,0.03)" stroke="rgba(110,145,180,0.25)" stroke-width="0.9"/>
+                <!-- Standfuß -->
+                <line x1="60" y1="74" x2="60" y2="88" stroke="rgba(110,145,180,0.15)" stroke-width="0.8"/>
+                <line x1="46" y1="88" x2="74" y2="88" stroke="rgba(110,145,180,0.15)" stroke-width="0.8" stroke-linecap="round"/>
+                <!-- Balkendiagramm als Sternbild-Punkte -->
+                <!-- Balken 1 (niedrig) -->
+                <circle cx="38" cy="62" r="1.5" fill="rgba(110,145,180,0.3)"/>
+                <circle cx="38" cy="56" r="1.2" fill="rgba(110,145,180,0.25)"/>
+                <line x1="38" y1="62" x2="38" y2="56" stroke="rgba(110,145,180,0.15)" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- Balken 2 (mittel) -->
+                <circle cx="54" cy="62" r="1.5" fill="rgba(110,145,180,0.35)"/>
+                <circle cx="54" cy="48" r="1.5" fill="rgba(110,145,180,0.35)"/>
+                <line x1="54" y1="62" x2="54" y2="48" stroke="rgba(110,145,180,0.2)" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- Balken 3 (hoch – Erfolg) -->
+                <circle cx="70" cy="62" r="1.5" fill="rgba(110,180,140,0.4)"/>
+                <circle cx="70" cy="38" r="2" fill="rgba(110,180,140,0.5)">
+                    <animate attributeName="r" values="2;2.5;2" dur="2.8s" repeatCount="indefinite"/>
+                </circle>
+                <line x1="70" y1="62" x2="70" y2="38" stroke="rgba(110,180,140,0.25)" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- Trend-Verbindung -->
+                <path d="M38,56 Q46,44 54,48 Q62,36 70,38" fill="none" stroke="rgba(110,145,180,0.12)" stroke-width="0.6" stroke-dasharray="2 2"/>
+                <!-- Aufwärts-Pfeil -->
+                <circle cx="82" cy="36" r="1" fill="rgba(110,180,140,0.3)">
+                    <animate attributeName="cy" values="36;33;36" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <line x1="82" y1="42" x2="82" y2="36" stroke="rgba(110,180,140,0.2)" stroke-width="0.6"/>
+            </svg>
+        </div>
+        <h3>Gesellschafterversammlung</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(110,180,140,0.45)"></span>Generativ · Blau/Grün</div>
+    </div>
+
+    <!-- 29. Screenshot-Bonus / Bildschirm + Cursor -->
+    <div class="icon-card">
+        <div class="icon-wrap">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <radialGradient id="glow-screenshot" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="rgba(225,185,145,0.05)"/>
+                        <stop offset="100%" stop-color="transparent"/>
+                    </radialGradient>
+                </defs>
+                <circle cx="60" cy="60" r="45" fill="url(#glow-screenshot)"/>
+                <!-- Bildschirm -->
+                <rect x="22" y="24" width="76" height="48" rx="5" fill="rgba(225,185,145,0.02)" stroke="rgba(225,185,145,0.25)" stroke-width="0.9"/>
+                <!-- Standfuß -->
+                <line x1="60" y1="72" x2="60" y2="82" stroke="rgba(225,185,145,0.15)" stroke-width="0.8"/>
+                <line x1="48" y1="82" x2="72" y2="82" stroke="rgba(225,185,145,0.15)" stroke-width="0.8" stroke-linecap="round"/>
+                <!-- Gestrichelte Auswahl-Ecken (Screenshot-Rahmen) -->
+                <!-- Oben links -->
+                <line x1="34" y1="34" x2="42" y2="34" stroke="rgba(225,185,145,0.35)" stroke-width="0.8" stroke-dasharray="2 1.5"/>
+                <line x1="34" y1="34" x2="34" y2="42" stroke="rgba(225,185,145,0.35)" stroke-width="0.8" stroke-dasharray="2 1.5"/>
+                <!-- Oben rechts -->
+                <line x1="78" y1="34" x2="86" y2="34" stroke="rgba(225,185,145,0.35)" stroke-width="0.8" stroke-dasharray="2 1.5"/>
+                <line x1="86" y1="34" x2="86" y2="42" stroke="rgba(225,185,145,0.35)" stroke-width="0.8" stroke-dasharray="2 1.5"/>
+                <!-- Unten links -->
+                <line x1="34" y1="60" x2="34" y2="62" stroke="rgba(225,185,145,0.35)" stroke-width="0.8"/>
+                <line x1="34" y1="62" x2="42" y2="62" stroke="rgba(225,185,145,0.35)" stroke-width="0.8" stroke-dasharray="2 1.5"/>
+                <!-- Unten rechts -->
+                <line x1="86" y1="60" x2="86" y2="62" stroke="rgba(225,185,145,0.35)" stroke-width="0.8"/>
+                <line x1="78" y1="62" x2="86" y2="62" stroke="rgba(225,185,145,0.35)" stroke-width="0.8" stroke-dasharray="2 1.5"/>
+                <!-- Cursor als Sternbild -->
+                <circle cx="56" cy="42" r="1.5" fill="rgba(225,185,145,0.45)"/>
+                <circle cx="56" cy="56" r="1.5" fill="rgba(225,185,145,0.4)"/>
+                <circle cx="64" cy="52" r="1.2" fill="rgba(225,185,145,0.35)"/>
+                <circle cx="68" cy="55" r="1" fill="rgba(225,185,145,0.3)"/>
+                <path d="M56,42 L56,56 L64,52 L68,55" fill="none" stroke="rgba(225,185,145,0.2)" stroke-width="0.6"/>
+                <polygon points="56,42 56,56 64,52" fill="rgba(225,185,145,0.08)" stroke="rgba(225,185,145,0.15)" stroke-width="0.5"/>
+                <!-- Fragezeichen (schwebend) -->
+                <text x="40" y="54" font-size="14" font-weight="600" fill="rgba(225,185,145,0.15)" font-family="Inter, sans-serif">?</text>
+                <!-- Pulsierender Lösung-Punkt -->
+                <circle cx="86" cy="88" r="3" fill="rgba(110,180,140,0.15)" stroke="rgba(110,180,140,0.3)" stroke-width="0.6">
+                    <animate attributeName="r" values="3;4;3" dur="2.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="86" cy="88" r="1.2" fill="rgba(110,180,140,0.4)"/>
+                <!-- Verbindung Cursor → Lösung -->
+                <path d="M68,55 Q78,70 86,88" fill="none" stroke="rgba(110,180,140,0.1)" stroke-width="0.5" stroke-dasharray="2 2">
+                    <animate attributeName="stroke-dashoffset" values="0;-8" dur="2s" repeatCount="indefinite"/>
+                </path>
+            </svg>
+        </div>
+        <h3>Screenshot-Bonus</h3>
+        <div class="meta"><span class="color-dot" style="background:rgba(225,185,145,0.5)"></span>Generativ · Warm/Grün</div>
+    </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ÜBERSICHT / LEGENDE                                    -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="annotation" style="margin-top: 48px;">
+    <strong>Übersicht: 25 Icons</strong><br><br>
+    <strong>Section 1 – AI-First:</strong> AI-First-Selbstermächtigung, Exploration, Prototyping, Architekturentscheidung, Tiefintegration<br>
+    <strong>Section 2 – Schmerzpunkte:</strong> Makro-Druck, KI-Chaos, Kognitive Überlastung<br>
+    <strong>Section 3 – Reality Gap:</strong> Reality Gap<br>
+    <strong>Section 4 – Methode:</strong> Zuhören, Wörterbuch, Satzbau, Kontext, Muttersprachler<br>
+    <strong>Section 5 – Produkte:</strong> KI-Dolmetscher, CEO-KI-Coaching, KI-Strategie, Gesprächsintelligenz, Prozess-Intelligenz<br>
+    <strong>Section 7 – Knowledge Layer:</strong> Knowledge Layer, Search & Find, Entscheidungsvorbereitung<br>
+    <strong>Section 8 – DSGVO:</strong> Datensouveränität<br>
+    <strong>CTA:</strong> Virtueller Espresso<br>
+    <strong>Section 11 – FAQ:</strong> FAQ<br>
+    <strong>AI-First Szenarien:</strong> EU-Verordnung, Preisanstieg, Gesellschafterversammlung, Screenshot-Bonus<br><br>
+    <strong>Stilprinzipien:</strong><br>
+    · Generativ (Sternbild): Punkte + Verbindungslinien, nie vollständig geschlossen<br>
+    · One-Line: Durchgehender Strich, warm, für menschliche Themen<br>
+    · Alle Icons animiert: Pulsieren, Drift, Dash-Flow<br>
+    · Farbkodierung: Blau (KI/Tech), Warm (Mensch), Rot (Schmerz), Grün (Erfolg)<br>
+    · Viewbox: 120×120, skalierbar auf 160/80/40px
+</div>
+
+</body>
+</html>

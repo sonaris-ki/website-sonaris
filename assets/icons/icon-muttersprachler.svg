@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(225,185,145,0.04)"/>
+                <circle cx="60" cy="30" r="2.5" fill="rgba(225,185,145,0.5)"/>
+                <circle cx="86" cy="45" r="2.5" fill="rgba(225,185,145,0.5)"/>
+                <circle cx="86" cy="75" r="2.5" fill="rgba(225,185,145,0.45)"/>
+                <circle cx="60" cy="90" r="2.5" fill="rgba(225,185,145,0.45)"/>
+                <circle cx="34" cy="75" r="2.5" fill="rgba(225,185,145,0.5)"/>
+                <circle cx="34" cy="45" r="2.5" fill="rgba(225,185,145,0.5)"/>
+                <line x1="60" y1="30" x2="86" y2="45" stroke="rgba(225,185,145,0.2)" stroke-width="0.7"/>
+                <line x1="86" y1="45" x2="86" y2="75" stroke="rgba(225,185,145,0.18)" stroke-width="0.7"/>
+                <line x1="86" y1="75" x2="60" y2="90" stroke="rgba(225,185,145,0.18)" stroke-width="0.7"/>
+                <line x1="60" y1="90" x2="34" y2="75" stroke="rgba(225,185,145,0.2)" stroke-width="0.7"/>
+                <line x1="34" y1="75" x2="34" y2="45" stroke="rgba(225,185,145,0.2)" stroke-width="0.7"/>
+                <line x1="34" y1="45" x2="60" y2="30" stroke="rgba(225,185,145,0.2)" stroke-width="0.7"/>
+                <line x1="60" y1="30" x2="60" y2="90" stroke="rgba(225,185,145,0.06)" stroke-width="0.4"/>
+                <line x1="34" y1="45" x2="86" y2="75" stroke="rgba(225,185,145,0.06)" stroke-width="0.4"/>
+                <line x1="86" y1="45" x2="34" y2="75" stroke="rgba(225,185,145,0.06)" stroke-width="0.4"/>
+                <circle cx="60" cy="60" r="4" fill="rgba(225,185,145,0.08)" stroke="rgba(225,185,145,0.25)" stroke-width="0.6">
+                    <animate attributeName="r" values="4;4.5;4" dur="4s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="60" r="1.5" fill="rgba(225,185,145,0.5)"/>
+                <circle cx="60" cy="60" r="20" fill="none" stroke="rgba(225,185,145,0.05)" stroke-width="0.5">
+                    <animate attributeName="r" values="20;24;20" dur="4s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.1;0;0.1" dur="4s" repeatCount="indefinite"/>
+                </circle>
+</svg>

@@ -1,0 +1,2081 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonaris</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            overflow: hidden;
+            background: #121820;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        canvas { display: block; position: absolute; top: 0; left: 0; }
+        #main { z-index: 1; }
+        #fragments { z-index: 2; pointer-events: none; }
+        #fx { z-index: 3; pointer-events: none; }
+
+        /* Branding */
+        #logo {
+            position: fixed;
+            top: 40px;
+            left: 45px;
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: rgba(140, 180, 220, 1);
+            z-index: 20;
+            cursor: default;
+            user-select: none;
+        }
+
+        /* Fragment tooltip */
+        #fragment-tooltip {
+            position: fixed;
+            background: rgba(20, 30, 42, 0.92);
+            border: 1px solid rgba(110, 145, 180, 0.25);
+            color: rgba(160, 185, 215, 0.95);
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+            max-width: 260px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 30;
+        }
+        #fragment-tooltip.visible { opacity: 1; }
+
+        /* ── Chat panel ── */
+        #chat-panel {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 620px;
+            max-width: calc(100vw - 32px);
+            z-index: 20;
+            padding: 0 0 190px 0;
+        }
+
+        #chat-header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 4px 6px 4px;
+            min-height: 28px;
+        }
+
+        #chat-cleanup {
+            background: none;
+            border: 1px solid rgba(110, 145, 180, 0.18);
+            color: rgba(110, 145, 180, 0.5);
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.25s;
+            opacity: 0;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        #chat-cleanup.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        #chat-cleanup:hover {
+            color: rgba(160, 185, 215, 0.85);
+            border-color: rgba(110, 145, 180, 0.35);
+            background: rgba(110, 145, 180, 0.08);
+        }
+        #chat-cleanup svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+        #chat-messages {
+            max-height: 380px;
+            overflow-y: auto;
+            margin-bottom: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 8px 4px;
+        }
+
+        #chat-messages::-webkit-scrollbar { width: 4px; }
+        #chat-messages::-webkit-scrollbar-track { background: transparent; }
+        #chat-messages::-webkit-scrollbar-thumb { background: rgba(110,145,180,0.25); border-radius: 2px; }
+
+        .msg {
+            max-width: 88%;
+            padding: 11px 16px;
+            border-radius: 14px;
+            font-size: 14.5px;
+            line-height: 1.6;
+            animation: fadeUp 0.35s ease;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .msg.user {
+            align-self: flex-end;
+            background: rgba(110, 145, 180, 0.18);
+            color: rgba(200, 220, 240, 0.95);
+            border: 1px solid rgba(110, 145, 180, 0.2);
+        }
+
+        .msg.bot {
+            align-self: flex-start;
+            background: rgba(20, 30, 42, 0.78);
+            color: rgba(175, 198, 222, 0.95);
+            border: 1px solid rgba(110, 145, 180, 0.14);
+        }
+
+        .msg.typing {
+            align-self: flex-start;
+            background: rgba(20, 30, 42, 0.75);
+            border: 1px solid rgba(110, 145, 180, 0.12);
+            padding: 13px 18px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .typing-dots span {
+            width: 6px;
+            height: 6px;
+            background: rgba(110, 145, 180, 0.6);
+            border-radius: 50%;
+            animation: bounce 1.2s infinite;
+        }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+
+        /* ── Contact CTA button in chat messages ── */
+        .msg-cta {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 7px 16px;
+            background: rgba(160, 85, 95, 0.2);
+            border: 1px solid rgba(160, 85, 95, 0.35);
+            border-radius: 10px;
+            color: rgba(220, 140, 150, 0.95);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.25s;
+            text-decoration: none;
+        }
+        .msg-cta:hover {
+            background: rgba(160, 85, 95, 0.35);
+            border-color: rgba(220, 140, 150, 0.5);
+        }
+
+        #chat-input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: rgba(16, 24, 34, 0.88);
+            border: 1px solid rgba(110, 145, 180, 0.22);
+            border-radius: 16px;
+            padding: 12px 16px;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 0 40px rgba(80, 120, 170, 0.06), 0 0 80px rgba(80, 120, 170, 0.03);
+        }
+
+        /* Contact icon in input row */
+        #contact-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.45;
+            transition: opacity 0.25s;
+        }
+        #contact-btn:hover { opacity: 0.85; }
+        #contact-btn svg { width: 20px; height: 20px; stroke: rgba(220, 140, 150, 0.9); fill: none; stroke-width: 1.5; }
+
+        #chat-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: rgba(200, 220, 240, 0.95);
+            font-size: 15px;
+            font-family: inherit;
+        }
+
+        #chat-input::placeholder { color: rgba(110, 145, 180, 0.42); }
+
+        #chat-send {
+            background: rgba(110, 145, 180, 0.18);
+            border: 1px solid rgba(110, 145, 180, 0.25);
+            border-radius: 10px;
+            color: rgba(160, 185, 215, 0.9);
+            cursor: pointer;
+            padding: 7px 12px;
+            font-size: 16px;
+            transition: background 0.2s;
+            line-height: 1;
+        }
+
+        #chat-send:hover { background: rgba(110, 145, 180, 0.35); }
+
+        /* Learning badge */
+        #learning-badge {
+            position: fixed;
+            top: 40px;
+            right: 45px;
+            font-size: 11px;
+            color: rgba(110, 145, 180, 0.5);
+            letter-spacing: 0.5px;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        #learning-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: rgba(110, 180, 140, 0.65);
+            border-radius: 50%;
+            animation: pulse-dot 2.5s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 0.65; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.3); }
+        }
+
+        /* Settings toggle */
+        #toggle {
+            position: fixed;
+            bottom: 40px;
+            right: 45px;
+            width: 34px;
+            height: 34px;
+            cursor: pointer;
+            opacity: 0.3;
+            transition: opacity 0.2s;
+            z-index: 20;
+        }
+        #toggle:hover { opacity: 0.65; }
+        #toggle svg { width: 100%; height: 100%; stroke: rgba(160, 185, 215, 0.9); fill: none; stroke-width: 1.5; }
+
+        /* Controls panel */
+        #controls {
+            position: fixed;
+            bottom: 88px;
+            right: 45px;
+            width: 230px;
+            background: rgba(12, 18, 26, 0.94);
+            border: 1px solid rgba(80, 100, 130, 0.18);
+            border-radius: 12px;
+            padding: 20px;
+            z-index: 25;
+            display: none;
+            backdrop-filter: blur(16px);
+        }
+        #controls.visible { display: block; }
+
+        .control-group { margin-bottom: 14px; }
+        .control-group:last-child { margin-bottom: 0; }
+        .control-label { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 12px; color: rgba(160, 185, 215, 0.55); }
+        .control-value { color: rgba(130, 155, 180, 0.6); font-size: 11px; }
+
+        input[type="range"] { width: 100%; height: 4px; -webkit-appearance: none; background: rgba(80, 100, 130, 0.2); border-radius: 2px; outline: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; background: rgba(110, 145, 180, 0.75); border-radius: 50%; cursor: pointer; }
+
+        .section-title { color: rgba(110, 145, 180, 0.45); font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid rgba(110, 145, 180, 0.08); }
+        .section { margin-bottom: 20px; }
+        .section:last-child { margin-bottom: 0; }
+
+        /* Sound toggle */
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .toggle-label { font-size: 12px; color: rgba(160, 185, 215, 0.55); }
+        .toggle-switch {
+            width: 36px;
+            height: 20px;
+            background: rgba(80, 100, 130, 0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.25s;
+        }
+        .toggle-switch.active { background: rgba(110, 145, 180, 0.45); }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            background: rgba(160, 185, 215, 0.8);
+            border-radius: 50%;
+            transition: transform 0.25s;
+        }
+        .toggle-switch.active::after { transform: translateX(16px); }
+
+        /* ── Footer ── */
+        #footer {
+            position: fixed;
+            bottom: 44px;
+            left: 45px;
+            z-index: 21;
+            display: flex;
+            gap: 18px;
+            font-size: 11px;
+        }
+        #footer a {
+            color: rgba(110, 145, 180, 0.28);
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.25s;
+            letter-spacing: 0.3px;
+        }
+        #footer a:hover { color: rgba(170, 125, 85, 0.7); }
+
+        /* ── Overlay ── */
+        #overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(8, 12, 18, 0.92);
+            backdrop-filter: blur(20px);
+            z-index: 50;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            animation: overlayIn 0.35s ease;
+        }
+        #overlay.visible { display: flex; }
+
+        @keyframes overlayIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        #overlay-content {
+            max-width: 560px;
+            width: calc(100vw - 48px);
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 48px 40px;
+            color: rgba(215, 185, 155, 0.92);
+            line-height: 1.75;
+        }
+
+        #overlay-content::-webkit-scrollbar { width: 4px; }
+        #overlay-content::-webkit-scrollbar-track { background: transparent; }
+        #overlay-content::-webkit-scrollbar-thumb { background: rgba(170, 125, 85, 0.25); border-radius: 2px; }
+
+        #overlay-content h2 {
+            font-size: 22px;
+            font-weight: 500;
+            color: rgba(225, 185, 145, 0.95);
+            margin-bottom: 28px;
+            letter-spacing: 0.5px;
+        }
+
+        #overlay-content h3 {
+            font-size: 15px;
+            font-weight: 500;
+            color: rgba(225, 185, 145, 0.85);
+            margin-top: 24px;
+            margin-bottom: 8px;
+        }
+
+        #overlay-content p {
+            font-size: 14px;
+            margin-bottom: 14px;
+            color: rgba(215, 185, 155, 0.78);
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .team-card {
+            background: rgba(170, 125, 85, 0.06);
+            border: 1px solid rgba(170, 125, 85, 0.12);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .team-card .name {
+            font-size: 15px;
+            font-weight: 500;
+            color: rgba(225, 185, 145, 0.92);
+            margin-bottom: 4px;
+        }
+
+        .team-card .role {
+            font-size: 12px;
+            color: rgba(215, 185, 155, 0.55);
+        }
+
+        /* Team initials circle */
+        .team-initials {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(170, 125, 85, 0.12);
+            border: 1px solid rgba(170, 125, 85, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 16px;
+            font-weight: 500;
+            color: rgba(225, 185, 145, 0.7);
+            letter-spacing: 1px;
+        }
+
+        #overlay-close {
+            position: fixed;
+            top: 28px;
+            right: 32px;
+            z-index: 51;
+            background: none;
+            border: 1px solid rgba(170, 125, 85, 0.2);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            color: rgba(215, 185, 155, 0.6);
+            font-size: 18px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s;
+        }
+        #overlay-close.visible { display: flex; }
+        #overlay-close:hover { color: rgba(225, 185, 145, 0.9); border-color: rgba(170, 125, 85, 0.4); }
+
+        /* ── Contact Overlay ── */
+        .contact-form {
+            margin-top: 24px;
+        }
+
+        .contact-form p {
+            margin-bottom: 20px;
+        }
+
+        .contact-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(160, 85, 95, 0.15);
+            border: 1px solid rgba(160, 85, 95, 0.3);
+            border-radius: 10px;
+            color: rgba(220, 140, 150, 0.92);
+            font-size: 14px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+        .contact-link:hover {
+            background: rgba(160, 85, 95, 0.28);
+            border-color: rgba(220, 140, 150, 0.45);
+        }
+        .contact-link svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+
+        /* ── Easter Egg: Glitch ── */
+        @keyframes glitch1 {
+            0% { transform: translate(0) skewX(0); filter: none; }
+            5% { transform: translate(-12px, 4px) skewX(-4deg); filter: hue-rotate(90deg) saturate(5); }
+            10% { transform: translate(8px, -6px) skewX(3deg); filter: hue-rotate(180deg) brightness(2); }
+            15% { transform: translate(-5px, 8px) skewX(-6deg); filter: invert(1) contrast(3); }
+            20% { transform: translate(15px, -3px) skewX(5deg); filter: hue-rotate(270deg) saturate(6); }
+            25% { transform: translate(-8px, -10px) skewX(-8deg); filter: brightness(3) hue-rotate(45deg); }
+            30% { transform: translate(0) skewX(0); filter: brightness(0); }
+            35% { transform: translate(10px, 5px) skewX(4deg); filter: hue-rotate(120deg) brightness(2.5) saturate(4); }
+            40% { transform: translate(-15px, -4px) skewX(-5deg); filter: invert(1) hue-rotate(200deg); }
+            45% { transform: translate(6px, 8px) skewX(7deg); filter: contrast(4) saturate(0); }
+            50% { transform: translate(0) skewX(0); filter: brightness(0); }
+            55% { transform: translate(-10px, 6px) skewX(-3deg); filter: hue-rotate(300deg) brightness(1.8); }
+            60% { transform: translate(12px, -8px) skewX(6deg); filter: invert(1) saturate(8); }
+            65% { transform: translate(0) skewX(0); filter: brightness(0); }
+            100% { transform: translate(0) skewX(0); filter: brightness(0); }
+        }
+
+        @keyframes scanlines {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 4px; }
+        }
+
+        body.glitching {
+            animation: glitch1 1.2s ease-in-out;
+        }
+        body.glitching::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.15) 2px,
+                rgba(0,0,0,0.15) 4px
+            );
+            animation: scanlines 0.1s linear infinite;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        body.glitching canvas { filter: brightness(0.3) saturate(0.2); transition: filter 0.2s; }
+
+        body.blackout { background: #000 !important; }
+        body.blackout canvas { filter: brightness(0) !important; transition: filter 0.4s; }
+        body.blackout #logo,
+        body.blackout #learning-badge,
+        body.blackout #chat-panel,
+        body.blackout #footer,
+        body.blackout #toggle,
+        body.blackout #controls,
+        body.blackout #fragment-tooltip { opacity: 0 !important; transition: opacity 0.3s; }
+
+        #crash-screen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #000;
+            z-index: 60;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', monospace;
+            color: rgba(180, 200, 220, 0.8);
+        }
+        #crash-screen.visible { display: flex; }
+
+        #crash-screen .crash-text {
+            font-size: 14px;
+            line-height: 2;
+            text-align: left;
+            max-width: 500px;
+        }
+
+        #crash-screen .crash-line {
+            opacity: 0;
+            animation: crashLineIn 0.3s ease forwards;
+        }
+
+        @keyframes crashLineIn {
+            from { opacity: 0; transform: translateX(-5px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        #crash-screen .cursor-blink {
+            display: inline-block;
+            width: 8px;
+            height: 14px;
+            background: rgba(180, 200, 220, 0.8);
+            animation: blink 0.8s step-end infinite;
+            vertical-align: middle;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        body.recovering { background: #121820 !important; transition: background 1.5s; }
+        body.recovering canvas { filter: brightness(1) saturate(1); transition: filter 2s ease-out; }
+        body.recovering #logo,
+        body.recovering #learning-badge,
+        body.recovering #chat-panel,
+        body.recovering #footer,
+        body.recovering #toggle { opacity: 1 !important; transition: opacity 1.5s ease-out 0.5s; }
+
+        #dont-press {
+            background: none;
+            border: 1px solid rgba(160, 85, 95, 0.25);
+            color: rgba(160, 85, 95, 0.55);
+            font-size: 11px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.25s;
+            margin-top: 4px;
+        }
+        #dont-press:hover {
+            color: rgba(220, 140, 150, 0.85);
+            border-color: rgba(160, 85, 95, 0.45);
+            background: rgba(160, 85, 95, 0.08);
+        }
+
+        /* ── Contact Mini-Dialog ── */
+        .contact-dialog {
+            max-width: 420px;
+            margin: 0 auto;
+        }
+
+        .contact-dialog .contact-question {
+            font-size: 18px;
+            color: rgba(225, 185, 145, 0.95);
+            font-weight: 400;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .contact-dialog .contact-input-wrap {
+            background: rgba(170, 125, 85, 0.06);
+            border: 1px solid rgba(170, 125, 85, 0.18);
+            border-radius: 14px;
+            padding: 14px 18px;
+            margin-bottom: 16px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            transition: border-color 0.25s;
+        }
+
+        .contact-dialog .contact-input-wrap:focus-within {
+            border-color: rgba(170, 125, 85, 0.4);
+        }
+
+        .contact-dialog input[type="text"],
+        .contact-dialog input[type="email"],
+        .contact-dialog input[type="tel"] {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: rgba(225, 185, 145, 0.92);
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .contact-dialog input::placeholder {
+            color: rgba(215, 185, 155, 0.35);
+        }
+
+        .contact-dialog .contact-send {
+            background: rgba(170, 125, 85, 0.15);
+            border: 1px solid rgba(170, 125, 85, 0.3);
+            border-radius: 10px;
+            color: rgba(225, 185, 145, 0.9);
+            padding: 10px 24px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: inherit;
+            margin-top: 8px;
+        }
+
+        .contact-dialog .contact-send:hover {
+            background: rgba(170, 125, 85, 0.28);
+            border-color: rgba(225, 185, 145, 0.45);
+        }
+
+        .contact-dialog .contact-reply {
+            background: rgba(170, 125, 85, 0.06);
+            border: 1px solid rgba(170, 125, 85, 0.12);
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            color: rgba(215, 185, 155, 0.82);
+            font-size: 14px;
+            line-height: 1.6;
+            animation: fadeUp 0.4s ease;
+        }
+
+        .contact-dialog .contact-fields {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            animation: fadeUp 0.4s ease;
+        }
+
+        .contact-dialog .contact-fields.visible {
+            display: flex;
+        }
+
+        .contact-dialog .contact-success {
+            text-align: center;
+            padding: 24px;
+            animation: fadeUp 0.4s ease;
+        }
+
+        .contact-dialog .contact-success .checkmark {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(110, 180, 140, 0.15);
+            border: 1px solid rgba(110, 180, 140, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 22px;
+        }
+
+        /* ── Mobile ── */
+        @media (max-width: 680px) {
+            #chat-panel { width: 100%; max-width: 100%; padding: 0 16px 120px 16px; }
+            #chat-messages { max-height: 280px; }
+            #chat-input-row { padding: 10px 12px; border-radius: 14px; }
+            #logo { top: 24px; left: 24px; font-size: 24px; }
+            #learning-badge { top: 24px; right: 24px; font-size: 10px; }
+            #toggle { bottom: 24px; right: 24px; }
+            #controls { bottom: 72px; right: 16px; }
+            .msg { font-size: 14px; }
+            #footer { bottom: 28px; left: 24px; gap: 12px; font-size: 10px; }
+            .team-grid { grid-template-columns: 1fr; }
+            #overlay-content { padding: 36px 24px; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="main"></canvas>
+    <canvas id="fragments"></canvas>
+    <canvas id="fx"></canvas>
+
+    <div id="logo">sonaris</div>
+    <div id="learning-badge">Assistent wird trainiert</div>
+    <div id="fragment-tooltip"></div>
+
+    <!-- Chat -->
+    <div id="chat-panel">
+        <div id="chat-header">
+            <button id="chat-cleanup" title="Gespräch zurücksetzen">
+                <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 1 3 6.7"/><polyline points="3 22 3 16 9 16"/></svg>
+                Neustart
+            </button>
+        </div>
+        <div id="chat-messages"></div>
+        <div id="chat-input-row">
+            <button id="contact-btn" title="Persönlich sprechen">
+                <svg viewBox="0 0 24 24">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
+            </button>
+            <input id="chat-input" type="text" placeholder="Schreib etwas …" autocomplete="off" />
+            <button id="chat-send">&#8593;</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer">
+        <a id="footer-team">Team</a>
+        <a id="footer-about">Über Sonaris</a>
+        <a id="footer-impressum">Impressum</a>
+    </div>
+
+    <!-- Overlay -->
+    <div id="overlay">
+        <div id="overlay-content"></div>
+    </div>
+    <button id="overlay-close">&times;</button>
+
+    <!-- Crash Screen (Easter Egg) -->
+    <div id="crash-screen">
+        <div class="crash-text" id="crash-text"></div>
+    </div>
+
+    <!-- Settings -->
+    <div id="toggle">
+        <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+        </svg>
+    </div>
+
+    <div id="controls">
+        <div class="section">
+            <div class="section-title">Atmosphäre</div>
+            <div class="control-group">
+                <div class="control-label"><span>Stimmung</span><span class="control-value" id="moodValue">balanciert</span></div>
+                <input type="range" id="mood" min="0" max="100" step="1" value="50">
+            </div>
+            <div class="control-group">
+                <div class="control-label"><span>Tiefenschärfe</span><span class="control-value" id="depthValue">mittel</span></div>
+                <input type="range" id="depth" min="0" max="100" step="1" value="50">
+            </div>
+            <div class="control-group">
+                <div class="control-label"><span>Partikelzahl</span><span class="control-value" id="densityValue">mittel</span></div>
+                <input type="range" id="density" min="0" max="100" step="1" value="50">
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title">Verbindungen</div>
+            <div class="control-group">
+                <div class="control-label"><span>Netzwerk</span><span class="control-value" id="networkValue">mittel</span></div>
+                <input type="range" id="network" min="0" max="100" step="1" value="50">
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title">Extras</div>
+            <div class="toggle-row">
+                <span class="toggle-label">Ton</span>
+                <div class="toggle-switch" id="sound-toggle"></div>
+            </div>
+            <div style="margin-top: 14px; text-align: center;">
+                <button id="dont-press">Bitte nicht drücken</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ── Canvases ──────────────────────────────────────────────────────────
+        const mainCanvas = document.getElementById('main');
+        const mainCtx = mainCanvas.getContext('2d');
+        const fragmentsCanvas = document.getElementById('fragments');
+        const fragmentsCtx = fragmentsCanvas.getContext('2d');
+        const fxCanvas = document.getElementById('fx');
+        const fxCtx = fxCanvas.getContext('2d');
+
+        let width, height;
+        let mouseX = 0, mouseY = 0;
+        let targetMouseX = 0, targetMouseY = 0;
+        let time = 0;
+        let dwellTime = 0;
+        let lastMouseX = 0, lastMouseY = 0;
+
+        // ── Inactivity tracking ──────────────────────────────────────────────
+        let lastInteractionTime = 0;
+        let nudgeFragmentIndex = -1;
+        let nudgeActive = false;
+        const NUDGE_DELAY = 30000;
+
+        // ── Click trail particles ────────────────────────────────────────────
+        let clickTrails = [];
+
+        // ── Message counter for cleanup button ──────────────────────────────
+        let messageCount = 0;
+
+        // ── Functional color palettes ────────────────────────────────────────
+        // Blue = Chat/KI-Dialog, Red = Human Contact, Warm = Context/Overlays
+        const colors = {
+            blue:  { bg: {r:20,g:28,b:36}, base: {r:55,g:75,b:100}, clarity: {r:110,g:145,b:180}, highlight: {r:180,g:200,b:225}, text: {r:160,g:185,b:215} },
+            red:   { bg: {r:28,g:18,b:20}, base: {r:85,g:45,b:55}, clarity: {r:160,g:85,b:95}, highlight: {r:220,g:140,b:150}, text: {r:210,g:160,b:165} },
+            warm:  { bg: {r:30,g:24,b:18}, base: {r:95,g:70,b:50}, clarity: {r:170,g:125,b:85}, highlight: {r:225,g:185,b:145}, text: {r:215,g:185,b:155} },
+        };
+
+        // ── Settings: new master parameters ──────────────────────────────────
+        let settings = {
+            mood: 50,           // 0=calm, 100=dynamic
+            depthOfField: 50,   // 0=flat, 100=deep
+            density: 50,        // 0=200 particles, 100=1200 particles
+            network: 50,        // 0=off, 100=strong
+            soundOn: false,
+        };
+
+        // Derived params (recalculated from settings)
+        let params = {
+            breathSpeed: 1,
+            movementIntensity: 1.8,
+            parallaxStrength: 1,
+            fragmentVisibility: 1,
+            fragmentSize: 1,
+            networkIntensity: 1,
+            targetParticleCount: 800,
+        };
+
+        function recalcParams() {
+            const m = settings.mood / 100;    // 0..1
+            const d = settings.depthOfField / 100;
+            const n = settings.network / 100;
+            const dens = settings.density / 100;
+
+            // Mood affects: breath speed, movement, color brightness
+            params.breathSpeed = 0.4 + m * 1.8;          // 0.4 .. 2.2
+            params.movementIntensity = 0.6 + m * 2.4;    // 0.6 .. 3.0
+
+            // Depth of field affects parallax + fragment size variation
+            params.parallaxStrength = 0.1 + d * 1.8;     // 0.1 .. 1.9
+
+            // Density: 200 .. 1200
+            params.targetParticleCount = Math.round(200 + dens * 1000);
+
+            // Network
+            params.networkIntensity = n * 2;              // 0 .. 2
+
+            // Fragment vis + size stay at reasonable defaults
+            params.fragmentVisibility = 1;
+            params.fragmentSize = 1;
+        }
+
+        function lerp(a, b, t) { return a + (b - a) * t; }
+        function getHighlightColor() { return colors.blue.highlight; }
+        function getTextColor()      { return colors.blue.text; }
+        function getBgColor()        { return colors.blue.bg; }
+        function getBaseColor()      { return colors.blue.base; }
+
+        // ── All 20 concept fragments (Du-Form) ──────────────────────────────
+        const allFragmentData = [
+            { text: 'Selbstermächtigung', explanation: 'Du triffst Entscheidungen, die wirklich von dir kommen.',
+              question: 'Wie treffe ich Entscheidungen, die wirklich meine eigenen sind?', hasCTA: false },
+            { text: 'Denkpartner', explanation: 'Ein Gegenüber, das mitdenkt – jederzeit, ohne Agenda.',
+              question: 'Wie finde ich einen Denkpartner, der mitdenkt – ohne eigene Agenda?', hasCTA: false },
+            { text: 'Führung', explanation: 'Deine Haltung wird sichtbar, bevor du ein Wort sagst.',
+              question: 'Was macht Führung in der KI-Ära aus?', hasCTA: false },
+            { text: 'Klarheit', explanation: 'Du weißt, was zählt – und warum.',
+              question: 'Wie komme ich schneller zu Klarheit bei komplexen Entscheidungen?', hasCTA: false },
+            { text: 'Tempo', explanation: 'Deine besten Gedanken kommen schneller zum Einsatz.',
+              question: 'Wie bringe ich meine besten Gedanken schneller in die Umsetzung?', hasCTA: false },
+            { text: 'Entscheidung', explanation: 'Du entscheidest auf Basis von dem, was du wirklich weißt.',
+              question: 'Wie kann KI mir helfen, besser zu entscheiden?', hasCTA: false },
+            { text: 'Delegation', explanation: 'Du übergibst mit Vertrauen – und behältst den Überblick.',
+              question: 'Wie delegiere ich besser und behalte trotzdem den Überblick?', hasCTA: false },
+            { text: 'Wirksamkeit', explanation: 'Was du tust, hinterlässt Spuren, die du gewollt hast.',
+              question: 'Wie werde ich in meiner Rolle wirksamer?', hasCTA: false },
+            { text: 'Transformation', explanation: 'Veränderung, die von dir ausgeht – und dich weiterbringt.',
+              question: 'Wie starte ich eine KI-Transformation, die wirklich von mir ausgeht?', hasCTA: true },
+            { text: 'Kontrolle', explanation: 'Du behältst den Faden – auch wenn vieles gleichzeitig läuft.',
+              question: 'Wie behalte ich den Überblick, wenn alles gleichzeitig passiert?', hasCTA: false },
+            { text: 'Vertrauen', explanation: 'Dein Team spürt, dass du weißt, wohin es geht.',
+              question: 'Wie schaffe ich Vertrauen in meinem Team durch KI-Kompetenz?', hasCTA: false },
+            { text: 'Fokus', explanation: 'Deine Aufmerksamkeit landet dort, wo sie den größten Unterschied macht.',
+              question: 'Wie finde ich heraus, worauf ich mich wirklich fokussieren sollte?', hasCTA: false },
+            { text: 'Verantwortung', explanation: 'Du trägst sie – und KI hilft dir, ihr gerecht zu werden.',
+              question: 'Wie hilft mir KI, meiner Verantwortung besser gerecht zu werden?', hasCTA: false },
+            { text: 'Zukunft', explanation: 'Du gestaltest sie aktiv, statt auf sie zu reagieren.',
+              question: 'Wie gestalte ich die Zukunft meines Unternehmens aktiv mit KI?', hasCTA: false },
+            { text: 'Kompetenz', explanation: 'Deine Erfahrung verbindet sich mit neuen Möglichkeiten.',
+              question: 'Wie verbinde ich meine Erfahrung mit den Möglichkeiten von KI?', hasCTA: false },
+            { text: 'Orientierung', explanation: 'Du weißt, wo du stehst – und was als nächstes kommt.',
+              question: 'Wo stehe ich mit KI – und was wäre ein guter nächster Schritt?', hasCTA: true },
+            { text: 'Eigenständigkeit', explanation: 'Du bleibst Herr deiner Werkzeuge.',
+              question: 'Wie nutze ich KI eigenständig, ohne von Dienstleistern abhängig zu sein?', hasCTA: false },
+            { text: 'Haltung', explanation: 'Deine Überzeugungen prägen, wie KI bei dir wirkt.',
+              question: 'Welche Haltung brauche ich, damit KI bei mir wirklich wirkt?', hasCTA: false },
+            { text: 'Souveränität', explanation: 'Du nutzt KI aus einer Position der Stärke.',
+              question: 'Wie nutze ich KI souverän – ohne mich davon treiben zu lassen?', hasCTA: false },
+            { text: 'Anfang', explanation: 'Der erste Schritt gehört dir – und er ist kleiner als gedacht.',
+              question: 'Was ist ein guter erster Schritt, um KI für mich zu nutzen?', hasCTA: true },
+        ];
+
+        // ── Bot replies: kurz, mit Gegenfrage ───────────────────────────────
+        const botReplies = {
+            'Selbstermächtigung': 'KI-Selbstermächtigung heißt: Du bleibst der Entscheider. KI gibt dir Werkzeuge für mehr Klarheit und Tempo. Was würde sich ändern, wenn du KI als Denkpartner hättest?',
+            'Denkpartner': 'Ein KI-Denkpartner erledigt keine Aufgaben – er schärft deine Gedanken. Jede strategische Überlegung sofort durchspielbar. Willst du das einmal erleben?',
+            'Führung': 'Führung heißt: verstehen, was möglich ist, und die Richtung vorgeben. Dafür musst du KI nicht programmieren – du musst sie denken können. Wie gehst du damit heute um?',
+            'Klarheit': 'Klarheit entsteht durch die richtigen Fragen – und schnelle, belastbare Antworten. KI beschleunigt diesen Prozess massiv. Was ist gerade dein dringlichstes Thema?',
+            'Tempo': 'Zwischen Gedanke und Umsetzung liegen oft zu viele Schleifen. KI verkürzt diesen Weg drastisch. Was bremst dich gerade am meisten?',
+            'Entscheidung': 'KI liefert dir in Minuten, wofür du sonst Tage brauchst: Recherche, Analyse, Szenarien. Welche Entscheidung steht bei dir gerade an?',
+            'Delegation': 'Delegation funktioniert besser mit Überblick. KI hilft dir, schneller zu prüfen und Zusammenhänge zu erkennen. Wo fällt dir Loslassen schwer?',
+            'Wirksamkeit': 'Wirksamkeit heißt: weniger sortieren, mehr gestalten. KI schafft Raum für das, was wirklich zählt. Was wäre dein erster Anwendungsfall?',
+            'Transformation': 'Transformation beginnt mit einem konkreten Moment. 90 Minuten, ein Anwendungsfall aus deinem Alltag. Das ist unser KI-Kickstart.',
+            'Kontrolle': 'KI hilft dir, komplexe Situationen schneller zu durchdringen – ohne dich in Details zu verlieren. Was beschäftigt dich dabei am meisten?',
+            'Vertrauen': 'Vertrauen entsteht, wenn dein Team sieht, dass du die Richtung kennst. KI hilft dir, schneller und fundierter zu kommunizieren. Wie setzt du heute Impulse?',
+            'Fokus': 'KI filtert aus der Informationsflut das Wesentliche – damit deine Aufmerksamkeit dort landet, wo sie zählt. Wo verlierst du aktuell am meisten Zeit?',
+            'Verantwortung': 'Verantwortung lässt sich nicht delegieren – aber du kannst dir Werkzeuge schaffen, die helfen. Genau da setzt Sonaris an. Was ist deine größte Verantwortung gerade?',
+            'Zukunft': 'KI ist kein Autopilot – sie ist ein Beschleuniger für dein Denken. Wie blickst du auf die nächsten 12 Monate?',
+            'Kompetenz': 'Deine Erfahrung ist dein größtes Asset. KI macht sie nicht überflüssig – sie erweitert, was du damit tun kannst. Welche Kompetenz würdest du gern verstärken?',
+            'Orientierung': 'KI kann dein persönliches Radar sein – für Markt, Team und Strategie. Was fehlt dir gerade an Überblick?',
+            'Eigenständigkeit': 'Eigenständigkeit heißt: du verstehst deine Werkzeuge. Sonaris zeigt dir, wie du KI selbst nutzt – souverän und kompetent. Wo möchtest du unabhängiger werden?',
+            'Haltung': 'Haltung entscheidet, ob KI Mehrwert schafft oder Komplexität. Wir helfen dir, eine fundierte Position zu entwickeln. Was ist deine aktuelle Haltung zum Thema?',
+            'Souveränität': 'Souveränität heißt: du nutzt KI, weil du es willst – kein Hype, kein Druck. Wie souverän fühlst du dich aktuell im Umgang mit KI?',
+            'Anfang': '90 Minuten, ein konkreter Anwendungsfall aus deinem Alltag, und du erlebst, was möglich ist. Das ist unser KI-Kickstart.',
+        };
+
+        // Topics that trigger a contact CTA in the bot reply
+        const ctaTopics = new Set(['Transformation', 'Orientierung', 'Anfang']);
+
+        const VISIBLE_COUNT = 6;
+        const ROTATION_INTERVAL = 16000;
+
+        // ── Fragment state ────────────────────────────────────────────────────
+        let fragments = [];
+        let poolIndices = [];
+        let hoveredFragment = null;
+        let lastRotation = 0;
+
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function makeFragment(dataIndex) {
+            const d = allFragmentData[dataIndex];
+            return {
+                dataIndex,
+                text: d.text,
+                explanation: d.explanation,
+                question: d.question,
+                depth: 0.4 + Math.random() * 0.6,
+                x: 0.08 + Math.random() * 0.84,
+                y: 0.06 + Math.random() * 0.68,
+                baseX: 0,
+                baseY: 0,
+                currentX: 0,
+                currentY: 0,
+                driftPhase: Math.random() * Math.PI * 2,
+                driftSpeed: 0.18 + Math.random() * 0.25,
+                pulsePhase: Math.random() * Math.PI * 2,
+                pulseSpeed: 0.4 + Math.random() * 0.6,
+                visibility: 0,
+                targetVisibility: 0,
+                fadingOut: false,
+                frozen: false,
+                clickFlash: 0,
+            };
+        }
+
+        function initFragments() {
+            const order = shuffle([...Array(allFragmentData.length).keys()]);
+            const active = order.slice(0, VISIBLE_COUNT);
+            poolIndices = order.slice(VISIBLE_COUNT);
+
+            fragments = active.map(i => {
+                const f = makeFragment(i);
+                f.baseX = f.x * width;
+                f.baseY = f.y * height;
+                return f;
+            });
+        }
+
+        function rotateSingleFragment() {
+            if (poolIndices.length === 0) return;
+            const candidates = fragments.filter(f => !f.frozen && !f.fadingOut);
+            if (candidates.length === 0) return;
+
+            const outFrag = candidates[Math.floor(Math.random() * candidates.length)];
+            outFrag.fadingOut = true;
+
+            setTimeout(() => {
+                const newIndex = poolIndices.shift();
+                poolIndices.push(outFrag.dataIndex);
+
+                const idx = fragments.indexOf(outFrag);
+                if (idx === -1) return;
+
+                const f = makeFragment(newIndex);
+                f.baseX = f.x * width;
+                f.baseY = f.y * height;
+                fragments[idx] = f;
+            }, 1200);
+        }
+
+        // ── Particles ─────────────────────────────────────────────────────────
+        let particles = [];
+
+        function initParticles() {
+            const count = params.targetParticleCount;
+            // Keep existing particles if possible, add/remove to match target
+            if (particles.length > count) {
+                particles.length = count;
+            }
+            while (particles.length < count) {
+                const depth = 0.2 + Math.random() * 0.8;
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    depth,
+                    size: 2 + depth * 4,
+                    phase: Math.random() * Math.PI * 2,
+                    speedX: (Math.random() - 0.5) * 0.3,
+                    speedY: (Math.random() - 0.5) * 0.3,
+                    orbitRadius: 10 + Math.random() * 30,
+                    orbitSpeed: 0.2 + Math.random() * 0.5,
+                    opacity: 0.15 + depth * 0.3,
+                    calm: 0,
+                });
+            }
+        }
+
+        // ── Resize ────────────────────────────────────────────────────────────
+        function resize() {
+            width  = mainCanvas.width  = fragmentsCanvas.width  = fxCanvas.width  = window.innerWidth;
+            height = mainCanvas.height = fragmentsCanvas.height = fxCanvas.height = window.innerHeight;
+            if (!targetMouseX) { targetMouseX = width / 2; targetMouseY = height / 2; }
+            mouseX = width / 2;
+            mouseY = height / 2;
+            initParticles();
+            initFragments();
+        }
+        window.addEventListener('resize', resize);
+
+        // ── Mouse ─────────────────────────────────────────────────────────────
+        document.addEventListener('mousemove', e => {
+            targetMouseX = e.clientX;
+            targetMouseY = e.clientY;
+            lastInteractionTime = performance.now();
+            nudgeActive = false;
+        });
+        document.addEventListener('mouseleave', () => { targetMouseX = width / 2; targetMouseY = height / 2; });
+
+        // ── Touch ─────────────────────────────────────────────────────────────
+        document.addEventListener('touchmove', e => {
+            e.preventDefault();
+            targetMouseX = e.touches[0].clientX;
+            targetMouseY = e.touches[0].clientY;
+            lastInteractionTime = performance.now();
+            nudgeActive = false;
+        }, { passive: false });
+        document.addEventListener('touchend', () => { targetMouseX = width / 2; targetMouseY = height / 2; });
+
+        // ── Click trail FX ───────────────────────────────────────────────────
+        function spawnClickTrail(fromX, fromY) {
+            const chatPanel = document.getElementById('chat-panel');
+            const rect = chatPanel.getBoundingClientRect();
+            const toX = rect.left + rect.width / 2;
+            const toY = rect.top + 10;
+            const count = 12;
+
+            for (let i = 0; i < count; i++) {
+                const delay = i * 0.06;
+                const spread = 20;
+                clickTrails.push({
+                    x: fromX + (Math.random() - 0.5) * spread,
+                    y: fromY + (Math.random() - 0.5) * spread,
+                    toX: toX + (Math.random() - 0.5) * 40,
+                    toY: toY,
+                    progress: -delay,
+                    speed: 0.025 + Math.random() * 0.015,
+                    size: 2 + Math.random() * 3,
+                    alpha: 0.8,
+                });
+            }
+        }
+
+        function updateClickTrails() {
+            for (let i = clickTrails.length - 1; i >= 0; i--) {
+                const t = clickTrails[i];
+                t.progress += t.speed;
+                if (t.progress > 1.2) {
+                    clickTrails.splice(i, 1);
+                }
+            }
+        }
+
+        function drawClickTrails() {
+            fxCtx.clearRect(0, 0, width, height);
+            const hl = getHighlightColor();
+
+            clickTrails.forEach(t => {
+                if (t.progress < 0) return;
+                const p = Math.min(t.progress, 1);
+                const ease = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+
+                const x = lerp(t.x, t.toX, ease);
+                const y = lerp(t.y, t.toY, ease);
+                const alpha = t.alpha * (1 - p);
+                const size = t.size * (1 - p * 0.5);
+
+                fxCtx.beginPath();
+                fxCtx.arc(x, y, size, 0, Math.PI * 2);
+                fxCtx.fillStyle = `rgba(${hl.r},${hl.g},${hl.b},${alpha})`;
+                fxCtx.fill();
+            });
+        }
+
+        // ── Update particles ──────────────────────────────────────────────────
+        function updateParticles() {
+            const mi = params.movementIntensity;
+            const ps = params.parallaxStrength;
+
+            particles.forEach(p => {
+                const parallaxFactor = (1 - p.depth) * ps * 35;
+                const offsetX = (mouseX - width / 2) / width * parallaxFactor;
+                const offsetY = (mouseY - height / 2) / height * parallaxFactor;
+
+                const dx = mouseX - p.x;
+                const dy = mouseY - p.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const influence = Math.max(0, 1 - dist / 300);
+                p.calm += (influence - p.calm) * 0.05;
+
+                const orbitX = Math.cos(time * p.orbitSpeed + p.phase) * p.orbitRadius * mi;
+                const orbitY = Math.sin(time * p.orbitSpeed * 0.7 + p.phase) * p.orbitRadius * mi;
+
+                p.x += p.speedX * mi + orbitX * 0.01;
+                p.y += p.speedY * mi + orbitY * 0.01;
+
+                if (p.x < 0) p.x = width;
+                if (p.x > width) p.x = 0;
+                if (p.y < 0) p.y = height;
+                if (p.y > height) p.y = 0;
+
+                p.displayX = p.x + offsetX;
+                p.displayY = p.y + offsetY;
+            });
+        }
+
+        // ── Update fragments ──────────────────────────────────────────────────
+        const fragmentTooltip = document.getElementById('fragment-tooltip');
+
+        function updateFragments(now) {
+            if (now - lastRotation > ROTATION_INTERVAL) {
+                lastRotation = now;
+                rotateSingleFragment();
+            }
+
+            // Nudge check
+            if (!nudgeActive && now - lastInteractionTime > NUDGE_DELAY && fragments.length > 0) {
+                const eligible = fragments.filter(f => !f.fadingOut);
+                if (eligible.length > 0) {
+                    nudgeFragmentIndex = fragments.indexOf(eligible[Math.floor(Math.random() * eligible.length)]);
+                    nudgeActive = true;
+                }
+            }
+
+            const attentionRadius = 220;
+            const ps = params.parallaxStrength;
+            let closestFragment = null;
+            let closestDist = Infinity;
+
+            fragments.forEach((f, idx) => {
+                if (f.fadingOut) {
+                    f.visibility = Math.max(0, f.visibility - 0.025);
+                    return;
+                }
+
+                const parallaxFactor = (1 - f.depth) * ps * 45;
+                const offsetX = (mouseX - width / 2) / width * parallaxFactor;
+                const offsetY = (mouseY - height / 2) / height * parallaxFactor;
+
+                const driftX = Math.sin(time * f.driftSpeed + f.driftPhase) * 18 * f.depth;
+                const driftY = Math.cos(time * f.driftSpeed * 0.7 + f.driftPhase) * 18 * f.depth;
+
+                f.currentX = f.baseX + driftX + offsetX;
+                f.currentY = f.baseY + driftY + offsetY;
+
+                const dx = f.currentX - mouseX;
+                const dy = f.currentY - mouseY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                const pulse = Math.sin(time * f.pulseSpeed + f.pulsePhase);
+                const pulseBoost = 0.04 + pulse * 0.04;
+
+                const isNudged = nudgeActive && idx === nudgeFragmentIndex;
+                const nudgeBoost = isNudged ? 0.12 + Math.sin(time * 1.2) * 0.08 : 0;
+
+                if (f.frozen) {
+                    f.targetVisibility = 1.0;
+                } else {
+                    const proximity = Math.max(0, 1 - dist / attentionRadius);
+                    f.targetVisibility = pulseBoost + nudgeBoost + proximity * proximity * (0.5 + dwellTime * 0.42);
+                }
+
+                f.visibility += (f.targetVisibility - f.visibility) * 0.05;
+
+                if (f.clickFlash > 0) f.clickFlash *= 0.92;
+
+                if (f.visibility > 0.25 && dist < closestDist) {
+                    closestDist = dist;
+                    closestFragment = f;
+                }
+            });
+
+            fragments.forEach(f => { f.frozen = false; });
+
+            if (closestFragment && closestDist < 90) {
+                hoveredFragment = closestFragment;
+                closestFragment.frozen = true;
+                fragmentTooltip.textContent = closestFragment.explanation;
+
+                let tooltipX = closestFragment.currentX - 120;
+                let tooltipY = closestFragment.currentY + 38;
+                tooltipX = Math.max(8, Math.min(tooltipX, width - 280));
+                tooltipY = Math.min(tooltipY, height - 80);
+
+                fragmentTooltip.style.left = tooltipX + 'px';
+                fragmentTooltip.style.top  = tooltipY + 'px';
+                fragmentTooltip.classList.add('visible');
+                mainCanvas.style.cursor = 'pointer';
+            } else {
+                hoveredFragment = null;
+                fragmentTooltip.classList.remove('visible');
+                mainCanvas.style.cursor = 'default';
+            }
+        }
+
+        // ── Draw particles + vignette ────────────────────────────────────────
+        function drawMain() {
+            const bg = getBgColor();
+            // Mood-dependent brightness
+            const moodBright = settings.mood / 100;
+            const bgR = bg.r + moodBright * 4;
+            const bgG = bg.g + moodBright * 3;
+            const bgB = bg.b + moodBright * 2;
+            mainCtx.fillStyle = `rgb(${bgR},${bgG},${bgB})`;
+            mainCtx.fillRect(0, 0, width, height);
+
+            const highlight = getHighlightColor();
+            const base = getBaseColor();
+
+            particles.forEach(p => {
+                const depthFactor = 0.5 + p.depth * 0.5;
+                const r = lerp(base.r, highlight.r, p.calm) * depthFactor;
+                const g = lerp(base.g, highlight.g, p.calm) * depthFactor;
+                const b = lerp(base.b, highlight.b, p.calm) * depthFactor;
+                const alpha = (p.opacity + p.calm * 0.2) * depthFactor;
+                const size = p.size * (1 - p.calm * 0.3);
+
+                mainCtx.beginPath();
+                mainCtx.arc(p.displayX, p.displayY, size, 0, Math.PI * 2);
+                mainCtx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+                mainCtx.fill();
+            });
+
+            // Vignette
+            const vignette = mainCtx.createRadialGradient(
+                width / 2, height / 2, Math.min(width, height) * 0.3,
+                width / 2, height / 2, Math.max(width, height) * 0.7
+            );
+            vignette.addColorStop(0, `rgba(${bg.r},${bg.g},${bg.b},0)`);
+            vignette.addColorStop(1, `rgba(${bg.r},${bg.g},${bg.b},0.45)`);
+            mainCtx.fillStyle = vignette;
+            mainCtx.fillRect(0, 0, width, height);
+        }
+
+        // ── Draw fragments + network lines ───────────────────────────────────
+        function drawFragments() {
+            fragmentsCtx.clearRect(0, 0, width, height);
+
+            const textColor = getTextColor();
+            const highlight = getHighlightColor();
+
+            // Network lines
+            const visible = fragments.filter(f => f.visibility > 0.1);
+            for (let i = 0; i < visible.length; i++) {
+                for (let j = i + 1; j < visible.length; j++) {
+                    const f1 = visible[i], f2 = visible[j];
+                    const dx = f2.currentX - f1.currentX;
+                    const dy = f2.currentY - f1.currentY;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    const distFactor = Math.max(0, 1 - dist / 550);
+                    const linePhase = (i * 7 + j * 13) * 0.1;
+                    const pulse = 0.5 + 0.5 * Math.sin(time * 2 + linePhase);
+                    const alpha = distFactor * (0.06 + pulse * 0.1) * params.networkIntensity * Math.min(f1.visibility, f2.visibility);
+                    if (alpha < 0.01) continue;
+                    const avgDepth = (f1.depth + f2.depth) / 2;
+                    const r = lerp(textColor.r, highlight.r, avgDepth * 0.5);
+                    const g = lerp(textColor.g, highlight.g, avgDepth * 0.5);
+                    const b = lerp(textColor.b, highlight.b, avgDepth * 0.5);
+                    fragmentsCtx.strokeStyle = `rgba(${r},${g},${b},${alpha})`;
+                    fragmentsCtx.lineWidth = 0.5 + pulse * 0.8;
+                    fragmentsCtx.beginPath();
+                    fragmentsCtx.moveTo(f1.currentX, f1.currentY);
+                    fragmentsCtx.lineTo(f2.currentX, f2.currentY);
+                    fragmentsCtx.stroke();
+                }
+            }
+
+            // Fragment labels
+            const sorted = [...fragments].sort((a, b) => a.depth - b.depth);
+            sorted.forEach(f => {
+                const vis = f.visibility * params.fragmentVisibility;
+                if (vis < 0.02) return;
+
+                const isHovered = hoveredFragment === f;
+                const depthScale = 0.65 + f.depth * 0.55;
+                const fontSize = (22 + vis * 10) * depthScale * params.fragmentSize;
+
+                fragmentsCtx.font = `${300 + vis * 200} ${fontSize}px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`;
+                fragmentsCtx.textAlign = 'center';
+                fragmentsCtx.textBaseline = 'middle';
+
+                const depthDim = 0.45 + f.depth * 0.55;
+                const flashBoost = f.clickFlash * 0.5;
+                const r = lerp(textColor.r * 0.25 * depthDim, textColor.r * depthDim, vis) + flashBoost * highlight.r;
+                const g = lerp(textColor.g * 0.25 * depthDim, textColor.g * depthDim, vis) + flashBoost * highlight.g;
+                const b = lerp(textColor.b * 0.25 * depthDim, textColor.b * depthDim, vis) + flashBoost * highlight.b;
+
+                const glowStrength = isHovered ? 0.7 : f.clickFlash > 0.1 ? f.clickFlash : (vis > 0.5 ? (vis - 0.5) * 0.3 : 0);
+
+                if (glowStrength > 0.01) {
+                    fragmentsCtx.shadowColor = `rgba(${highlight.r},${highlight.g},${highlight.b},${glowStrength})`;
+                    fragmentsCtx.shadowBlur = isHovered ? 32 : 20 + f.clickFlash * 40;
+                } else {
+                    fragmentsCtx.shadowColor = 'transparent';
+                    fragmentsCtx.shadowBlur = 0;
+                }
+
+                fragmentsCtx.fillStyle = `rgba(${Math.min(255,r)},${Math.min(255,g)},${Math.min(255,b)},${vis * 0.92})`;
+                fragmentsCtx.fillText(f.text, f.currentX, f.currentY);
+            });
+
+            fragmentsCtx.shadowColor = 'transparent';
+            fragmentsCtx.shadowBlur = 0;
+        }
+
+        // ── Main loop ─────────────────────────────────────────────────────────
+        function draw(now) {
+            time += 0.008 * params.breathSpeed;
+
+            mouseX += (targetMouseX - mouseX) * 0.06;
+            mouseY += (targetMouseY - mouseY) * 0.06;
+
+            const moveDist = Math.hypot(mouseX - lastMouseX, mouseY - lastMouseY);
+            dwellTime = moveDist < 5 ? Math.min(dwellTime + 0.015, 1) : Math.max(dwellTime - 0.025, 0);
+            lastMouseX = mouseX;
+            lastMouseY = mouseY;
+
+            // Adjust particle count smoothly
+            if (particles.length !== params.targetParticleCount) {
+                const diff = params.targetParticleCount - particles.length;
+                const step = Math.sign(diff) * Math.min(Math.abs(diff), 5); // add/remove 5 per frame
+                if (step > 0) {
+                    for (let i = 0; i < step; i++) {
+                        const depth = 0.2 + Math.random() * 0.8;
+                        particles.push({
+                            x: Math.random() * width, y: Math.random() * height, depth,
+                            size: 2 + depth * 4, phase: Math.random() * Math.PI * 2,
+                            speedX: (Math.random() - 0.5) * 0.3, speedY: (Math.random() - 0.5) * 0.3,
+                            orbitRadius: 10 + Math.random() * 30, orbitSpeed: 0.2 + Math.random() * 0.5,
+                            opacity: 0.15 + depth * 0.3, calm: 0,
+                        });
+                    }
+                } else {
+                    particles.length = Math.max(0, particles.length + step);
+                }
+            }
+
+            updateParticles();
+            updateFragments(now);
+            updateClickTrails();
+            drawMain();
+            drawFragments();
+            drawClickTrails();
+
+            requestAnimationFrame(draw);
+        }
+
+        // ── Click on fragment → question in chat ─────────────────────────────
+        function triggerFragmentClick(fragment) {
+            if (!fragment) return;
+
+            fragment.clickFlash = 1;
+            spawnClickTrail(fragment.currentX, fragment.currentY);
+            playClickSound();
+            fragmentTooltip.classList.remove('visible');
+
+            setTimeout(() => {
+                const question = fragment.question;
+                appendMessage(question, 'user');
+                triggerBotReply(fragment.text);
+            }, 500);
+
+            lastInteractionTime = performance.now();
+            nudgeActive = false;
+        }
+
+        mainCanvas.addEventListener('click', () => {
+            if (hoveredFragment) triggerFragmentClick(hoveredFragment);
+        });
+
+        mainCanvas.addEventListener('touchstart', () => {
+            if (hoveredFragment) triggerFragmentClick(hoveredFragment);
+        });
+
+        // ── Chat ──────────────────────────────────────────────────────────────
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput    = document.getElementById('chat-input');
+        const chatSend     = document.getElementById('chat-send');
+        const chatCleanup  = document.getElementById('chat-cleanup');
+
+        function updateCleanupVisibility() {
+            if (messageCount >= 2) {
+                chatCleanup.classList.add('visible');
+            } else {
+                chatCleanup.classList.remove('visible');
+            }
+        }
+
+        function appendMessage(text, role, extraHTML) {
+            const div = document.createElement('div');
+            div.className = `msg ${role}`;
+            if (extraHTML) {
+                div.innerHTML = text + extraHTML;
+            } else {
+                div.textContent = text;
+            }
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            messageCount++;
+            updateCleanupVisibility();
+            return div;
+        }
+
+        function showTyping() {
+            const div = document.createElement('div');
+            div.className = 'msg typing';
+            div.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return div;
+        }
+
+        function cleanupChat() {
+            chatMessages.innerHTML = '';
+            messageCount = 0;
+            updateCleanupVisibility();
+            // Show welcome again after short delay
+            setTimeout(() => {
+                appendMessage('Was beschäftigt dich im Zusammenhang mit KI gerade?', 'bot');
+            }, 400);
+        }
+
+        chatCleanup.addEventListener('click', cleanupChat);
+
+        async function triggerBotReply(key) {
+            const typing = showTyping();
+            await new Promise(r => setTimeout(r, 1000 + Math.random() * 600));
+            typing.remove();
+            const reply = botReplies[key] || 'Lass uns das gemeinsam durchdenken – was beschäftigt dich dabei am meisten?';
+
+            // Check if this topic should show a contact CTA
+            const showCTA = ctaTopics.has(key);
+            const ctaHTML = showCTA
+                ? '<br><a class="msg-cta" onclick="openOverlay(\'contact\')">☎ Sollen wir kurz telefonieren?</a>'
+                : '';
+
+            appendMessage(reply, 'bot', ctaHTML);
+        }
+
+        async function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+            chatInput.value = '';
+            lastInteractionTime = performance.now();
+            nudgeActive = false;
+            appendMessage(text, 'user');
+
+            const match = allFragmentData.find(d => d.text.toLowerCase() === text.toLowerCase());
+            if (match) {
+                triggerBotReply(match.text);
+            } else {
+                const typing = showTyping();
+                await new Promise(r => setTimeout(r, 1000 + Math.random() * 600));
+                typing.remove();
+
+                // After 4+ messages, suggest human contact
+                if (messageCount >= 4) {
+                    appendMessage(
+                        'Lass uns das gemeinsam durchdenken – was beschäftigt dich dabei am meisten?',
+                        'bot',
+                        '<br><a class="msg-cta" onclick="openOverlay(\'contact\')">☎ Persönlich sprechen</a>'
+                    );
+                } else {
+                    appendMessage('Lass uns das gemeinsam durchdenken – was beschäftigt dich dabei am meisten?', 'bot');
+                }
+            }
+        }
+
+        chatSend.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter') sendMessage();
+            lastInteractionTime = performance.now();
+            nudgeActive = false;
+        });
+
+        // ── Contact button ──────────────────────────────────────────────────
+        document.getElementById('contact-btn').addEventListener('click', () => {
+            openOverlay('contact');
+        });
+
+        // ── Welcome message ──────────────────────────────────────────────────
+        function showWelcome() {
+            setTimeout(() => {
+                appendMessage('Was beschäftigt dich im Zusammenhang mit KI gerade?', 'bot');
+            }, 800);
+        }
+
+        // ── Overlay system ───────────────────────────────────────────────────
+        const overlay = document.getElementById('overlay');
+        const overlayContent = document.getElementById('overlay-content');
+        const overlayClose = document.getElementById('overlay-close');
+
+        const overlayPages = {
+            team: `
+                <h2>Das Team</h2>
+                <p>Vier Perspektiven, ein gemeinsames Ziel: Unternehmer befähigen, KI eigenständig und souverän einzusetzen.</p>
+                <div class="team-grid">
+                    <div class="team-card">
+                        <div class="team-initials">OA</div>
+                        <div class="name">Oliver Andrees</div>
+                        <div class="role">Kontaktarchitekt</div>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-initials">CP</div>
+                        <div class="name">Christian Pessing</div>
+                        <div class="role">Strategische Umsetzung</div>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-initials">LS</div>
+                        <div class="name">Lukas Sontheimer</div>
+                        <div class="role">KI-Architektur</div>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-initials">LS</div>
+                        <div class="name">Lorenz Surkemper</div>
+                        <div class="role">Technologie & Integration</div>
+                    </div>
+                </div>
+            `,
+            about: `
+                <h2>Über Sonaris</h2>
+                <p>Sonaris begleitet Geschäftsführer und Führungskräfte im Mittelstand dabei, KI als Denkwerkzeug zu verstehen und eigenständig einzusetzen.</p>
+                <h3>Was wir tun</h3>
+                <p>Wir starten mit einem 90-Minuten KI-Kickstart: ein konkreter Anwendungsfall aus deinem Alltag, durchgespielt mit KI. Kein Theorievortrag, kein Verkaufsgespräch – ein Erlebnis, das zeigt, was möglich ist.</p>
+                <h3>Wofür wir stehen</h3>
+                <p>Selbstermächtigung statt Abhängigkeit. Du lernst, KI als Denkpartner zu nutzen – für Entscheidungen, Strategie und Führung. Souverän und kompetent.</p>
+                <h3>Für wen</h3>
+                <p>Für Geschäftsführer und Entscheider, die KI verstehen und nutzen wollen – aus eigener Stärke heraus.</p>
+            `,
+            impressum: `
+                <h2>Impressum</h2>
+                <h3>Angaben gemäß § 5 TMG</h3>
+                <p>Sonaris GbR<br>
+                [Adresse wird ergänzt]<br>
+                [PLZ Ort]</p>
+                <h3>Vertreten durch</h3>
+                <p>Oliver Andrees, Christian Pessing,<br>Lukas Sontheimer, Lorenz Surkemper</p>
+                <h3>Kontakt</h3>
+                <p>E-Mail: kontakt@sonaris.de</p>
+                <h3>Verantwortlich für den Inhalt</h3>
+                <p>Oliver Andrees</p>
+            `,
+            contact: `
+                <div class="contact-dialog" id="contact-dialog">
+                    <div class="contact-question">Was ist gerade dein dringendstes Thema?</div>
+                    <div class="contact-input-wrap">
+                        <input type="text" id="contact-topic" placeholder="z.B. KI für mein Vertriebsteam einsetzen" />
+                    </div>
+                    <button class="contact-send" id="contact-topic-send">Absenden</button>
+                </div>
+            `,
+        };
+
+        function openOverlay(page) {
+            overlayContent.innerHTML = overlayPages[page] || '';
+            overlay.classList.add('visible');
+            overlayClose.classList.add('visible');
+
+            // Wire up contact mini-dialog if it's the contact page
+            if (page === 'contact') {
+                initContactDialog();
+            }
+        }
+
+        function initContactDialog() {
+            const dialog = document.getElementById('contact-dialog');
+            const topicInput = document.getElementById('contact-topic');
+            const topicSend = document.getElementById('contact-topic-send');
+            if (!dialog || !topicInput || !topicSend) return;
+
+            topicInput.focus();
+
+            // Allow Enter key
+            topicInput.addEventListener('keydown', e => {
+                if (e.key === 'Enter') topicSend.click();
+            });
+
+            topicSend.addEventListener('click', () => {
+                const topic = topicInput.value.trim();
+                if (!topic) { topicInput.focus(); return; }
+
+                // Phase 2: Show reply + contact fields
+                dialog.innerHTML = `
+                    <div class="contact-reply">
+                        Verstanden: <em>${topic}</em><br><br>
+                        Wir melden uns innerhalb von 24 Stunden bei dir.
+                    </div>
+                    <div class="contact-fields visible">
+                        <div class="contact-input-wrap">
+                            <input type="email" id="contact-email" placeholder="Deine E-Mail-Adresse" />
+                        </div>
+                        <div class="contact-input-wrap">
+                            <input type="tel" id="contact-phone" placeholder="Telefon (optional)" />
+                        </div>
+                        <button class="contact-send" id="contact-final-send">Absenden</button>
+                    </div>
+                `;
+
+                document.getElementById('contact-email').focus();
+
+                document.getElementById('contact-email').addEventListener('keydown', e => {
+                    if (e.key === 'Enter') document.getElementById('contact-final-send').click();
+                });
+
+                document.getElementById('contact-final-send').addEventListener('click', () => {
+                    const email = document.getElementById('contact-email').value.trim();
+                    if (!email || !email.includes('@')) {
+                        document.getElementById('contact-email').focus();
+                        return;
+                    }
+
+                    // Phase 3: Success
+                    dialog.innerHTML = `
+                        <div class="contact-success">
+                            <div class="checkmark">✓</div>
+                            <p style="color: rgba(225, 185, 145, 0.92); font-size: 16px; margin-bottom: 8px;">
+                                Danke. Wir melden uns.
+                            </p>
+                            <p style="color: rgba(215, 185, 155, 0.5); font-size: 13px;">
+                                Dein Thema: ${topic}
+                            </p>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        function closeOverlay() {
+            overlay.classList.remove('visible');
+            overlayClose.classList.remove('visible');
+        }
+
+        overlayClose.addEventListener('click', closeOverlay);
+        overlay.addEventListener('click', e => {
+            if (e.target === overlay) closeOverlay();
+        });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') closeOverlay();
+        });
+
+        // Footer links
+        document.getElementById('footer-team').addEventListener('click', () => openOverlay('team'));
+        document.getElementById('footer-about').addEventListener('click', () => openOverlay('about'));
+        document.getElementById('footer-impressum').addEventListener('click', () => openOverlay('impressum'));
+
+        // ── Ambient Sound (Web Audio API) ────────────────────────────────────
+        let audioCtx = null;
+        let ambientNodes = null;
+
+        function createAmbientSound() {
+            if (audioCtx) return;
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+            // Create a gentle ambient drone with 3 oscillators
+            const master = audioCtx.createGain();
+            master.gain.value = 0;
+            master.connect(audioCtx.destination);
+
+            const osc1 = audioCtx.createOscillator();
+            osc1.type = 'sine';
+            osc1.frequency.value = 110; // A2
+            const gain1 = audioCtx.createGain();
+            gain1.gain.value = 0.08;
+            osc1.connect(gain1);
+            gain1.connect(master);
+
+            const osc2 = audioCtx.createOscillator();
+            osc2.type = 'sine';
+            osc2.frequency.value = 164.81; // E3
+            const gain2 = audioCtx.createGain();
+            gain2.gain.value = 0.05;
+            osc2.connect(gain2);
+            gain2.connect(master);
+
+            const osc3 = audioCtx.createOscillator();
+            osc3.type = 'sine';
+            osc3.frequency.value = 220; // A3
+            const gain3 = audioCtx.createGain();
+            gain3.gain.value = 0.03;
+            osc3.connect(gain3);
+            gain3.connect(master);
+
+            // Subtle LFO on master volume
+            const lfo = audioCtx.createOscillator();
+            lfo.type = 'sine';
+            lfo.frequency.value = 0.08; // very slow
+            const lfoGain = audioCtx.createGain();
+            lfoGain.gain.value = 0.015;
+            lfo.connect(lfoGain);
+            lfoGain.connect(master.gain);
+
+            osc1.start();
+            osc2.start();
+            osc3.start();
+            lfo.start();
+
+            ambientNodes = { master, osc1, osc2, osc3, lfo };
+        }
+
+        function toggleSound(on) {
+            if (on) {
+                createAmbientSound();
+                // Fade in
+                ambientNodes.master.gain.cancelScheduledValues(audioCtx.currentTime);
+                ambientNodes.master.gain.setValueAtTime(ambientNodes.master.gain.value, audioCtx.currentTime);
+                ambientNodes.master.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 1.5);
+            } else if (ambientNodes) {
+                // Fade out
+                ambientNodes.master.gain.cancelScheduledValues(audioCtx.currentTime);
+                ambientNodes.master.gain.setValueAtTime(ambientNodes.master.gain.value, audioCtx.currentTime);
+                ambientNodes.master.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1.0);
+            }
+        }
+
+        // Play a subtle click sound when fragment is tapped
+        function playClickSound() {
+            if (!settings.soundOn || !audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            osc.type = 'sine';
+            osc.frequency.value = 880;
+            const env = audioCtx.createGain();
+            env.gain.value = 0.06;
+            env.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+            osc.connect(env);
+            env.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.15);
+        }
+
+        // Play crash/power-down sound (always plays, regardless of sound toggle)
+        function playCrashSound() {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+            // Descending sweep — like a system powering down
+            const sweep = ctx.createOscillator();
+            sweep.type = 'sawtooth';
+            sweep.frequency.setValueAtTime(800, ctx.currentTime);
+            sweep.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 1.0);
+            const sweepGain = ctx.createGain();
+            sweepGain.gain.setValueAtTime(0.12, ctx.currentTime);
+            sweepGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
+            sweep.connect(sweepGain);
+            sweepGain.connect(ctx.destination);
+            sweep.start();
+            sweep.stop(ctx.currentTime + 1.2);
+
+            // Noise burst — static/distortion
+            const bufferSize = ctx.sampleRate * 0.8;
+            const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const data = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+            }
+            const noise = ctx.createBufferSource();
+            noise.buffer = noiseBuffer;
+            const noiseGain = ctx.createGain();
+            noiseGain.gain.setValueAtTime(0.15, ctx.currentTime);
+            noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
+            // Low-pass filter for rumble
+            const lpf = ctx.createBiquadFilter();
+            lpf.type = 'lowpass';
+            lpf.frequency.setValueAtTime(2000, ctx.currentTime);
+            lpf.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.8);
+            noise.connect(lpf);
+            lpf.connect(noiseGain);
+            noiseGain.connect(ctx.destination);
+            noise.start();
+
+            // Deep impact thud
+            const thud = ctx.createOscillator();
+            thud.type = 'sine';
+            thud.frequency.setValueAtTime(80, ctx.currentTime);
+            thud.frequency.exponentialRampToValueAtTime(20, ctx.currentTime + 0.5);
+            const thudGain = ctx.createGain();
+            thudGain.gain.setValueAtTime(0.2, ctx.currentTime);
+            thudGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+            thud.connect(thudGain);
+            thudGain.connect(ctx.destination);
+            thud.start();
+            thud.stop(ctx.currentTime + 0.5);
+        }
+
+        // ── Settings UI ───────────────────────────────────────────────────────
+        const toggle   = document.getElementById('toggle');
+        const controls = document.getElementById('controls');
+        toggle.addEventListener('click', () => controls.classList.toggle('visible'));
+
+        // Mood labels
+        function moodLabel(v) {
+            if (v < 20) return 'ruhig';
+            if (v < 40) return 'gelassen';
+            if (v < 60) return 'balanciert';
+            if (v < 80) return 'lebendig';
+            return 'dynamisch';
+        }
+
+        function depthLabel(v) {
+            if (v < 25) return 'flach';
+            if (v < 50) return 'subtil';
+            if (v < 75) return 'mittel';
+            return 'tief';
+        }
+
+        function densityLabel(v) {
+            if (v < 25) return 'minimal';
+            if (v < 50) return 'leicht';
+            if (v < 75) return 'mittel';
+            return 'dicht';
+        }
+
+        function networkLabel(v) {
+            if (v < 10) return 'aus';
+            if (v < 35) return 'dezent';
+            if (v < 65) return 'mittel';
+            return 'stark';
+        }
+
+        function bindSetting(sliderId, settingKey, labelFn) {
+            const el = document.getElementById(sliderId);
+            const valEl = document.getElementById(sliderId + 'Value');
+            el.addEventListener('input', () => {
+                settings[settingKey] = parseInt(el.value);
+                if (valEl && labelFn) valEl.textContent = labelFn(settings[settingKey]);
+                recalcParams();
+            });
+        }
+
+        bindSetting('mood', 'mood', moodLabel);
+        bindSetting('depth', 'depthOfField', depthLabel);
+        bindSetting('density', 'density', densityLabel);
+        bindSetting('network', 'network', networkLabel);
+
+        // Sound toggle
+        const soundToggle = document.getElementById('sound-toggle');
+        soundToggle.addEventListener('click', () => {
+            settings.soundOn = !settings.soundOn;
+            soundToggle.classList.toggle('active', settings.soundOn);
+            toggleSound(settings.soundOn);
+        });
+
+        // ── Easter Egg: "Bitte nicht drücken" ─────────────────────────────────
+        let crashActive = false;
+        const dontPressBtn = document.getElementById('dont-press');
+        const crashScreen = document.getElementById('crash-screen');
+        const crashText = document.getElementById('crash-text');
+
+        const crashLines = [
+            '> SYSTEM INTERRUPT',
+            '> Neural network destabilized...',
+            '> Attempting recovery...',
+            '> Restoring particle matrix [████████░░] 80%',
+            '> Restoring particle matrix [██████████] 100%',
+            '> Fragment coherence: OK',
+            '> Cognitive layer: STABLE',
+            '',
+            '> Alles in Ordnung. Ich bin robust.',
+            '> Hatte ich nicht gesagt: Bitte nicht drücken?',
+        ];
+
+        async function typeCrashLine(text, container, delay) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    const line = document.createElement('div');
+                    line.className = 'crash-line';
+                    line.style.animationDelay = '0s';
+                    if (text === '') {
+                        line.innerHTML = '&nbsp;';
+                    } else {
+                        line.textContent = text;
+                    }
+                    container.appendChild(line);
+                    resolve();
+                }, delay);
+            });
+        }
+
+        dontPressBtn.addEventListener('click', async () => {
+            if (crashActive) return;
+            crashActive = true;
+
+            // Close settings panel
+            controls.classList.remove('visible');
+
+            // Save state
+            const savedSpeeds = particles.map(p => ({ speedY: p.speedY, speedX: p.speedX }));
+            const savedFragmentY = fragments.map(f => f.baseY);
+
+            // Phase 1: Glitch (1.2s) — particles get gravity, fragments fall
+            playCrashSound();
+            document.body.classList.add('glitching');
+            particles.forEach(p => {
+                p.speedY = 3 + Math.random() * 5;
+                p.speedX = (Math.random() - 0.5) * 3;
+            });
+            fragments.forEach(f => { f.baseY = height + 300; });
+
+            await new Promise(r => setTimeout(r, 1200));
+
+            // Phase 2: Blackout
+            document.body.classList.remove('glitching');
+            document.body.classList.add('blackout');
+
+            await new Promise(r => setTimeout(r, 800));
+
+            // Phase 3: Crash screen with terminal output
+            crashText.innerHTML = '';
+            crashScreen.classList.add('visible');
+
+            for (let i = 0; i < crashLines.length; i++) {
+                const delay = i === 0 ? 300 : (i < 3 ? 500 : (i < 5 ? 400 : (i < 7 ? 350 : 700)));
+                await typeCrashLine(crashLines[i], crashText, delay);
+            }
+
+            // Add blinking cursor at end
+            const cursorSpan = document.createElement('span');
+            cursorSpan.className = 'cursor-blink';
+            crashText.lastElementChild.appendChild(cursorSpan);
+
+            // Wait, then recover
+            await new Promise(r => setTimeout(r, 2500));
+
+            // Phase 4: Recovery
+            crashScreen.classList.remove('visible');
+            document.body.classList.remove('blackout');
+
+            // Restore particles
+            particles.forEach((p, i) => {
+                p.speedY = savedSpeeds[i].speedY;
+                p.speedX = savedSpeeds[i].speedX;
+                p.y = Math.random() * height;
+                p.x = Math.random() * width;
+            });
+            fragments.forEach((f, i) => {
+                f.baseY = savedFragmentY[i] !== undefined ? savedFragmentY[i] : f.y * height;
+            });
+
+            document.body.classList.add('recovering');
+
+            setTimeout(() => {
+                appendMessage('Alles in Ordnung. Ich bin robust. Hatte ich nicht gesagt: Bitte nicht drücken?', 'bot');
+            }, 800);
+
+            setTimeout(() => {
+                document.body.classList.remove('recovering');
+                crashActive = false;
+            }, 3000);
+        });
+
+        // ── Boot ──────────────────────────────────────────────────────────────
+        recalcParams();
+        resize();
+        lastRotation = performance.now();
+        lastInteractionTime = performance.now();
+        targetMouseX = width / 2;
+        targetMouseY = height / 2;
+        showWelcome();
+        requestAnimationFrame(draw);
+    </script>
+</body>
+</html>

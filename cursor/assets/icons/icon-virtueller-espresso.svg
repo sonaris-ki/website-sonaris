@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <radialGradient id="g-espresso" cx="50%" cy="60%" r="40%">
+                        <stop offset="0%" stop-color="rgba(225,185,145,0.08)"/>
+                        <stop offset="100%" stop-color="rgba(225,185,145,0)"/>
+                    </radialGradient>
+                </defs>
+                <circle cx="60" cy="65" r="45" fill="url(#g-espresso)"/>
+                <path d="M 38 58 L 35 88 Q 35 95, 45 96 L 75 96 Q 85 95, 85 88 L 82 58"
+                    fill="none" stroke="rgba(225,185,145,0.45)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M 35 58 Q 60 54, 85 58" fill="none" stroke="rgba(225,185,145,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M 82 63 Q 98 63, 98 76 Q 98 88, 85 88"
+                    fill="none" stroke="rgba(225,185,145,0.35)" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M 25 100 Q 60 106, 95 100" fill="none" stroke="rgba(225,185,145,0.2)" stroke-width="1" stroke-linecap="round"/>
+                <path d="M 48 55 Q 44 42, 50 32 Q 56 22, 48 12" fill="none" stroke="rgba(225,185,145,0.2)" stroke-width="0.8" stroke-linecap="round">
+                    <animate attributeName="d"
+                        values="M 48 55 Q 44 42, 50 32 Q 56 22, 48 12;M 48 55 Q 52 40, 46 30 Q 40 20, 48 10;M 48 55 Q 44 42, 50 32 Q 56 22, 48 12"
+                        dur="4s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.2;0.08;0.2" dur="4s" repeatCount="indefinite"/>
+                </path>
+                <path d="M 60 52 Q 56 38, 62 28 Q 68 18, 60 8" fill="none" stroke="rgba(225,185,145,0.18)" stroke-width="0.8" stroke-linecap="round">
+                    <animate attributeName="d"
+                        values="M 60 52 Q 56 38, 62 28 Q 68 18, 60 8;M 60 52 Q 64 36, 58 26 Q 52 16, 60 6;M 60 52 Q 56 38, 62 28 Q 68 18, 60 8"
+                        dur="4.5s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.18;0.06;0.18" dur="4.5s" repeatCount="indefinite"/>
+                </path>
+                <path d="M 72 55 Q 68 44, 74 34 Q 80 24, 72 16" fill="none" stroke="rgba(225,185,145,0.15)" stroke-width="0.8" stroke-linecap="round">
+                    <animate attributeName="d"
+                        values="M 72 55 Q 68 44, 74 34 Q 80 24, 72 16;M 72 55 Q 76 42, 70 32 Q 64 22, 72 14;M 72 55 Q 68 44, 74 34 Q 80 24, 72 16"
+                        dur="5s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.15;0.05;0.15" dur="5s" repeatCount="indefinite"/>
+                </path>
+                <circle cx="48" cy="10" r="1.5" fill="rgba(110,145,180,0.4)">
+                    <animate attributeName="cy" values="10;6;10" dur="3s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.4;0.15;0.4" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="60" cy="6" r="1.8" fill="rgba(110,145,180,0.45)">
+                    <animate attributeName="cy" values="6;2;6" dur="3.5s" repeatCount="indefinite"/>
+                    <animate attributeName="opacity" values="0.45;0.15;0.45" dur="3.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="72" cy="12" r="1.3" fill="rgba(110,145,180,0.35)">
+                    <animate attributeName="cy" values="12;7;12" dur="4s" repeatCount="indefinite"/>
+                </circle>
+                <line x1="48" y1="10" x2="60" y2="6" stroke="rgba(110,145,180,0.15)" stroke-width="0.4"/>
+                <line x1="60" y1="6" x2="72" y2="12" stroke="rgba(110,145,180,0.12)" stroke-width="0.4"/>
+</svg>

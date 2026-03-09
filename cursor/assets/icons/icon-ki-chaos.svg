@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="40" fill="rgba(160,85,95,0.04)"/>
+                <circle cx="28" cy="35" r="2.5" fill="rgba(160,85,95,0.5)">
+                    <animate attributeName="cx" values="28;30;28" dur="3s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="72" cy="28" r="2" fill="rgba(160,85,95,0.4)">
+                    <animate attributeName="cy" values="28;26;28" dur="2.8s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="95" cy="50" r="2" fill="rgba(160,85,95,0.35)">
+                    <animate attributeName="cx" values="95;97;95" dur="3.2s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="45" cy="60" r="2.5" fill="rgba(160,85,95,0.45)">
+                    <animate attributeName="cy" values="60;58;60" dur="2.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="85" cy="80" r="2" fill="rgba(160,85,95,0.4)">
+                    <animate attributeName="cx" values="85;83;85" dur="3.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="35" cy="88" r="2.5" fill="rgba(160,85,95,0.5)">
+                    <animate attributeName="cy" values="88;90;88" dur="2.7s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="65" cy="75" r="1.5" fill="rgba(160,85,95,0.3)">
+                    <animate attributeName="cx" values="65;67;65" dur="3.8s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="55" cy="40" r="1.5" fill="rgba(160,85,95,0.35)"/>
+                <line x1="28" y1="35" x2="40" y2="45" stroke="rgba(160,85,95,0.12)" stroke-width="0.5" stroke-dasharray="2 4"/>
+                <line x1="72" y1="28" x2="60" y2="38" stroke="rgba(160,85,95,0.1)" stroke-width="0.5" stroke-dasharray="2 4"/>
+                <line x1="95" y1="50" x2="80" y2="60" stroke="rgba(160,85,95,0.08)" stroke-width="0.5" stroke-dasharray="2 4"/>
+                <line x1="45" y1="60" x2="55" y2="70" stroke="rgba(160,85,95,0.08)" stroke-width="0.5" stroke-dasharray="2 4"/>
+                <line x1="85" y1="80" x2="70" y2="78" stroke="rgba(160,85,95,0.08)" stroke-width="0.5" stroke-dasharray="2 4"/>
+</svg>
