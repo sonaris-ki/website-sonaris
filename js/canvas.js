@@ -227,13 +227,12 @@ document.addEventListener('mouseleave', () => { targetMouseX = width / 2; target
 
 document.addEventListener('touchmove', e => {
     if (e.target.closest('#denkraum-layer')) {
-        e.preventDefault();
         targetMouseX = e.touches[0].clientX;
         targetMouseY = e.touches[0].clientY;
         lastInteractionTime = performance.now();
         nudgeActive = false;
     }
-}, { passive: false });
+}, { passive: true });
 document.addEventListener('touchend', () => { targetMouseX = width / 2; targetMouseY = height / 2; });
 
 // ── Click trail FX ────────────────────────────────────────────────
