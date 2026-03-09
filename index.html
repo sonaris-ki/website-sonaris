@@ -146,9 +146,9 @@
     </div>
 
     <div id="denkraum-footer">
-        <a id="footer-team">Team</a>
-        <a id="footer-about">Sonaris</a>
-        <a id="footer-impressum">Impressum</a>
+        <a href="#" id="footer-team">Team</a>
+        <a href="#" id="footer-impressum">Impressum</a>
+        <a href="#" id="footer-datenschutz">Datenschutz</a>
     </div>
 
     <div id="toggle">
@@ -638,7 +638,7 @@
 
             <!-- PART 1: Headline + Intro -->
             <div class="gap-intro reveal">
-                <h2 id="reality-gap-heading" data-lh="heading-tight" data-fs="heading">Die Lücke, die niemand sieht</h2>
+                <h2 id="reality-gap-heading" data-lh="heading-tight" data-fs="heading">Exponentiell unterschätzt</h2>
                 <p class="gap-lead" data-lh="lead" data-fs="lead">Zwischen dem, was KI heute kann, und dem, was deutsche Unternehmen davon nutzen, klafft eine Lücke. Teilwissen über die Geschwindigkeit der Entwicklung spielt dabei eine zentrale Rolle.</p>
                 <p class="accent-quote reveal reveal-delay-1" data-lh="lead" data-fs="kicker">„Wir überschätzen Technologie kurzfristig – und unterschätzen sie langfristig."</p>
                 <p class="gap-quote-cite reveal reveal-delay-1" data-fs="caption" data-lh="lead">— Roy Amara, Institute for the Future, Stanford</p>
@@ -1195,6 +1195,7 @@
 <p>Gleichzeitig bewahre ich kritische Distanz. Ich spreche offen über Datenschutzbedenken, Überwachungsmöglichkeiten und die Grenzen der KI. Meine Erkenntnis: "Arbeit mit KI ist eine homöopathische Erstverschlimmerung im Hinblick auf Zeit." Die erste Säule – das Verständnis der Menschen – bildet das Fundament für jede erfolgreiche Technologie-Implementierung.</p>
 <p>Ich arbeite mit mittelständischen Unternehmen und deren Führungskräften, die KI als strategisches Werkzeug verstehen wollen und bereit sind, selbst voranzugehen. Meine Kunden schätzen meine Ehrlichkeit, meine Fähigkeit, komplexe Themen verständlich zu machen, und dass ich Modernität mit Bodenhaftung verbinde.</p>
 <p>Persönlich: Ich komme aus Berlin, arbeite mobil von Meeting zu Meeting und bin bekannt für meine Begeisterungsfähigkeit bei neuen Tools. Diese Begeisterung kanalisiere ich in strukturierte Verkaufsprozesse, die funktionieren.</p>
+<p>Im Projekt <a href="https://dialoglabor.solutions" target="_blank" rel="noopener">Dialoglabor.Solutions</a> arbeite ich mit Christian Pessing seit vielen Jahren erfolgreich zusammen.</p>
             </div>
         </div>
     </div>
@@ -1230,7 +1231,7 @@
 <p>Technisch bewege ich mich sicher in der KI-Plattform-Entwicklung, insbesondere mit Open Web UI, Datenbankintegration und API-Schnittstellen. Wenn es eine technische Herausforderung gibt, setze ich meinen Ehrgeiz an, zu schauen, wie es geht. Mein Fokus liegt zunächst auf der Qualität und Machbarkeit – im Dreieck von Preis, Qualität und Zeit.</p>
 <p>Ich arbeite mit mittelständischen Unternehmen, die konkrete technische Umsetzungen brauchen und jemanden suchen, der sagt: "Das können wir machen" – und dann auch liefert.</p>
 <p>Persönlich: Ich hatte schon immer unternehmerische Interessen. Ich arbeite remote, meist aus meinem Homeoffice, und schätze die Flexibilität, die mir erlaubt, konzentriert und effektiv zu arbeiten.</p>
-<p><a href="https://remotesourcing.de" target="_blank" rel="noopener">remotesourcing.de</a></p>
+<p>Remote Sourcing ist mein Unternehmen, mit dem ich seit Jahren für Kunden arbeite: <a href="https://remotesourcing.de" target="_blank" rel="noopener">remotesourcing.de</a></p>
             </div>
         </div>
     </div>
@@ -1249,6 +1250,7 @@
 <p>Mit einer selbst entwickelten Hartkernbuntstift-Technik auf G4-Zeichenkarton schaffe ich surreale Interpretationen von Bewusstseinszuständen und Traumwelten. Diese künstlerische Praxis schärft mein Verständnis für non-lineare Kommunikation und visuelle Informationsverarbeitung - Kompetenzen, die sich direkt auf meine Arbeit mit KI-Systemen übertragen. Beide Bereiche - systematische Kommunikationsanalyse und intuitive visuelle Gestaltung - verstärken sich gegenseitig.</p>
 <p>Meine Kunden sind Fach- und Führungskräfte aus mittelständischen Unternehmen, die verstehen möchten, wie traditionelle Kommunikationsexzellenz und KI-Kompetenz sich gegenseitig verstärken können.</p>
 <p>Persönlich: Ich bin Vater einer 11 jährigen Tochter und arbeite aus einem selbst ausgebauten Mercedes Sprinter Coaching-Mobil.</p>
+<p>Im Projekt <a href="https://dialoglabor.solutions" target="_blank" rel="noopener">Dialoglabor.Solutions</a> arbeite ich mit Oliver Andrees seit vielen Jahren erfolgreich zusammen.</p>
             </div>
         </div>
     </div>
@@ -1588,7 +1590,13 @@
         </div>
     </section>
 
-    
+    <footer class="site-footer">
+        <span class="footer-brand">Sonaris © 2026</span>
+        <div class="footer-links">
+            <a href="#" id="footer-bottom-impressum">Impressum</a>
+            <a href="#" id="footer-bottom-datenschutz">Datenschutz</a>
+        </div>
+    </footer>
 
     </div><!-- #content-layer -->
 
@@ -2031,7 +2039,7 @@ function showResult(){
         const subtitleX = toX(gapEnd) + 14;
         const subtitleY = toY(linear(subtitleT)) + 20;
         ctx.fillStyle = 'rgba(220,140,150,0.35)'; ctx.font = '300 9px Inter, -apple-system, sans-serif'; ctx.textAlign = 'left';
-        ctx.fillText('Die Lücke, die niemand sieht', subtitleX, subtitleY);
+        ctx.fillText('Exponentiell unterschätzt', subtitleX, subtitleY);
 
         const arrowX = subtitleX + 70;
         const arrowBottom = subtitleY - 14, arrowTop = gapLabelY + 30;

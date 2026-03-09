@@ -2,6 +2,12 @@
    RESPONSIVE – Media queries for all breakpoints
    ═══════════════════════════════════════════════════════════════════ */
 
+/* ── Team-Overlay: mittlere Breite (3 Spalten) ──────────────────── */
+
+@media (max-width: 900px) {
+    #overlay-content .team-overlay-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
 /* ── Tablet (768–1200px) ───────────────────────────────────────── */
 
 @media (max-width: 1200px) {
@@ -52,6 +58,8 @@
     /* Overlay */
     .team-grid { grid-template-columns: 1fr; }
     #overlay-content { padding: 36px 24px; }
+    #overlay-content.overlay-content--team { max-width: calc(100vw - 32px); }
+    #overlay-content .team-overlay-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
 
     /* Navigation – Touch-Ziele min. 44×44px (Apple HIG) */
     .nav-hamburger { display: block; min-width: 44px; min-height: 44px; padding: 10px; }
@@ -151,5 +159,6 @@
 
 @media (max-width: 480px) {
     .team-section-grid { grid-template-columns: 1fr; }
+    #overlay-content .team-overlay-grid { grid-template-columns: 1fr; }
     .source-tag { font-size: var(--fs-label); padding: 4px 10px; }
 }

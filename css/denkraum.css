@@ -403,10 +403,11 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14p
     position: fixed;
     bottom: 44px;
     left: 45px;
-    z-index: 20;
+    z-index: 30;
     display: flex;
     gap: 18px;
     font-size: 11px;
+    pointer-events: auto;
 }
 #denkraum-footer a {
     color: rgba(110, 145, 180, 0.28);
@@ -414,6 +415,8 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14p
     cursor: pointer;
     transition: color 0.25s;
     letter-spacing: 0.3px;
+    pointer-events: auto;
+    padding: 8px 4px;
 }
 #denkraum-footer a:hover { color: rgba(170, 125, 85, 0.7); }
 
@@ -442,6 +445,21 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14p
     line-height: 1.75;
 }
 
+#overlay-content.overlay-content--team {
+    max-width: 1000px;
+}
+
+.team-detail-back {
+    display: inline-block;
+    margin-bottom: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: var(--fs-caption);
+}
+.team-detail-in-overlay .team-overlay-close { display: none; }
+
 #overlay-content::-webkit-scrollbar { width: 4px; }
 #overlay-content::-webkit-scrollbar-track { background: transparent; }
 #overlay-content::-webkit-scrollbar-thumb { background: rgba(170, 125, 85, 0.25); border-radius: 2px; }
@@ -460,10 +478,32 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14p
     margin-top: 24px;
     margin-bottom: 8px;
 }
+#overlay-content h4 {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(225, 185, 145, 0.75);
+    margin-top: 16px;
+    margin-bottom: 6px;
+}
 #overlay-content p {
     font-size: 14px;
     margin-bottom: 14px;
     color: rgba(215, 185, 155, 0.78);
+}
+#overlay-content ul {
+    font-size: 14px;
+    margin-bottom: 14px;
+    padding-left: 24px;
+    color: rgba(215, 185, 155, 0.78);
+}
+#overlay-content li { margin-bottom: 4px; }
+#overlay-content a {
+    color: rgba(110, 145, 180, 0.6);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+#overlay-content a:hover {
+    color: rgba(160, 185, 215, 0.9);
 }
 
 /* ── Team grid (overlay) ───────────────────────────────────────── */
