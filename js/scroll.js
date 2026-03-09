@@ -61,23 +61,16 @@
         scrollIndicator.addEventListener('click', scrollToContent);
     }
 
-    // Chat scroll hint (three arrows) – Event-Delegation, da Klicks sonst blockiert werden
+    // Chat scroll hint: direkter Klick-Handler, keine Delegation
     const chatScrollHint = document.getElementById('chat-scroll-hint');
-    function handleScrollHintActivate(e) {
-        const isOnHint = chatScrollHint && (
-            e.type === 'keydown' ? document.activeElement === chatScrollHint
-                : chatScrollHint.contains(e.target)
-        );
-        if (!isOnHint) return;
-        if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
-        e.preventDefault();
-        e.stopPropagation();
-        scrollToContent();
-    }
     if (chatScrollHint) {
-        document.addEventListener('click', handleScrollHintActivate, true);
-        document.addEventListener('touchend', handleScrollHintActivate, true);
-        chatScrollHint.addEventListener('keydown', handleScrollHintActivate);
+        ['click', 'touchend'].forEach(function(ev) {
+            chatScrollHint.addEventListener(ev, function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                scrollToContent();
+            });
+        });
     }
 
     // Detect scroll intent

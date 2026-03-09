@@ -28,9 +28,9 @@
             const target = document.getElementById(targetId);
             if (target) {
                 e.preventDefault();
-                // Enable scroll if not yet enabled
-                document.body.style.overflow = 'auto';
-                target.scrollIntoView({ behavior: 'smooth' });
+                document.body.style.setProperty('overflow', 'auto', 'important');
+                document.documentElement.style.setProperty('overflow', 'auto', 'important');
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         });
     });
