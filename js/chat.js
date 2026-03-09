@@ -402,6 +402,10 @@ function initContactDialog() {
         document.getElementById('contact-final-send').addEventListener('click', () => {
             const email = document.getElementById('contact-email').value.trim();
             if (!email || !email.includes('@')) { document.getElementById('contact-email').focus(); return; }
+            const phone = document.getElementById('contact-phone').value.trim();
+            const subject = encodeURIComponent('Kontaktanfrage von sonaris.de');
+            const body = encodeURIComponent(`Thema: ${topic}\n\nE-Mail: ${email}\nTelefon: ${phone || '(nicht angegeben)'}`);
+            window.location.href = `mailto:oliver@sonaris.de?subject=${subject}&body=${body}`;
 
             dialog.innerHTML = `
                 <div class="contact-success">
