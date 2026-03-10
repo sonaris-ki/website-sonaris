@@ -44,7 +44,10 @@
     /* Gap-Chart: weniger Padding auf Mobile */
     .gap-chart-block { padding: 16px; }
 
-    /* Denkraum */
+    /* Denkraum – Mobile: Begriffe, Tooltip und Scroll-Hint ausblenden */
+    #fragments { display: none !important; }
+    #fragment-tooltip { display: none !important; }
+    #chat-scroll-hint { display: none !important; }
     #chat-panel { width: 100%; max-width: 100%; padding: 0 16px 120px 16px; }
     #chat-messages { max-height: 280px; }
     #chat-input-row { padding: 10px 12px; border-radius: 14px; }
